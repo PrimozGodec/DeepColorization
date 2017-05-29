@@ -96,7 +96,7 @@ def image_generator(image_dir, batch_size):
             shuffle(image_dir)
 
 
-b_size = 128
+b_size = 32
 list_dir = os.listdir("../small_dataset")
 
 model = Sequential()
