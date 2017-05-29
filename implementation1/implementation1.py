@@ -52,9 +52,9 @@ def save_rgb(file_name, im):
 
 # cielab properties - according to responses
 # from https://stackoverflow.com/questions/19099063/what-are-the-ranges-of-coordinates-in-the-cielab-color-space
-l_range = {min: 0, max: 100}
-a_range = {min: -87, max: 99}
-b_range = {min: -108, max: 95}
+l_range = {"min": 0, "max": 100}
+a_range = {"min": -87, "max": 99}
+b_range = {"min": -108, "max": 95}
 n_bins = 20
 a_bin_len = a_range["max"] - a_range["min"]
 b_bin_len = b_range["max"] - b_range["min"]
@@ -96,7 +96,7 @@ def image_generator(image_dir, batch_size):
             shuffle(image_dir)
 
 
-b_size = 2
+b_size = 128
 list_dir = os.listdir("../small_dataset")
 
 model = Sequential()
