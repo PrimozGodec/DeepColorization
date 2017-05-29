@@ -163,7 +163,7 @@ model.add(Activation(custom_softmax))
 sgd = optimizers.SGD(lr=1, momentum=0.0, decay=0, nesterov=False)
 model.compile(optimizer=sgd,
               loss='mean_squared_error',
-              metrics=['accuracy'])
+              metrics=['mse'])
 
 model.summary()
 
