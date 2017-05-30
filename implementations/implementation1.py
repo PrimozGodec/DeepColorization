@@ -8,7 +8,7 @@ from random import shuffle
 
 from support_scripts import image_processing
 
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 def custom_softmax(x):
@@ -25,7 +25,7 @@ list_dir = list_dir[:20]
 model = Sequential()
 
 # conv1_1
-model.add(Conv2D(64, (3, 3), activation='relu', padding="same", input_shape=(256, 256, 1)))
+model.add(Conv2D(64, (3, 3), padding="same", activation='relu', input_shape=(256, 256, 1)))
 # conv1_2
 model.add(Conv2D(64, (3, 3), strides=(2, 2), padding="same", activation='relu'))
 
@@ -76,14 +76,14 @@ model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2), activati
 # conv8_3
 model.add(Conv2DTranspose(64, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
 # conv8_4
-model.add(Conv2D(2, (3, 3), padding="same",  activation='relu'))
+model.add(Conv2D(2, (3, 3), padding="same"))
 
 # multidimensional softmax
 # todo: try the way to use default function - with axis
 # model.add(Activation(custom_softmax))
 
 
-sgd = optimizers.SGD(lr=0.01, momentum=0.0, decay=0, nesterov=False)
+sgd = optimizers.SGD(lr=0.1, momentum=0.0, decay=0, nesterov=False)
 model.compile(optimizer=sgd,
               loss='mean_squared_error',
               metrics=['mse'])

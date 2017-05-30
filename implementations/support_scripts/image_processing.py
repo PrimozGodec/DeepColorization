@@ -2,16 +2,28 @@ import numpy as np
 from skimage import io, color
 from skimage.transform import resize
 from random import shuffle
+import os
 
 import scipy.ndimage
+# import matplotlib.pyplot as plt
+# from scipy.misc import imread
+
+
+from PIL import Image
 
 
 # load data
 def load_images(file):
     images = []
 
-    rgb = io.imread("../small_dataset/" + file)
-    rgb = resize(rgb, (256, 256), mode='reflect')
+    rgb = io.imread("../../small_dataset/" + file)
+    img = Image.fromarray(rgb, 'RGB')
+
+    img = img.resize((256, 256), Image.ANTIALIAS)
+
+    img = img.convert(mode="RGB")  # ensure that image rgb
+    rgb = np.array(img)
+
     if len(rgb.shape) == 3 and (rgb.shape[2]) == 3:  # avoid black and white photos
         return color.rgb2lab(rgb)
     else:
@@ -58,8 +70,6 @@ def gaussian_filter(data, sigma=5):
     return data
 
 
-
-
 def image_generator(image_dir, batch_size):
     n = 0
     while True:
@@ -72,8 +82,18 @@ def image_generator(image_dir, batch_size):
             im = load_images(image)
             batch_imputs[i] = images_to_l(im)[:, :, np.newaxis]
             batch_targets[i] = images_to_ab(im)
+
         yield (batch_imputs, batch_targets)
         n += batch_size
         if n + batch_size > len(image_dir):
             n = 0
             shuffle(image_dir)
+
+
+if __name__ == "__main__":
+    # test
+    list_dir = os.listdir("../../small_dataset")
+    g = image_generator(list_dir, 2)
+    a = next(g)
+
+    print(a)
