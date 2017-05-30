@@ -177,7 +177,7 @@ model.summary()
 
 
 model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
-                    steps_per_epoch=len(list_dir)//b_size, epochs=5)
+                    steps_per_epoch=len(list_dir)//b_size, epochs=50)
 model.save_weights("implementation1.h5")
 
 
