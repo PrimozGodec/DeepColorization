@@ -175,9 +175,9 @@ model.compile(optimizer=opt,
 
 model.summary()
 
-for i in range(n_epochs // 100):
+for i in range(n_epochs // 10):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
-                    steps_per_epoch=len(list_dir)//b_size, epochs=n_epochs)
+                    steps_per_epoch=len(list_dir)//b_size, epochs=10)
     model.save_weights("../weights/implementation1-i.h5")
 
 
