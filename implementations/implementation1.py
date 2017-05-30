@@ -83,7 +83,7 @@ model.add(Conv2D(400, (3, 3), padding="same", activation='relu'))
 model.add(Activation(custom_softmax))
 
 
-sgd = optimizers.SGD(lr=0.01, momentum=0.0, decay=0, nesterov=False)
+sgd = optimizers.SGD(lr=10, momentum=0.0, decay=0, nesterov=False)
 model.compile(optimizer=sgd,
               loss='mean_squared_error',
               metrics=['mse'])
@@ -93,7 +93,6 @@ model.summary()
 model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
                     steps_per_epoch=len(list_dir)//b_size, epochs=5)
 
-print(model.get_weights())
 
 model.save_weights('implementation1_1.h5')
 # model.load_weights('implementation1_1.h5')
