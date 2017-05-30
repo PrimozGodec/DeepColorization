@@ -2,7 +2,7 @@ import os
 
 from keras import backend as K
 from keras import optimizers
-from keras.layers import Conv2D, Conv2DTranspose
+from keras.layers import Conv2D, Conv2DTranspose, Activation
 from keras.models import Sequential
 from random import shuffle
 
@@ -60,27 +60,27 @@ model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
 # conv6_2
 model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
 # conv6_3
-model.add(Conv2D(512, (3, 3), padding="same"))
+model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
 
 # conv7_1
-model.add(Conv2D(256, (3, 3), padding="same"))
+model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
 # conv7_2
-model.add(Conv2D(256, (3, 3), padding="same"))
+model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
 # conv7_3
-model.add(Conv2D(256, (3, 3), padding="same"))
+model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
 
 # conv8_1
-model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2)))
+model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
 # conv8_2
-model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2)))
+model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
 # conv8_3
-model.add(Conv2DTranspose(64, (3, 3), padding="same",  strides=(2, 2)))
+model.add(Conv2DTranspose(64, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
 # conv8_4
-model.add(Conv2D(2, (3, 3), padding="same"))
+model.add(Conv2D(400, (3, 3), padding="same", activation='relu'))
 
 # multidimensional softmax
 # todo: try the way to use default function - with axis
-# model.add(Activation(custom_softmax))
+model.add(Activation(custom_softmax))
 
 
 sgd = optimizers.SGD(lr=0.01, momentum=0.0, decay=0, nesterov=False)
@@ -90,7 +90,7 @@ model.compile(optimizer=sgd,
 
 model.summary()
 
-model.fit_generator(image_processing.image_generator(list_dir, b_size),
+model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
                     steps_per_epoch=len(list_dir)//b_size, epochs=50)
 
 model.save_weights('implementation1_1.h5')
