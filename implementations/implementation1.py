@@ -18,7 +18,7 @@ def custom_softmax(x):
 
 
 
-b_size = 2
+b_size = 32
 list_dir = os.listdir("../small_dataset")
 shuffle(list_dir)
 list_dir = list_dir[:20]
