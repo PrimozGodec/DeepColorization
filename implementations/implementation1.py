@@ -19,7 +19,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 #     y_pred = K.reshape(y_pred, (n * h * w, q))
 #
 #     weights = y_true[:, 313:]  # extract weight from y_true
-#     weights = K.concatenate([weights] * 313, axis=1)
+#     weights = K.concatenate([weights] * 313, axis=3)
 #     y_true = y_true[:, :-1]  # remove last column
 #     y_pred = y_pred[:, :-1]  # remove last column
 #
@@ -42,85 +42,85 @@ model = Sequential()
 
 # conv1_1
 model.add(Conv2D(64, (3, 3), padding="same", input_shape=(256, 256, 1)))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv1_2
 model.add(Conv2D(64, (3, 3), strides=(2, 2), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv2_1
 model.add(Conv2D(128, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv2_2
 model.add(Conv2D(128, (3, 3), strides=(2, 2), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv3_1
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv3_2
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv3_3
 model.add(Conv2D(256, (3, 3), padding="same", strides=(2, 2)))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv4_1
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv4_2
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv4_3
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv5_1
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv5_2
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv5_3
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv6_1
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv6_2
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv6_3
 model.add(Conv2D(512, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv7_1
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv7_2
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 # conv7_3
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # # conv8_1
@@ -135,12 +135,12 @@ model.add(Activation("relu"))
 # conv8_1
 model.add(UpSampling2D(size=(2, 2)))
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv8_2
 model.add(Conv2D(256, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=1))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
 # conv8_3
@@ -176,9 +176,9 @@ model.compile(optimizer=opt,
 model.summary()
 
 
-model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
-                    steps_per_epoch=len(list_dir)//b_size, epochs=1)
-model.save_weights("implementation1.h5")
+# model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
+#                     steps_per_epoch=len(list_dir)//b_size, epochs=1)
+# model.save_weights("implementation1.h5")
 
 
 # g = image_processing.image_generator_hist(list_dir, 1)
