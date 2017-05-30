@@ -16,7 +16,7 @@ from PIL import Image
 def load_images(file):
     images = []
 
-    rgb = io.imread("../../small_dataset/" + file)
+    rgb = io.imread("../small_dataset/" + file)
     img = Image.fromarray(rgb, 'RGB')
 
     img = img.resize((256, 256), Image.ANTIALIAS)
