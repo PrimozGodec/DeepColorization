@@ -35,8 +35,9 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 b_size = 2
 list_dir = os.listdir("../small_dataset")
 shuffle(list_dir)
-list_dir = list_dir[:20]
+list_dir = list_dir
 num_classes = 400
+n_epochs = 1000
 
 model = Sequential()
 
@@ -170,15 +171,14 @@ model.add(Lambda(resize_image))
 # sgd = optimizers.SGD(lr=10, momentum=0.0, decay=0, nesterov=False)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt,
-              loss='mean_squared_error',
-              metrics=['mse'])
+              loss='mean_squared_error')
 
 model.summary()
 
-
-model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
-                    steps_per_epoch=len(list_dir)//b_size, epochs=1000)
-model.save_weights("implementation1.h5")
+for i in range(n_epochs // 100):
+    model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
+                    steps_per_epoch=len(list_dir)//b_size, epochs=n_epochs)
+    model.save_weights("../weights/implementation1-i.h5")
 
 
 # g = image_processing.image_generator_hist(list_dir, 1)
@@ -187,7 +187,6 @@ model.save_weights("implementation1.h5")
 # model.predict(image_processing.load_images(i[0]))
 
 
-model.save_weights('implementation1_1.h5')
 # model.load_weights('implementation1_1.h5')
 #
 # prediction = model.predict(images_to_l(load_images(list_dir[0])))
