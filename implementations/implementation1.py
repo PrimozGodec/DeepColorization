@@ -60,21 +60,21 @@ model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
 # conv6_2
 model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
 # conv6_3
-model.add(Conv2D(512, (3, 3), padding="same", activation='relu'))
+model.add(Conv2D(512, (3, 3), padding="same"))
 
 # conv7_1
-model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
+model.add(Conv2D(256, (3, 3), padding="same"))
 # conv7_2
-model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
+model.add(Conv2D(256, (3, 3), padding="same"))
 # conv7_3
-model.add(Conv2D(256, (3, 3), padding="same", activation='relu'))
+model.add(Conv2D(256, (3, 3), padding="same"))
 
 # conv8_1
-model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
+model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2)))
 # conv8_2
-model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
+model.add(Conv2DTranspose(128, (3, 3), padding="same",  strides=(2, 2)))
 # conv8_3
-model.add(Conv2DTranspose(64, (3, 3), padding="same",  strides=(2, 2), activation='relu'))
+model.add(Conv2DTranspose(64, (3, 3), padding="same",  strides=(2, 2)))
 # conv8_4
 model.add(Conv2D(2, (3, 3), padding="same"))
 
@@ -83,7 +83,7 @@ model.add(Conv2D(2, (3, 3), padding="same"))
 # model.add(Activation(custom_softmax))
 
 
-sgd = optimizers.SGD(lr=0.1, momentum=0.0, decay=0, nesterov=False)
+sgd = optimizers.SGD(lr=0.01, momentum=0.0, decay=0, nesterov=False)
 model.compile(optimizer=sgd,
               loss='mean_squared_error',
               metrics=['mse'])
