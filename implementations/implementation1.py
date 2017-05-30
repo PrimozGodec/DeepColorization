@@ -83,7 +83,7 @@ model.add(Conv2D(400, (3, 3), padding="same", activation='relu'))
 model.add(Activation(custom_softmax))
 
 
-sgd = optimizers.SGD(lr=0.01, momentum=0.0, decay=0, nesterov=False)
+sgd = optimizers.SGD(lr=0.1, momentum=0.0, decay=0, nesterov=False)
 model.compile(optimizer=sgd,
               loss='mean_squared_error',
               metrics=['mse'])
