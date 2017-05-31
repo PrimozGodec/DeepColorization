@@ -106,4 +106,5 @@ ENV/
 imagenet/fall11_urls.txt
 small_dataset/*
 test_set/*.jpg
+result_images/*.jpg
 weights/*.h5
