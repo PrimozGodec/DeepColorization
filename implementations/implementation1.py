@@ -175,7 +175,7 @@ model.compile(optimizer=opt,
 
 model.summary()
 
-save_every_n_epoch = 1
+save_every_n_epoch = 10
 
 for i in range(n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
