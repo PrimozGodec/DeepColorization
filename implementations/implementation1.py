@@ -11,12 +11,12 @@ from support_scripts import image_processing
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 # cross entropy
-# def categorical_crossentropy_color(y_true, y_pred):
+# def custom_crossentropy(y_true, y_pred):
 #
-#     # Flatten  # todo: make weight
-#     n, h, w, q = y_true.shape
-#     y_true = K.reshape(y_true, (n * h * w, q))
-#     y_pred = K.reshape(y_pred, (n * h * w, q))
+#     # Flatten
+#     nb, h, w, q = y_true.shape
+#     y_true = K.reshape(y_true, (nb * h * w, q))
+#     y_pred = K.reshape(y_pred, (nb * h * w, q))
 #
 #     weights = y_true[:, 313:]  # extract weight from y_true
 #     weights = K.concatenate([weights] * 313, axis=3)
@@ -37,7 +37,7 @@ list_dir = os.listdir("../small_dataset")
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
-n_epochs = 1000
+n_epochs = 100
 
 model = Sequential()
 
@@ -174,8 +174,9 @@ model.compile(optimizer=opt,
               loss='mean_squared_error')
 
 model.summary()
+model.load_weights("../weights/implementation1-20.h5")
 
-save_every_n_epoch = 10
+save_every_n_epoch = 5
 
 for i in range(n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
