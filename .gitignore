@@ -1,5 +1,4 @@
-imagenet/fall11_urls.txt
-small_dataset/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -102,3 +101,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# all stuff that are data not code
+imagenet/fall11_urls.txt
+small_dataset/*
+test_set/*.jpg
+weights/*.h5
