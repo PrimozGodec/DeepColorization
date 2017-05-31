@@ -32,7 +32,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 #     return cross_ent
 
 
-b_size = 2
+b_size = 32
 list_dir = os.listdir("../small_dataset")
 shuffle(list_dir)
 list_dir = list_dir
