@@ -12,7 +12,7 @@ from functools import wraps
 import errno
 import os
 import signal
-import ssl
+import numpy as np
 
 class ImageDownloadGenerator:
 
@@ -47,7 +47,7 @@ class ImageDownloadGenerator:
         self.mode = mode
 
         # open data file
-        self.imagefile = open("../imagenet/fall11_urls.txt", encoding = "ISO-8859-1")
+        self.imagefile = open("../../imagenet/fall11_urls.txt", encoding = "ISO-8859-1")
 
         self.preprocess_the_file()
         self.n = 0  # image that will be read next
@@ -86,44 +86,51 @@ class ImageDownloadGenerator:
     @timeout(2)
     def download_image(self, link, name):
         try:
-            path = "../small_dataset/" + name + ".jpg"
+            path = "../../small_dataset/" + name + ".jpg"
+            # if file already downloaded
             if os.path.isfile(path):
                 return os.path.abspath(path)
+            # else
             with request.urlopen(link) as url:
                 s = url.read()
                 print(s)
                 if "<html" in str(s):  #.startswith("b'<html"):
                     return "error"
                 im = Image.open(BytesIO(s))
-                [w, h] = im.size
-                if w > 256 and h > 256:
+                [w, h, c] = np.array(im).shape
+                print(w, h, c)
+                # image must be color and has size at least 256x256
+                if w > 256 and h > 256 and c == 3:
                     im.save(path)
                     return os.path.abspath(path)
                 return "error"
-        except (error.HTTPError, error.URLError, OSError, IOError, UnicodeEncodeError, ssl.CertificateError) as err:
+        except:
+            print('here')
             return "error"
 
     def download_images_generator(self):
         # while true waits for first successful download
-            while True:
-                name_link = self.select_photo()
-                if len(name_link) != 2:  # != 2 means weird url
-                    continue
-                [name, link] = name_link
-                print(name, link)
-                r = ""
-                try:
-                    r = self.download_image(link, name)
-                except TimeoutError as err:
-                    print('timeout')
-                if r is not "error":
-                    yield r  # then r contains path
-                if self.n > len(self.line_offset):
-                    break
+        while True:
+            name_link = self.select_photo()
+            if len(name_link) != 2:  # != 2 means weird url
+                continue
+            [name, link] = name_link
+            print(name, link)
+            r = ""
+            try:
+                r = self.download_image(link, name)
+            except TimeoutError as err:
+                print('timeout')
+            if r is not "error":
+                yield r  # then r contains path
+            if self.n >= len(self.line_offset):
+                if self.mode == "random":
+                    shuffle(self.line_offset)
+                self.n = 0
 
 
 if __name__ == "__main__":
     ig = ImageDownloadGenerator()
     g = ig.download_images_generator()
-    for i in range(500):
+    for i in range(30):
         print(next(g))
