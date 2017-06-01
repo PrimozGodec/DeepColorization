@@ -8,7 +8,7 @@ from random import shuffle
 
 from support_scripts import image_processing
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 # cross entropy
 # def custom_crossentropy(y_true, y_pred):
@@ -174,11 +174,12 @@ model.compile(optimizer=opt,
               loss='mean_squared_error')
 
 model.summary()
-model.load_weights("../weights/implementation1-20.h5")
+model.load_weights("../weights/implementation1-90.h5")
 
 save_every_n_epoch = 5
+start_from = 91
 
-for i in range(n_epochs // save_every_n_epoch):
+for i in range(start_from, n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
