@@ -5,6 +5,7 @@ from keras import optimizers
 from keras.layers import Conv2D, Conv2DTranspose, Activation, BatchNormalization, UpSampling2D, Lambda
 from keras.models import Sequential
 from random import shuffle
+import numpy as np
 
 from implementations.support_scripts import image_processing
 
@@ -15,7 +16,9 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 def custom_crossentrophy(y_true, y_pred):
 
     # Flatten
-    nb, h, w, q = y_true.shape
+    tf_session = K.get_session()
+    [nb, h, w, q] = K.shape(y_pred).eval(session=tf_session)
+
     y_true = K.reshape(y_true, (nb * h * w, q))
     y_pred = K.reshape(y_pred, (nb * h * w, q))
 
@@ -168,6 +171,7 @@ model.compile(optimizer=opt,
 model.summary()
 
 save_every_n_epoch = 10
+
 
 for i in range(n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
