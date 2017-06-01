@@ -33,7 +33,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 
 b_size = 16
-list_dir = os.listdir("../small_dataset")
+dir_name = "../small_dataset"
+list_dir = os.listdir(dir_name)
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
@@ -180,7 +181,7 @@ save_every_n_epoch = 5
 start_from = 95
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
+    model.fit_generator(image_processing.image_generator_hist(list_dir, dir_name, b_size),
                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
 
