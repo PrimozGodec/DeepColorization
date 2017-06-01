@@ -177,9 +177,9 @@ model.summary()
 model.load_weights("../weights/implementation1-90.h5")
 
 save_every_n_epoch = 5
-start_from = 91
+start_from = 95
 
-for i in range(start_from, n_epochs // save_every_n_epoch):
+for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
