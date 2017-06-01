@@ -32,7 +32,7 @@ list_dir = os.listdir(images_dir_name)[:20]
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
-n_epochs = 10
+n_epochs = 100
 
 model = Sequential()
 
