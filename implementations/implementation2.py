@@ -28,7 +28,7 @@ def custom_crossentrophy(y_true, y_pred):
 
 b_size = 2
 images_dir_name = "../small_dataset"
-list_dir = os.listdir(images_dir_name)[:5]
+list_dir = os.listdir(images_dir_name)
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
