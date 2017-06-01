@@ -5,9 +5,9 @@ from keras import optimizers
 from keras.layers import Conv2D, Conv2DTranspose, Activation, BatchNormalization, UpSampling2D, Lambda
 from keras.models import Sequential
 from random import shuffle
-import numpy as np
 
-from implementations.support_scripts import image_processing
+
+from support_scripts import image_processing
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -172,9 +172,8 @@ model.summary()
 
 save_every_n_epoch = 10
 
-
 for i in range(n_epochs // save_every_n_epoch):
-    model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
+    model.fit_generator(image_processing.image_generator_hist(list_dir, images_dir_name, b_size),
                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     # model.save_weights("../weights/implementation2-" + str(i * save_every_n_epoch) + ".h5")
 
