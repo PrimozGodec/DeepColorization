@@ -6,7 +6,7 @@ from keras.layers import Conv2D, Conv2DTranspose, Activation, BatchNormalization
 from keras.models import Sequential
 from random import shuffle
 
-from support_scripts import image_processing
+from implementations.support_scripts import image_processing
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -23,12 +23,13 @@ def custom_crossentrophy(y_true, y_pred):
     return K.mean(cross_ent, axis=-1)
 
 
-b_size = 16
-list_dir = os.listdir("../small_dataset")
+b_size = 2
+images_dir_name = "../small_dataset"
+list_dir = os.listdir(images_dir_name)[:20]
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
-n_epochs = 1000
+n_epochs = 10
 
 model = Sequential()
 
@@ -171,7 +172,12 @@ save_every_n_epoch = 10
 for i in range(n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, b_size),
                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
-    model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
+    # model.save_weights("../weights/implementation2-" + str(i * save_every_n_epoch) + ".h5")
+
+    # make validation
+    loss = model.evaluate_generator(image_processing.image_generator_hist(None, "../test_set", b_size), 2)
+    print("Validation loss:", loss)
+
 
 
 # g = image_processing.image_generator_hist(list_dir, 1)
