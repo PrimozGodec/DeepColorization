@@ -38,7 +38,7 @@ list_dir = os.listdir(dir_name)
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
-n_epochs = 100
+n_epochs = 1000
 
 model = Sequential()
 
@@ -175,10 +175,10 @@ model.compile(optimizer=opt,
               loss='mean_squared_error')
 
 model.summary()
-model.load_weights("../weights/implementation1-90.h5")
+model.load_weights("../weights/implementation1-95.h5")
 
 save_every_n_epoch = 5
-start_from = 95
+start_from = 100
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     model.fit_generator(image_processing.image_generator_hist(list_dir, dir_name, b_size),
