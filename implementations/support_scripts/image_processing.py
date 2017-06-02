@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from skimage import io, color
 from skimage.transform import resize
 from random import shuffle
@@ -6,6 +7,7 @@ import os
 import scipy.stats as st
 
 import scipy.ndimage
+import scipy.signal
 # import matplotlib.pyplot as plt
 # from scipy.misc import imread
 
@@ -14,8 +16,10 @@ from PIL import Image
 
 
 # load data
+from implementations.support_scripts.download_dataset import ImageDownloadGenerator
+
+
 def load_images(dir, file):
-    images = []
 
     rgb = io.imread(os.path.join(dir, file))
     img = Image.fromarray(rgb, 'RGB')
@@ -56,13 +60,35 @@ a_bin_len = a_range["max"] - a_range["min"]
 b_bin_len = b_range["max"] - b_range["min"]
 
 
+def ab_to_indices(ab, mode="one-hot"):
 
-def ab_to_histogram(ab):
+    return ((ab[:, :, 0] - a_range["min"]) / a_bin_len * n_bins).astype(int) * n_bins + \
+              ((ab[:, :, 1] - b_range["min"]) / b_bin_len * n_bins).astype(int)
+
+
+def ab_to_histogram(ab, mode="one-hot"):
 
     indices = ((ab[:, :, 0] - a_range["min"]) / a_bin_len * n_bins).astype(int) * n_bins + \
               ((ab[:, :, 1] - b_range["min"]) / b_bin_len * n_bins).astype(int)
 
-    return ((np.arange(n_bins ** 2) == indices[:, :, None]).astype(int))
+    h, w, d = ab.shape
+    im = np.zeros((h, w, n_bins ** 2))
+
+
+    if mode == "gaussian":
+        kernel = gkern(3, nsig=5)
+        top_left = ((np.arange(n_bins ** 2) == indices[:, :, None] - n_bins - 1).astype(float)) * kernel[0, 0]
+        top = ((np.arange(n_bins ** 2) == indices[:, :, None] - n_bins).astype(float)) * kernel[0, 1]
+        top_right = ((np.arange(n_bins ** 2) == indices[:, :, None] - n_bins + 1).astype(float)) * kernel[0, 2]
+        right = ((np.arange(n_bins ** 2) == indices[:, :, None] + 1).astype(float)) * kernel[1, 2]
+        left = ((np.arange(n_bins ** 2) == indices[:, :, None] - 1).astype(float)) * kernel[1, 0]
+        bottom_left = ((np.arange(n_bins ** 2) == indices[:, :, None] + n_bins - 1).astype(float)) * kernel[2, 0]
+        bottom = ((np.arange(n_bins ** 2) == indices[:, :, None] + n_bins).astype(float)) * kernel[2, 1]
+        bottom_right = ((np.arange(n_bins ** 2) == indices[:, :, None] + n_bins + 1).astype(float)) * kernel[2, 2]
+        im += top_left + top + top_right + left + right + bottom_left + bottom + bottom_right
+
+    return ((np.arange(n_bins ** 2) == indices[:, :, None]).astype(int)) + im
+
 
 
 def histogram_to_ab(hist):
@@ -87,13 +113,13 @@ def gkern(kernlen, nsig=5):
 
 def gaussian_filter(data, sigma=5):
     data = data.astype(np.float32)
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
-            im = np.reshape(data[i, j, :], (n_bins, n_bins))
-            k = gkern(3, nsig=sigma)
-            l = scipy.ndimage.convolve(im.astype(float), k, mode='constant', cval=0.0)
-            data[i, j, :] = l.flatten()
-    return data
+    w, h, c = data.shape
+    data = data.reshape((w * h, int(np.sqrt(c)), int(np.sqrt(c))))
+
+    k = gkern(3, nsig=sigma)[None, :, :]
+    l = scipy.signal.convolve(data.astype(float), k, mode='same')
+
+    return l.reshape(w, h, c)
 
 
 def image_generator(image_dir, batch_size):
@@ -143,10 +169,8 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
         for i, image in enumerate(batch_im_names):
             im = load_images(image_dir_name, image)
             batch_imputs[i] = images_to_l(im)[:, :, np.newaxis]
-            batch_targets[i] = ab_to_histogram(images_to_ab(im))
-            # in case user want smoothed targets
-            if mode == "gaussian":
-                batch_targets[i] = gaussian_filter(batch_targets[i])
+            batch_targets[i] = ab_to_histogram(images_to_ab(im), mode=mode)
+
         yield (batch_imputs, batch_targets)
         n += batch_size
         if n + batch_size > len(image_dir):
@@ -154,14 +178,34 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
             shuffle(image_dir)
 
 
-if __name__ == "__main__":
-    # test
-    a = np.array([[[0, 0], [-87, -108], [98, 94]],
-                  [[5, 10], [11, 8], [-10, -23]]])
-    h = ab_to_histogram(a)
-    c = histogram_to_ab(h)
-    print(c)
+def generate_h5(generator, size, name):
+    import h5py
 
+    # generate examples
+    x = np.zeros((size, 256, 256, 1))
+    y = np.zeros((size, 256, 256, 1))
+
+    for i in range(size):
+        # download image
+        file_name = next(generator)
+        lab_im = load_images("../../small_dataset", file_name)
+        x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
+        y[i, :, :, :] = ab_to_indices(images_to_ab(lab_im))
+
+    f = h5py.File("../../h5_data/" + name, 'w')
+    # Creating dataset to store features
+    X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='f')
+    X_dset[:] = x
+    # Creating dataset to store labels
+    y_dset = f.create_dataset('ab_hist', (size, 256, 256, 1), dtype='i')
+    y_dset[:] = y
+    f.close()
+
+
+if __name__ == "__main__":
+    ig = ImageDownloadGenerator()
+    g = ig.download_images_generator()
+    generate_h5(g, 100, "test.h5")
 
 
 

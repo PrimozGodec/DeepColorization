@@ -6,35 +6,43 @@ from keras.layers import Conv2D, Conv2DTranspose, Activation, BatchNormalization
 from keras.models import Sequential
 from random import shuffle
 
-
+from keras.utils import HDF5Matrix
 from support_scripts import image_processing
 
 from implementations.support_scripts.common import make_prediction_sample
+from implementations.support_scripts.image_processing import load_images, images_to_l
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 # cross entropy
-def custom_crossentrophy(y_true, y_pred):
-
-    # Flatten
-    tf_session = K.get_session()
-    [nb, h, w, q] = K.shape(y_pred).eval(session=tf_session)
-
-    y_true = K.reshape(y_true, (nb * h * w, q))
-    y_pred = K.reshape(y_pred, (nb * h * w, q))
-
-    cross_ent = K.categorical_crossentropy(y_true, y_pred)
-    return K.mean(cross_ent, axis=-1)
+# def custom_crossentropy(y_true, y_pred):
+#
+#     # Flatten
+#     nb, h, w, q = y_true.shape
+#     y_true = K.reshape(y_true, (nb * h * w, q))
+#     y_pred = K.reshape(y_pred, (nb * h * w, q))
+#
+#     weights = y_true[:, 313:]  # extract weight from y_true
+#     weights = K.concatenate([weights] * 313, axis=3)
+#     y_true = y_true[:, :-1]  # remove last column
+#     y_pred = y_pred[:, :-1]  # remove last column
+#
+#     # multiply y_true by weights
+#     y_true = y_true * weights
+#
+#     cross_ent = K.categorical_crossentropy(y_pred, y_true)
+#     cross_ent = K.mean(cross_ent, axis=-1)
+#
+#     return cross_ent
 
 
 b_size = 8
-images_dir_name = "../small_dataset"
-list_dir = os.listdir(images_dir_name)
+dir_name = "../small_dataset"
+list_dir = os.listdir(dir_name)
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 400
-n_epochs = 100
+n_epochs = 1000
 
 model = Sequential()
 
@@ -168,35 +176,20 @@ model.add(Lambda(resize_image))
 # sgd = optimizers.SGD(lr=10, momentum=0.0, decay=0, nesterov=False)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt,
-              loss=custom_crossentrophy)
+              loss='mean_squared_error')
 
 model.summary()
-model.load_weights("../weights/implementation2-95.h5")
+
 
 save_every_n_epoch = 5
+start_from = 100
 
-# for i in range(n_epochs // save_every_n_epoch):
-#     model.fit_generator(image_processing.image_generator_hist(list_dir, images_dir_name, b_size),
-#                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
-#     model.save_weights("../weights/implementation2-" + str(i * save_every_n_epoch) + ".h5")
-#
-#     # make validation
-#     loss = model.evaluate_generator(image_processing.image_generator_hist(None, "../test_set", b_size), 2)
-#     print("Validation loss:", loss)
+def data_to_onehot(data):
+    return K.one_hot(data, 400)  # todo: maybe it needs to be lambda
 
 
+# Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
+X_train = HDF5Matrix('../h5_data/test.h5', 'grayscale')
+y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=data_to_onehot)
 
-# g = image_processing.image_generator_hist(list_dir, 1)
-# i = next(g)
-#
-# model.predict(image_processing.load_images(i[0]))
-
-
-# model.load_weights('implementation1_1.h5')
-#
-# prediction = model.predict(images_to_l(load_images(list_dir[0])))
-#
-# with open('pred.pickle', 'wb') as handle:
-#     pickle.dump(prediction, handle)
-
-make_prediction_sample(model, b_size, "im2-200-")
+model.fit(X_train, y_train, batch_size=16, shuffle='batch')

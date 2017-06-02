@@ -8,6 +8,9 @@ from random import shuffle
 
 from support_scripts import image_processing
 
+from implementations.support_scripts.common import make_prediction_sample
+from implementations.support_scripts.image_processing import load_images, images_to_l
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 # cross entropy
@@ -32,7 +35,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 #     return cross_ent
 
 
-b_size = 16
+b_size = 8
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -175,15 +178,15 @@ model.compile(optimizer=opt,
               loss='mean_squared_error')
 
 model.summary()
-model.load_weights("../weights/implementation1-95.h5")
+model.load_weights("../weights/implementation1-200.h5")
 
 save_every_n_epoch = 5
 start_from = 100
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    model.fit_generator(image_processing.image_generator_hist(list_dir, dir_name, b_size),
-                     steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
-    model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     model.fit_generator(image_processing.image_generator_hist(list_dir, dir_name, b_size),
+#                      steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
+#     model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
 
 
 # g = image_processing.image_generator_hist(list_dir, 1)
@@ -198,3 +201,6 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
 #
 # with open('pred.pickle', 'wb') as handle:
 #     pickle.dump(prediction, handle)
+
+# see results
+make_prediction_sample(model, b_size, "im1-200-")

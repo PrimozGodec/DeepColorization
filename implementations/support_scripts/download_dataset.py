@@ -79,7 +79,7 @@ class ImageDownloadGenerator:
         self.imagefile.seek(self.line_offset[self.n])
         self.n += 1
         link_name = self.imagefile.readline().split()
-        print(link_name)
+        # print(link_name)
         return link_name
 
 
@@ -93,19 +93,19 @@ class ImageDownloadGenerator:
             # else
             with request.urlopen(link) as url:
                 s = url.read()
-                print(s)
+                # print(s)
                 if "<html" in str(s):  #.startswith("b'<html"):
                     return "error"
                 im = Image.open(BytesIO(s))
                 [w, h, c] = np.array(im).shape
-                print(w, h, c)
+                # print(w, h, c)
                 # image must be color and has size at least 256x256
                 if w > 256 and h > 256 and c == 3:
                     im.save(path)
                     return os.path.abspath(path)
                 return "error"
         except:
-            print('here')
+            # print('here')
             return "error"
 
     def download_images_generator(self):
@@ -115,7 +115,7 @@ class ImageDownloadGenerator:
             if len(name_link) != 2:  # != 2 means weird url
                 continue
             [name, link] = name_link
-            print(name, link)
+            # print(name, link)
             r = ""
             try:
                 r = self.download_image(link, name)
@@ -132,5 +132,12 @@ class ImageDownloadGenerator:
 if __name__ == "__main__":
     ig = ImageDownloadGenerator()
     g = ig.download_images_generator()
+
+    import time
+
+    start = time.time()
+
     for i in range(30):
         print(next(g))
+
+    print(time.time() - start)
