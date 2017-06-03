@@ -1,5 +1,10 @@
+from random import shuffle
+
 import numpy as np
 import scipy.misc
+from os import listdir
+
+from os.path import isfile, join
 from skimage import color
 import keras.backend as K
 
@@ -25,3 +30,26 @@ def data_to_onehot(data):
     t = K.one_hot(K.round(data), 400)
     tf_session = K.get_session()
     return t.eval(session=tf_session)
+
+
+class H5Choose:
+
+    def __init__(self, dir):
+        self.dir = dir
+        self.used = []
+
+    def pick_next(self):
+        only_files = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
+        not_used = list(set(only_files) - set(self.used))
+
+        if len(not_used) > 0:
+
+            selected = not_used[0]
+        else:
+            shuffle(only_files)
+            selected = only_files[0]
+
+        if selected not in self.used:
+            self.used.append(selected)
+        print("Selected dataset: ", selected)
+        return join(self.dir, selected)

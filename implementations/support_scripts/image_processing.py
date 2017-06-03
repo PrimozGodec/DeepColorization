@@ -1,5 +1,7 @@
 import numpy as np
 import time
+
+from os.path import isfile, join
 from skimage import io, color
 from skimage.transform import resize
 from random import shuffle
@@ -178,34 +180,81 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
             shuffle(image_dir)
 
 
-def generate_h5(generator, size, name):
-    import h5py
+class ImageDownloader:
+    """
+    This class is used to download images and save them in H5 files
+    """
 
-    # generate examples
-    x = np.zeros((size, 256, 256, 1))
-    y = np.zeros((size, 256, 256))
+    def __init__(self, dir):
+        self.dir = dir
+        self.n = self.find_n()
+        self.image_generator = ImageDownloadGenerator()
 
-    for i in range(size):
-        # download image
-        file_name = next(generator)
-        lab_im = load_images("../../small_dataset", file_name)
-        x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
-        y[i, :, :] = ab_to_indices(images_to_ab(lab_im))
+    def find_n(self):
+        """
+        This function finds n - number to start numbering the h5 files
 
-    f = h5py.File("../../h5_data/" + name, 'w')
-    # Creating dataset to store features
-    X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
-    X_dset[:] = x
-    # Creating dataset to store labels
-    y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='int32')
-    y_dset[:] = y
-    f.close()
+        Returns
+        -------
+        int
+            Number that tells from where to number the h5 files in dir
+        """
+
+        only_files = [f for f in os.listdir(self.dir) if isfile(join(self.dir, f))]
+        return max([int(x[:4]) for x in only_files])  # files has name with format xxxx.h5 - x is a number
+
+    def generate_files(self, num_images = 1024, num_files=None):
+        """
+        Function generates h5 files with image data
+
+        Parameters
+        ----------
+        num_images : int
+            Number of images in one files
+        num_files : int
+            Number of files function generates before stop - if None continue until stopped
+        """
+
+        def gen():
+            g = self.image_generator.download_images_generator()
+            self.generate_h5(g, num_images, "{0:0=4d}.h5".format(self.n))
+            self.n += 1
+
+        if num_files is None:
+            while True:
+                gen()
+        else:
+            for _ in range(num_files):
+                gen()
+
+
+    @staticmethod
+    def generate_h5(generator, size, name):
+        import h5py
+
+        # generate examples
+        x = np.zeros((size, 256, 256, 1))
+        y = np.zeros((size, 256, 256))
+
+        for i in range(size):
+            # download image
+            file_name = next(generator)
+            lab_im = load_images("../../small_dataset", file_name)
+            x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
+            y[i, :, :] = ab_to_indices(images_to_ab(lab_im))
+
+        f = h5py.File("../../h5_data/" + name, 'w')
+        # Creating dataset to store features
+        X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
+        X_dset[:] = x
+        # Creating dataset to store labels
+        y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='int32')
+        y_dset[:] = y
+        f.close()
+
 
 
 if __name__ == "__main__":
-    ig = ImageDownloadGenerator()
-    g = ig.download_images_generator()
-    generate_h5(g, 100, "test.h5")
-
-
-
+    # jstu test
+    id = ImageDownloader("../../h5_data")
+    g = id.generate_files(num_images=2)

@@ -12,7 +12,7 @@ from random import shuffle
 from keras.utils import HDF5Matrix
 from implementations.support_scripts import image_processing
 
-from implementations.support_scripts.common import make_prediction_sample, data_to_onehot
+from implementations.support_scripts.common import make_prediction_sample, data_to_onehot, H5Choose
 from implementations.support_scripts.image_processing import load_images, images_to_l
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
@@ -136,12 +136,11 @@ model.add(Conv2D(400, (1, 1), padding="same"))
 
 # multidimensional softmax
 def custom_softmax(x):
-    # e = K.exp(x - K.max(x, axis=1, keepdims=True))
-    # s = K.sum(e, axis=1, keepdims=True)
-    # return e / s
-    x = K.reshape(x, (b_size * 64 * 64, num_classes))
+    tf_session = K.get_session()
+    [nb, h, w, q] = K.shape(x).eval(session=tf_session)
+    x = K.reshape(x, (nb * h * w, num_classes))
     x = K.softmax(x)
-    x = K.reshape(x, (b_size, 64, 64, num_classes))
+    x = K.reshape(x, (nb, h, w, num_classes))
     return x
 
 
@@ -172,18 +171,22 @@ model.summary()
 save_every_n_epoch = 5
 start_from = 100
 
-
-# Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-X_train = HDF5Matrix('../h5_data/test.h5', 'grayscale')
-y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist')
-
 import time
 
+file_picker = H5Choose(dir="../h5_data")
+
 for epoch in range(n_epochs):
+    # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
+    file = file_picker.pick_next()
+    X_train = HDF5Matrix(file, 'grayscale')
+    y_train = HDF5Matrix(file, 'ab_hist')
+
     print("Epoch " + str(epoch) + "/" + str(n_epochs))
     start = time.time()
     for b in range(len(y_train) // b_size):
         i, j = b * b_size, (b+1) * b_size
         a = data_to_onehot(y_train)
         model.fit(X_train, a, epochs=1, batch_size=b_size)
-    print("Spent:" + str(time.time() - start))
+    print("Spent: " + str(time.time() - start))
+    if epoch % 5 == 4:
+        model.evaluate(X_train[:16], y_train[:16], batch_size=16)
