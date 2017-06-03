@@ -1,4 +1,7 @@
+import sys
 import os
+
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from keras import backend as K
 from keras import optimizers
