@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.misc
 from skimage import color
-
+import keras.backend as K
 
 """
 This script contains functions that are common to all the implementations used
@@ -19,3 +19,9 @@ def make_prediction_sample(model, batch_size, name):
         im = np.concatenate((images_l[i, :, :, :], histogram_to_ab(predictions_ab[i, :, :, :])), axis=2)
         im_rgb = color.lab2rgb(im)
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
+
+
+def data_to_onehot(data):
+    t = K.one_hot(K.round(data), 400)
+    tf_session = K.get_session()
+    return t.eval(session=tf_session)

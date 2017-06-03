@@ -28,7 +28,7 @@ def custom_crossentrophy(y_true, y_pred):
     return K.mean(cross_ent, axis=-1)
 
 
-b_size = 8
+b_size = 2
 images_dir_name = "../small_dataset"
 list_dir = os.listdir(images_dir_name)
 shuffle(list_dir)

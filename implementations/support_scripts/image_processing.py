@@ -197,7 +197,7 @@ def generate_h5(generator, size, name):
     X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
     X_dset[:] = x
     # Creating dataset to store labels
-    y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='uint16')
+    y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='int32')
     y_dset[:] = y
     f.close()
 
@@ -205,7 +205,7 @@ def generate_h5(generator, size, name):
 if __name__ == "__main__":
     ig = ImageDownloadGenerator()
     g = ig.download_images_generator()
-    generate_h5(g, 2, "test.h5")
+    generate_h5(g, 100, "test.h5")
 
 
 

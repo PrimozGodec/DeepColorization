@@ -12,12 +12,12 @@ from random import shuffle
 from keras.utils import HDF5Matrix
 from implementations.support_scripts import image_processing
 
-from implementations.support_scripts.common import make_prediction_sample
+from implementations.support_scripts.common import make_prediction_sample, data_to_onehot
 from implementations.support_scripts.image_processing import load_images, images_to_l
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
-b_size = 16
+b_size = 2
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -149,10 +149,6 @@ def resize_image(x):
     return K.resize_images(x, 4, 4, "channels_last")
 
 
-def data_to_onehot(data):
-    t = K.one_hot(K.round(data), 400)
-    tf_session = K.get_session()
-    return t.eval(session=tf_session)
 #
 #
 # def mean_squared_error(y_true, y_pred):
@@ -184,10 +180,10 @@ y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist')
 import time
 
 for epoch in range(n_epochs):
-    print("Epoch" + str(epoch) + "/" + str(n_epochs))
+    print("Epoch " + str(epoch) + "/" + str(n_epochs))
     start = time.time()
     for b in range(len(y_train) // b_size):
         i, j = b * b_size, (b+1) * b_size
-        a = data_to_onehot(y_train[i:j])
-        model.train_on_batch(X_train[i:j], a)
+        a = data_to_onehot(y_train[:])
+        model.fit(X_train[:], a, epochs=1, batch_size=b_size)
     print("Spent:" + str(time.time() - start))
