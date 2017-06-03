@@ -9,8 +9,8 @@ from random import shuffle
 from keras.utils import HDF5Matrix
 from support_scripts import image_processing
 
-from implementations.support_scripts.common import make_prediction_sample
-from implementations.support_scripts.image_processing import load_images, images_to_l
+from support_scripts.common import make_prediction_sample
+from support_scripts.image_processing import load_images, images_to_l
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
