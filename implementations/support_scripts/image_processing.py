@@ -183,21 +183,21 @@ def generate_h5(generator, size, name):
 
     # generate examples
     x = np.zeros((size, 256, 256, 1))
-    y = np.zeros((size, 256, 256, 1))
+    y = np.zeros((size, 256, 256))
 
     for i in range(size):
         # download image
         file_name = next(generator)
         lab_im = load_images("../../small_dataset", file_name)
         x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
-        y[i, :, :, :] = ab_to_indices(images_to_ab(lab_im))
+        y[i, :, :] = ab_to_indices(images_to_ab(lab_im))
 
     f = h5py.File("../../h5_data/" + name, 'w')
     # Creating dataset to store features
-    X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='f')
+    X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
     X_dset[:] = x
     # Creating dataset to store labels
-    y_dset = f.create_dataset('ab_hist', (size, 256, 256, 1), dtype='i')
+    y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='uint16')
     y_dset[:] = y
     f.close()
 
@@ -205,7 +205,7 @@ def generate_h5(generator, size, name):
 if __name__ == "__main__":
     ig = ImageDownloadGenerator()
     g = ig.download_images_generator()
-    generate_h5(g, 100, "test.h5")
+    generate_h5(g, 2, "test.h5")
 
 
 

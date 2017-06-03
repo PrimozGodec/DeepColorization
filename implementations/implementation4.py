@@ -146,8 +146,19 @@ def custom_softmax(x):
 
 
 def resize_image(x):
-    x = K.resize_images(x, 4, 4, "channels_last")
-    return x
+    return K.resize_images(x, 4, 4, "channels_last")
+
+
+def data_to_onehot(data):
+    t = K.one_hot(K.round(data), 400)
+    tf_session = K.get_session()
+    return t.eval(session=tf_session)
+#
+#
+# def mean_squared_error(y_true, y_pred):
+#     y_true = data_to_onehot(y_true)
+#     return K.mean(K.square(y_pred - y_true), axis=-1)
+
 
 
 model.add(Activation(custom_softmax))
@@ -157,7 +168,7 @@ model.add(Lambda(resize_image))
 # sgd = optimizers.SGD(lr=10, momentum=0.0, decay=0, nesterov=False)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt,
-              loss='mean_squared_error')
+              loss="mean_squared_error")
 
 model.summary()
 
@@ -166,14 +177,17 @@ save_every_n_epoch = 5
 start_from = 100
 
 
-def data_to_onehot(data):
-    a = K.one_hot(data, 400)
-    print(a)
-    return a
-
-
 # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
 X_train = HDF5Matrix('../h5_data/test.h5', 'grayscale')
-y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=data_to_onehot)
+y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist')
 
-model.fit(X_train, y_train, batch_size=b_size, shuffle='batch')
+import time
+
+for epoch in range(n_epochs):
+    print("Epoch" + str(epoch) + "/" + str(n_epochs))
+    start = time.time()
+    for b in range(len(y_train) // b_size):
+        i, j = b * b_size, (b+1) * b_size
+        a = data_to_onehot(y_train[i:j])
+        model.train_on_batch(X_train[i:j], a)
+    print("Spent:" + str(time.time() - start))
