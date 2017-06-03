@@ -16,7 +16,7 @@ from PIL import Image
 
 
 # load data
-from implementations.support_scripts.download_dataset import ImageDownloadGenerator
+from download_dataset import ImageDownloadGenerator
 
 
 def load_images(dir, file):
