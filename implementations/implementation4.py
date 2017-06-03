@@ -184,6 +184,6 @@ for epoch in range(n_epochs):
     start = time.time()
     for b in range(len(y_train) // b_size):
         i, j = b * b_size, (b+1) * b_size
-        a = data_to_onehot(y_train[:])
-        model.fit(X_train[:], a, epochs=1, batch_size=b_size)
+        a = data_to_onehot(y_train)
+        model.fit(X_train, a, epochs=1, batch_size=b_size)
     print("Spent:" + str(time.time() - start))
