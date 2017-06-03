@@ -12,29 +12,7 @@ from support_scripts import image_processing
 from implementations.support_scripts.common import make_prediction_sample
 from implementations.support_scripts.image_processing import load_images, images_to_l
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
-
-# cross entropy
-# def custom_crossentropy(y_true, y_pred):
-#
-#     # Flatten
-#     nb, h, w, q = y_true.shape
-#     y_true = K.reshape(y_true, (nb * h * w, q))
-#     y_pred = K.reshape(y_pred, (nb * h * w, q))
-#
-#     weights = y_true[:, 313:]  # extract weight from y_true
-#     weights = K.concatenate([weights] * 313, axis=3)
-#     y_true = y_true[:, :-1]  # remove last column
-#     y_pred = y_pred[:, :-1]  # remove last column
-#
-#     # multiply y_true by weights
-#     y_true = y_true * weights
-#
-#     cross_ent = K.categorical_crossentropy(y_pred, y_true)
-#     cross_ent = K.mean(cross_ent, axis=-1)
-#
-#     return cross_ent
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 b_size = 8
 dir_name = "../small_dataset"
@@ -183,6 +161,7 @@ model.summary()
 
 save_every_n_epoch = 5
 start_from = 100
+
 
 def data_to_onehot(data):
     return K.one_hot(data, 400)  # todo: maybe it needs to be lambda
