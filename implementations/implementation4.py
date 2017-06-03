@@ -17,7 +17,7 @@ from implementations.support_scripts.image_processing import load_images, images
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
-b_size = 8
+b_size = 16
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -167,11 +167,13 @@ start_from = 100
 
 
 def data_to_onehot(data):
-    return K.one_hot(data, 400)  # todo: maybe it needs to be lambda
+    a = K.one_hot(data, 400)
+    print(a)
+    return a
 
 
 # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
 X_train = HDF5Matrix('../h5_data/test.h5', 'grayscale')
-y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=Lambda(data_to_onehot))
+y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=data_to_onehot)
 
-model.fit(X_train, y_train, batch_size=16, shuffle='batch')
+model.fit(X_train, y_train, batch_size=b_size, shuffle='batch')
