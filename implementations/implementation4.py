@@ -172,6 +172,6 @@ def data_to_onehot(data):
 
 # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
 X_train = HDF5Matrix('../h5_data/test.h5', 'grayscale')
-y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=data_to_onehot)
+y_train = HDF5Matrix('../h5_data/test.h5', 'ab_hist', normalizer=Lambda(data_to_onehot))
 
 model.fit(X_train, y_train, batch_size=16, shuffle='batch')
