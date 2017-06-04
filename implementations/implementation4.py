@@ -176,25 +176,30 @@ start_from = 100
 
 # start image downloader
 id = ImageDownloader("../h5_data")
-
-download_thread = threading.Thread(target=id.generate_files, kwargs={'num_images': 1024})
-download_thread.start()
-
+id.setDaemon(True)  # thread die when main thread die
+id.start()
 
 file_picker = H5Choose(dir="../h5_data")
 
-for epoch in range(n_epochs):
-    # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-    file = file_picker.pick_next()
-    X_train = HDF5Matrix(file, 'grayscale')
-    y_train = HDF5Matrix(file, 'ab_hist')
+try:
+    for epoch in range(n_epochs):
+        # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
+        file = file_picker.pick_next()
+        X_train = HDF5Matrix(file, 'grayscale')
+        y_train = HDF5Matrix(file, 'ab_hist')
 
-    print("Epoch " + str(epoch) + "/" + str(n_epochs))
-    start = time.time()
-    for b in range(len(y_train) // b_size):
-        i, j = b * b_size, (b+1) * b_size
-        a = data_to_onehot(y_train)
-        model.fit(X_train, a, epochs=1, batch_size=b_size)
-    print("Spent: " + str(time.time() - start))
-    if epoch % 5 == 4:
-        model.evaluate(X_train[:16], y_train[:16], batch_size=16)
+        print("Epoch " + str(epoch) + "/" + str(n_epochs))
+        start = time.time()
+        for b in range(len(y_train) // b_size):
+            i, j = b * b_size, (b+1) * b_size
+            a = data_to_onehot(y_train)
+            model.fit(X_train, a, epochs=1, batch_size=b_size)
+        print("Spent: " + str(time.time() - start))
+        if epoch % 5 == 4:
+            model.evaluate(X_train[:16], y_train[:16], batch_size=16)
+
+except (KeyboardInterrupt, SystemExit):
+    id.stop()
+    sys.exit()
+
+id.stop()
