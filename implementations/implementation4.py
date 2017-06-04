@@ -1,5 +1,8 @@
 import sys
 import os
+import threading
+
+import time
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
@@ -13,7 +16,7 @@ from keras.utils import HDF5Matrix
 from implementations.support_scripts import image_processing
 
 from implementations.support_scripts.common import make_prediction_sample, data_to_onehot, H5Choose
-from implementations.support_scripts.image_processing import load_images, images_to_l
+from implementations.support_scripts.image_processing import load_images, images_to_l, ImageDownloader
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -171,7 +174,12 @@ model.summary()
 save_every_n_epoch = 5
 start_from = 100
 
-import time
+# start image downloader
+id = ImageDownloader("../h5_data")
+
+download_thread = threading.Thread(target=id.generate_files, kwargs={'num_images': 1024})
+download_thread.start()
+
 
 file_picker = H5Choose(dir="../h5_data")
 

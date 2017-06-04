@@ -1,3 +1,6 @@
+import inspect
+import threading
+
 import numpy as np
 import time
 
@@ -180,15 +183,28 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
             shuffle(image_dir)
 
 
-class ImageDownloader:
+class ImageDownloader(threading.Thread):
     """
     This class is used to download images and save them in H5 files
     """
 
-    def __init__(self, dir):
+    def __init__(self, dir, num_images=1024, num_files=None):
+        super(ImageDownloader, self).__init__()
+        self.things_lock = threading.Lock()
         self.dir = dir
         self.n = self.find_n()
         self.image_generator = ImageDownloadGenerator()
+        self.done = False
+        self.num_images = num_images
+        self.num_files = num_files
+
+    def run(self):
+        print('run')
+        self.generate_files(self.num_images, self.num_files)
+
+    def stop(self):
+        print("stop")
+        self.done = True
 
     def find_n(self):
         """
@@ -221,15 +237,16 @@ class ImageDownloader:
             self.n += 1
 
         if num_files is None:
-            while True:
+            while not self.done:
                 gen()
         else:
             for _ in range(num_files):
+                if self.done:
+                    break
                 gen()
 
 
-    @staticmethod
-    def generate_h5(generator, size, name):
+    def generate_h5(self, generator, size, name):
         import h5py
 
         # generate examples
@@ -239,11 +256,16 @@ class ImageDownloader:
         for i in range(size):
             # download image
             file_name = next(generator)
-            lab_im = load_images("../../small_dataset", file_name)
+
+            script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
+            rel_path = "./../small_dataset"
+            abs_file_path = os.path.join(script_dir, rel_path)
+
+            lab_im = load_images(abs_file_path, file_name)
             x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
             y[i, :, :] = ab_to_indices(images_to_ab(lab_im))
 
-        f = h5py.File("../../h5_data/" + name, 'w')
+        f = h5py.File(os.path.join(self.dir, name), 'w')
         # Creating dataset to store features
         X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
         X_dset[:] = x
@@ -255,6 +277,6 @@ class ImageDownloader:
 
 
 if __name__ == "__main__":
-    # jstu test
-    id = ImageDownloader("../../h5_data")
-    g = id.generate_files(num_images=2)
+    id = ImageDownloader("../../h5_data", num_images=2)
+    id.start() # todo: debug that
+
