@@ -125,7 +125,7 @@ class ImageDownloadGenerator:
             script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
             rel_path = "../../small_dataset/" + name + ".jpg"
             path = os.path.join(script_dir, rel_path)
-            print(path)
+
             # if file already downloaded
             if os.path.isfile(path):
                 return os.path.abspath(path)
@@ -144,8 +144,6 @@ class ImageDownloadGenerator:
                     return os.path.abspath(path)
                 return "error"
         except:
-            # print('here')
-            print("aaa")
             return "error"
 
     def download_images_generator(self):
