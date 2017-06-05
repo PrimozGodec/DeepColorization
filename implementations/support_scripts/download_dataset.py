@@ -158,14 +158,14 @@ class ImageDownloadGenerator:
             # print(name, link)
             r = ""
             try:
-                print(name)
+                # print(name)
                 r = self.download_image(link, name)
-                print(r)
+                # print(r)
             except TimeoutException as err:
                 print('timeout')
                 continue
             if r != "error":
-                print("r", r)
+                # print("r", r)
                 yield r  # then r contains path
             if self.n >= len(self.line_offset):
                 if self.mode == "random":
@@ -178,9 +178,9 @@ if __name__ == "__main__":
     g = ig.download_images_generator()
 
 
-    start = time.time()
-
-    for i in range(30):
-        print(next(g))
-
-    print(time.time() - start)
+    # start = time.time()
+    #
+    # for i in range(30):
+    #     print(next(g))
+    #
+    # print(time.time() - start)

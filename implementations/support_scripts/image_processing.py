@@ -218,7 +218,7 @@ class ImageDownloader(threading.Thread):
         """
         k = len(self.prefix)
         only_files = [f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix]
-        return max([int(x[k:k + 4]) for x in only_files])  # files has name with format prefxxxx.h5 - x is a number
+        return max([-1] + [int(x[k:k + 4]) for x in only_files]) + 1  # files has name with format prefxxxx.h5 - x is a number
 
     def remove_oldest(self):
         k = len(self.prefix)
@@ -227,7 +227,7 @@ class ImageDownloader(threading.Thread):
             os.remove(os.path.join(self.dir, only_files[0]))
             only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
-    def generate_files(self, num_images = 1024, num_files=None):
+    def generate_files(self, num_images=1024, num_files=None):
         """
         Function generates h5 files with image data
 
@@ -284,6 +284,6 @@ class ImageDownloader(threading.Thread):
         f.close()
 
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "b", num_images=2)
+    id = ImageDownloader("../../h5_data", "imp4_")
     id.start() # todo: debug that
 

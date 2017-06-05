@@ -40,7 +40,7 @@ class H5Choose:
 
     def pick_next(self):
         only_files = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
-        not_used = list(set(only_files) - set(self.used))
+        not_used = sorted(list(set(only_files) - set(self.used)))
 
         if len(not_used) > 0:
 
