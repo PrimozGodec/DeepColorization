@@ -139,11 +139,9 @@ model.add(Conv2D(400, (1, 1), padding="same"))
 
 # multidimensional softmax
 def custom_softmax(x):
-    tf_session = K.get_session()
-    [nb, h, w, q] = K.shape(x).eval(session=tf_session)
-    x = K.reshape(x, (nb * h * w, num_classes))
+    x = K.reshape(x, (b_size * 256 * 256, num_classes))
     x = K.softmax(x)
-    x = K.reshape(x, (nb, h, w, num_classes))
+    x = K.reshape(x, (b_size, 256, 256, num_classes))
     return x
 
 
