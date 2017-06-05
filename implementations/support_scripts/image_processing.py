@@ -188,10 +188,11 @@ class ImageDownloader(threading.Thread):
     This class is used to download images and save them in H5 files
     """
 
-    def __init__(self, dir, num_images=1024, num_files=None):
+    def __init__(self, dir, prefix, num_images=1024, num_files=None):
         super(ImageDownloader, self).__init__()
         self.things_lock = threading.Lock()
         self.dir = dir
+        self.prefix = prefix
         self.n = self.find_n()
         self.image_generator = ImageDownloadGenerator()
         self.done = False
@@ -215,9 +216,16 @@ class ImageDownloader(threading.Thread):
         int
             Number that tells from where to number the h5 files in dir
         """
+        k = len(self.prefix)
+        only_files = [f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix]
+        return max([int(x[k:k + 4]) for x in only_files])  # files has name with format prefxxxx.h5 - x is a number
 
-        only_files = [f for f in os.listdir(self.dir) if isfile(join(self.dir, f))]
-        return max([int(x[:4]) for x in only_files])  # files has name with format xxxx.h5 - x is a number
+    def remove_oldest(self):
+        k = len(self.prefix)
+        only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
+        while len(only_files) > 10:
+            os.remove(os.path.join(self.dir, only_files[0]))
+            only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
     def generate_files(self, num_images = 1024, num_files=None):
         """
@@ -233,18 +241,19 @@ class ImageDownloader(threading.Thread):
 
         def gen():
             g = self.image_generator.download_images_generator()
-            self.generate_h5(g, num_images, "{0:0=4d}.h5".format(self.n))
+            self.generate_h5(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             self.n += 1
 
         if num_files is None:
             while not self.done:
                 gen()
+                self.remove_oldest()
         else:
             for _ in range(num_files):
                 if self.done:
                     break
                 gen()
-
+                self.remove_oldest()
 
     def generate_h5(self, generator, size, name):
         import h5py
@@ -274,9 +283,7 @@ class ImageDownloader(threading.Thread):
         y_dset[:] = y
         f.close()
 
-
-
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", num_images=2)
+    id = ImageDownloader("../../h5_data", "b", num_images=2)
     id.start() # todo: debug that
 
