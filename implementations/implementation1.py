@@ -35,7 +35,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 #     return cross_ent
 
 
-b_size = 8
+b_size = 16
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -178,7 +178,7 @@ model.compile(optimizer=opt,
               loss='mean_squared_error')
 
 model.summary()
-model.load_weights("../weights/implementation1-200.h5")
+model.load_weights("../weights/implementation1-695.h5")
 
 save_every_n_epoch = 5
 start_from = 100
@@ -203,4 +203,4 @@ start_from = 100
 #     pickle.dump(prediction, handle)
 
 # see results
-make_prediction_sample(model, b_size, "im1-200-")
+make_prediction_sample(model, b_size, "im1-695-")
