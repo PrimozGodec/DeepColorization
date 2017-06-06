@@ -172,7 +172,7 @@ save_every_n_epoch = 5
 start_from = 100
 
 # start image downloader
-id = ImageDownloader("../h5_data", "imp4_")
+id = ImageDownloader("../h5_data", "imp4_", mode="common")
 id.setDaemon(True)  # thread die when main thread die
 id.start()
 
