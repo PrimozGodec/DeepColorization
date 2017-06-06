@@ -36,27 +36,27 @@ model.add(Conv2D(64, (3, 3), padding="same"))
 model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
-# model.add(Conv2D(64, (3, 3), padding="same"))
-# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-# model.add(Activation("relu"))
-#
-# # conv2_1
-# model.add(Conv2D(64, (3, 3), padding="same"))
-# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-# model.add(Activation("relu"))
-#
-# model.add(Conv2D(64, (3, 3), padding="same"))
-# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-# model.add(Activation("relu"))
-#
-# # conv2_2
-# model.add(Conv2D(64, (3, 3), padding="same"))
-# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-# model.add(Activation("relu"))
-#
-# model.add(Conv2D(64, (3, 3), padding="same"))
-# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-# model.add(Activation("relu"))
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(Activation("relu"))
+
+# conv2_1
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(Activation("relu"))
+
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(Activation("relu"))
+
+# conv2_2
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(Activation("relu"))
+
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+model.add(Activation("relu"))
 
 model.add(Conv2D(400, (1, 1), padding="same"))
 
