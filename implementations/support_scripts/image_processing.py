@@ -71,6 +71,14 @@ def ab_to_indices(ab, mode="one-hot"):
               ((ab[:, :, 1] - b_range["min"]) / b_bin_len * n_bins).astype(int)
 
 
+def ab_to_histogram_separate(ab):
+    idxa = ((ab[:, :, 0] - a_range["min"]) / a_bin_len * n_bins).astype(int)
+    idxb = ((ab[:, :, 1] - b_range["min"]) / b_bin_len * n_bins).astype(int)
+
+    return np.concatenate((((np.arange(n_bins) == idxa[:, :, None]).astype(int)),
+                          ((np.arange(n_bins) == idxb[:, :, None]).astype(int))), axis=2)
+
+
 def ab_to_histogram(ab, mode="one-hot"):
 
     indices = ((ab[:, :, 0] - a_range["min"]) / a_bin_len * n_bins).astype(int) * n_bins + \
@@ -101,6 +109,16 @@ def histogram_to_ab(hist):
 
     a = (indices // n_bins) / n_bins * a_bin_len + a_range["min"]
     b = (indices % n_bins) / n_bins * b_bin_len + b_range["min"]
+
+    return np.stack((a, b), axis=2)
+
+
+def histogram_to_ab_separate(hist):
+    indicesa = np.argmax(hist[:, :, 0:20], axis=2)
+    indicesb = np.argmax(hist[:, :, 20:40], axis=2)
+
+    a = indicesa / n_bins * a_bin_len + a_range["min"]
+    b = indicesb / n_bins * b_bin_len + b_range["min"]
 
     return np.stack((a, b), axis=2)
 
@@ -188,7 +206,7 @@ class ImageDownloader(threading.Thread):
     This class is used to download images and save them in H5 files
     """
 
-    def __init__(self, dir, prefix, num_images=1024, num_files=None):
+    def __init__(self, dir, prefix, num_images=1024, num_files=None, mode="separate"):
         super(ImageDownloader, self).__init__()
         self.things_lock = threading.Lock()
         self.dir = dir
@@ -199,6 +217,7 @@ class ImageDownloader(threading.Thread):
         self.num_images = num_images
         self.num_files = num_files
         self.current_file = ""
+        self.mode = mode
 
     def run(self):
         print('run')
@@ -246,7 +265,10 @@ class ImageDownloader(threading.Thread):
 
         def gen():
             g = self.image_generator.download_images_generator()
-            self.generate_h5(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
+            if self.mode == "separate":
+                self.generate_h5_separate(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
+            else:
+                self.generate_h5(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             self.n += 1
 
         if num_files is None:
@@ -288,7 +310,36 @@ class ImageDownloader(threading.Thread):
         y_dset[:] = y
         f.close()
 
+    def generate_h5_separate(self, generator, size, name):
+        import h5py
+        print("iii4")
+        # generate examples
+        x = np.zeros((size, 256, 256, 1))
+        y = np.zeros((size, 256, 256, 40), dtype=bool)
+        print("iii")
+        for i in range(size):
+            # download image
+            file_name = next(generator)
+
+            script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
+            rel_path = "./../small_dataset"
+            abs_file_path = os.path.join(script_dir, rel_path)
+
+            lab_im = load_images(abs_file_path, file_name)
+            x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
+            y[i, :, :, :] = ab_to_histogram_separate(images_to_ab(lab_im)).astype(bool)
+
+        f = h5py.File(os.path.join(self.dir, name), 'w')
+        # Creating dataset to store features
+        X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
+        X_dset[:] = x
+        # Creating dataset to store labels
+        y_dset = f.create_dataset('ab_hist', (size, 256, 256, 40), dtype='u1')
+        y_dset[:] = y
+        f.close()
+
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "imp4_")
+    id = ImageDownloader("../../h5_data", "imp6_", mode="separate")
     id.start() # todo: debug that
+
 
