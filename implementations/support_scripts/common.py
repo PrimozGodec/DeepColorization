@@ -31,10 +31,8 @@ def make_prediction_sample(model, batch_size, name):
 def data_to_onehot(data):
     s = time.time()
     t = K.one_hot(K.round(data), 400)
-    print("first" + str(time.time() - s))
     tf_session = K.get_session()
     a = t.eval(session=tf_session)
-    print("second" + str(time.time() - s))
     return a
 
 
