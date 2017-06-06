@@ -17,7 +17,7 @@ from implementations.support_scripts.image_processing import ImageDownloader
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
-b_size = 16
+b_size = 8
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
