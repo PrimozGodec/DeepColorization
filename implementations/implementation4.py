@@ -13,7 +13,6 @@ from keras.models import Sequential
 from random import shuffle
 
 from keras.utils import HDF5Matrix
-from implementations.support_scripts import image_processing
 
 from implementations.support_scripts.common import make_prediction_sample, data_to_onehot, H5Choose
 from implementations.support_scripts.image_processing import load_images, images_to_l, ImageDownloader
@@ -139,9 +138,9 @@ model.add(Conv2D(400, (1, 1), padding="same"))
 
 # multidimensional softmax
 def custom_softmax(x):
-    x = K.reshape(x, (b_size * 256 * 256, num_classes))
+    x = K.reshape(x, (b_size * 64 * 64, num_classes))
     x = K.softmax(x)
-    x = K.reshape(x, (b_size, 256, 256, num_classes))
+    x = K.reshape(x, (b_size, 64, 64, num_classes))
     return x
 
 
