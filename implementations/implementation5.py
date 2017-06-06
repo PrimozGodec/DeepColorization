@@ -101,10 +101,10 @@ try:
         for b in range(len(y_train) // b_size):
             i, j = b * b_size, (b+1) * b_size
             a = data_to_onehot(y_train)
-            model.fit(X_train, a, epochs=1, batch_size=b_size)
+            model.train_on_batch(X_train[i:j], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
-            model.evaluate(X_train[:16], y_train[:16], batch_size=16)
+            model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16)
         if epoch % 10 == 9:
             model.save_weights("../weights/implementation5-" + str(epoch) + ".h5")
 
