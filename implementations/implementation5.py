@@ -15,7 +15,7 @@ from keras.utils import HDF5Matrix
 from implementations.support_scripts.common import data_to_onehot, H5Choose
 from implementations.support_scripts.image_processing import ImageDownloader
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 16
 dir_name = "../small_dataset"
@@ -84,7 +84,7 @@ save_every_n_epoch = 50
 start_from = 100
 
 # start image downloader
-id = ImageDownloader("../h5_data")
+id = ImageDownloader("../h5_data", "imp5_")
 id.setDaemon(True)  # thread die when main thread die
 id.start()
 
@@ -106,6 +106,8 @@ try:
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
             model.evaluate(X_train[:16], y_train[:16], batch_size=16)
+        if epoch % 10 == 9:
+            model.save_weights("../weights/implementation5-" + str(epoch) + ".h5")
 
 except (KeyboardInterrupt, SystemExit):
     id.stop()
