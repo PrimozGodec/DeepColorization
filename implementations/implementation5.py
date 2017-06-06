@@ -92,7 +92,7 @@ file_picker = H5Choose(dir="../h5_data")
 try:
     for epoch in range(n_epochs):
         # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-        file = file_picker.pick_next()
+        file = file_picker.pick_next(id)
         X_train = HDF5Matrix(file, 'grayscale')
         y_train = HDF5Matrix(file, 'ab_hist')
 
