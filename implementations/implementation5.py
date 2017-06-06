@@ -71,17 +71,13 @@ def custom_softmax(x):
 model.add(Activation(custom_softmax))
 
 
-def custom_squared_error(y_true, y_pred):
-    y_true = K.one_hot(K.round(y_true), 400)
-    return K.mean(K.square(y_pred - y_true), axis=-1)
-
-
 # sgd = optimizers.SGD(lr=10, momentum=0.0, decay=0, nesterov=False)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt,
               loss="mean_squared_error")
 
 model.summary()
+exit()
 
 save_every_n_epoch = 50
 start_from = 100
@@ -105,9 +101,8 @@ try:
         for b in range(len(y_train) // b_size):
             i, j = b * b_size, (b+1) * b_size
 
-            # a = data_to_onehot(y_train[i:j])
-            # model.train_on_batch(X_train[i:j], a)
-            model.train_on_batch(X_train[i:j], y_train[i:j])
+            a = data_to_onehot(y_train[i:j])
+            model.train_on_batch(X_train[i:j], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
             print(model.evaluate(X_train[:8], data_to_onehot(y_train[:8]), batch_size=8))

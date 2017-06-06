@@ -29,11 +29,11 @@ def make_prediction_sample(model, batch_size, name):
 
 
 def data_to_onehot(data):
-    s = time.time()
-    t = K.one_hot(K.round(data), 400)
-    tf_session = K.get_session()
-    a = t.eval(session=tf_session)
-    return a
+    # s = time.time()
+    # t = K.one_hot(K.round(data), 400)
+    # tf_session = K.get_session()
+    # a = t.eval(session=tf_session)
+    return ((np.arange(20 ** 2) == data[:, :, :, None]).astype(int))
 
 
 class H5Choose:
