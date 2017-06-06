@@ -24,7 +24,7 @@ dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
 list_dir = list_dir
-num_classes = 400
+num_classes = 40
 n_epochs = 1000
 
 model = Sequential()
@@ -133,7 +133,7 @@ model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data
 model.add(Activation("relu"))
 
 # conv8_3
-model.add(Conv2D(400, (1, 1), padding="same"))
+model.add(Conv2D(40, (1, 1), padding="same"))
 
 
 # multidimensional softmax
