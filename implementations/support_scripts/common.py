@@ -13,7 +13,8 @@ import keras.backend as K
 """
 This script contains functions that are common to all the implementations used
 """
-from implementations.support_scripts.image_processing import image_generator_hist, histogram_to_ab
+from implementations.support_scripts.image_processing import image_generator_hist, histogram_to_ab, \
+    histogram_to_ab_separate
 
 
 def make_prediction_sample(model, batch_size, name):
@@ -23,7 +24,10 @@ def make_prediction_sample(model, batch_size, name):
 
     for i in range(images_l.shape[0]):
         # concatenate l and ab for each image
-        im = np.concatenate((images_l[i, :, :, :], histogram_to_ab(predictions_ab[i, :, :, :])), axis=2)
+        if images_l[i, :, :, :].shape[2] == 40:  # if only 40 bins there is separate implementation
+            im = np.concatenate((images_l[i, :, :, :], histogram_to_ab_separate(predictions_ab[i, :, :, :])), axis=2)
+        else:
+            im = np.concatenate((images_l[i, :, :, :], histogram_to_ab(predictions_ab[i, :, :, :])), axis=2)
         im_rgb = color.lab2rgb(im)
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
 
@@ -39,12 +43,14 @@ class H5Choose:
         self.dir = dir
         self.used = []
 
+    def all_files(self):
+        return [f for f in listdir(self.dir) if isfile(join(self.dir, f)) and f.endswith("h5")]
+
     def pick_next(self, downloader):
-        only_files = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
+        only_files = self.all_files()
         not_used = sorted(list(set(only_files) - set(self.used)))
 
         if len(not_used) > 0:
-
             selected = not_used[0]
         else:
             shuffle(only_files)
