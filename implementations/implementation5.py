@@ -100,7 +100,9 @@ try:
         start = time.time()
         for b in range(len(y_train) // b_size):
             i, j = b * b_size, (b+1) * b_size
+            s = time.time()
             a = data_to_onehot(y_train[i:j])
+            print(time.time() - s)
             model.train_on_batch(X_train[i:j], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
