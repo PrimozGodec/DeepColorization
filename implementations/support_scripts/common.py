@@ -34,7 +34,7 @@ def data_to_onehot(data):
     print("first" + str(time.time() - s))
     tf_session = K.get_session()
     a = t.eval(session=tf_session)
-    print("first" + str(time.time() - s))
+    print("second" + str(time.time() - s))
     return a
 
 
