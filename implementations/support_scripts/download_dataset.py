@@ -160,7 +160,7 @@ class ImageDownloadGenerator:
                 r = self.download_image(link, name)
                 # print(r)
             except TimeoutException as err:
-                print('timeout')
+                # print('timeout')
                 continue
             if r != "error":
                 # print("r", r)
