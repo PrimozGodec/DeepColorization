@@ -36,27 +36,27 @@ model.add(Conv2D(64, (3, 3), padding="same"))
 model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
 model.add(Activation("relu"))
 
-model.add(Conv2D(64, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-model.add(Activation("relu"))
-
-# conv2_1
-model.add(Conv2D(64, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-model.add(Activation("relu"))
-
-model.add(Conv2D(64, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-model.add(Activation("relu"))
-
-# conv2_2
-model.add(Conv2D(64, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-model.add(Activation("relu"))
-
-model.add(Conv2D(64, (3, 3), padding="same"))
-model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
-model.add(Activation("relu"))
+# model.add(Conv2D(64, (3, 3), padding="same"))
+# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+# model.add(Activation("relu"))
+#
+# # conv2_1
+# model.add(Conv2D(64, (3, 3), padding="same"))
+# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+# model.add(Activation("relu"))
+#
+# model.add(Conv2D(64, (3, 3), padding="same"))
+# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+# model.add(Activation("relu"))
+#
+# # conv2_2
+# model.add(Conv2D(64, (3, 3), padding="same"))
+# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+# model.add(Activation("relu"))
+#
+# model.add(Conv2D(64, (3, 3), padding="same"))
+# model.add(BatchNormalization(axis=3))  # todo: check if really axis 1 since data has last axis for chanel
+# model.add(Activation("relu"))
 
 model.add(Conv2D(400, (1, 1), padding="same"))
 
@@ -104,7 +104,7 @@ try:
             model.train_on_batch(X_train[i:j], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
-            model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16)
+            print(model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16))
         if epoch % 10 == 9:
             model.save_weights("../weights/implementation5-" + str(epoch) + ".h5")
 
