@@ -192,7 +192,7 @@ try:
             model.train_on_batch(X_train[i:j], y_train[i:j])
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
-            print(model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16))
+            print(model.evaluate(X_train[:16], y_train[:16], batch_size=16))
         if epoch % 10 == 9:
             model.save_weights("../weights/implementation6-" + str(epoch) + ".h5")
 
