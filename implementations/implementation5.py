@@ -77,7 +77,7 @@ model.compile(optimizer=opt,
               loss="mean_squared_error")
 
 model.summary()
-exit()
+
 
 save_every_n_epoch = 50
 start_from = 100
