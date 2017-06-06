@@ -104,7 +104,7 @@ try:
             model.train_on_batch(X_train[i:j], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
-            print(model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16))
+            print(model.evaluate(X_train[:8], data_to_onehot(y_train[:8]), batch_size=8))
         if epoch % 10 == 9:
             model.save_weights("../weights/implementation5-" + str(epoch) + ".h5")
 
