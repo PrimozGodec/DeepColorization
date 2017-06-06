@@ -78,7 +78,6 @@ model.compile(optimizer=opt,
 
 model.summary()
 
-exit()
 
 save_every_n_epoch = 50
 start_from = 100
