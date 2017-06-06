@@ -194,7 +194,7 @@ try:
         if epoch % 5 == 4:
             print(model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16))
         if epoch % 10 == 9:
-            model.save_weights("../weights/implementation4-" + str(epoch) + ".h5")
+            model.save_weights("../weights/implementation6-" + str(epoch) + ".h5")
 
 except (KeyboardInterrupt, SystemExit):
     id.stop()
