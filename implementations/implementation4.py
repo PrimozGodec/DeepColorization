@@ -193,7 +193,7 @@ try:
             model.train_on_batch(X_train[b:b+b_size], a)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
-            model.evaluate(X_train[:16], y_train[:16], batch_size=16)
+            model.evaluate(X_train[:16], data_to_onehot(y_train[:16]), batch_size=16)
 
 except (KeyboardInterrupt, SystemExit):
     id.stop()
