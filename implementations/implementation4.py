@@ -190,8 +190,8 @@ try:
         start = time.time()
         for b in range(len(y_train) // b_size):
             i, j = b * b_size, (b+1) * b_size
-            a = data_to_onehot(y_train)
-            model.fit(X_train, a, epochs=1, batch_size=b_size)
+            a = data_to_onehot(y_train[b:b+b_size])
+            model.fit(X_train[b:b+b_size], a, epochs=1, batch_size=b_size)
         print("Spent: " + str(time.time() - start))
         if epoch % 5 == 4:
             model.evaluate(X_train[:16], y_train[:16], batch_size=16)
