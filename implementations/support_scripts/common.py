@@ -5,6 +5,8 @@ import scipy.misc
 from os import listdir
 
 from os.path import isfile, join
+
+import time
 from skimage import color
 import keras.backend as K
 
@@ -27,9 +29,13 @@ def make_prediction_sample(model, batch_size, name):
 
 
 def data_to_onehot(data):
+    s = time.time()
     t = K.one_hot(K.round(data), 400)
+    print("first" + str(time.time() - s))
     tf_session = K.get_session()
-    return t.eval(session=tf_session)
+    a = t.eval(session=tf_session)
+    print("first" + str(time.time() - s))
+    return a
 
 
 class H5Choose:
