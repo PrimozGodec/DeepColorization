@@ -247,7 +247,9 @@ class ImageDownloader(threading.Thread):
         k = len(self.prefix)
         only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
-        while len(only_files) > 10 and only_files[0] != self.current_file:
+        keep_files = 3 if self.mode == "separate" else 10
+
+        while len(only_files) > keep_files and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir, only_files[0]))
             only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
