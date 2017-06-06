@@ -173,7 +173,7 @@ save_every_n_epoch = 5
 start_from = 100
 
 # start image downloader
-id = ImageDownloader("../h5_data")
+id = ImageDownloader("../h5_data", "imp4_")
 id.setDaemon(True)  # thread die when main thread die
 id.start()
 
@@ -182,7 +182,7 @@ file_picker = H5Choose(dir="../h5_data")
 try:
     for epoch in range(n_epochs):
         # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-        file = file_picker.pick_next()
+        file = file_picker.pick_next(id)
         X_train = HDF5Matrix(file, 'grayscale')
         y_train = HDF5Matrix(file, 'ab_hist')
 

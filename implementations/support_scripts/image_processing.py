@@ -198,6 +198,7 @@ class ImageDownloader(threading.Thread):
         self.done = False
         self.num_images = num_images
         self.num_files = num_files
+        self.current_file = ""
 
     def run(self):
         print('run')
@@ -206,6 +207,9 @@ class ImageDownloader(threading.Thread):
     def stop(self):
         print("stop")
         self.done = True
+
+    def set_current_file(self, filename):
+        self.current_file = filename
 
     def find_n(self):
         """
@@ -223,7 +227,8 @@ class ImageDownloader(threading.Thread):
     def remove_oldest(self):
         k = len(self.prefix)
         only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
-        while len(only_files) > 10:
+
+        while len(only_files) > 10 and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir, only_files[0]))
             only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 

@@ -38,7 +38,7 @@ class H5Choose:
         self.dir = dir
         self.used = []
 
-    def pick_next(self):
+    def pick_next(self, downloader):
         only_files = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
         not_used = sorted(list(set(only_files) - set(self.used)))
 
@@ -52,4 +52,5 @@ class H5Choose:
         if selected not in self.used:
             self.used.append(selected)
         print("Selected dataset: ", selected)
+        downloader.set_current_file(selected)
         return join(self.dir, selected)
