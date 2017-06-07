@@ -83,7 +83,7 @@ model.summary()
 
 start_from = 0
 save_every_n_epoch = 10
-n_epochs = 1000
+n_epochs = 6
 
 
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
