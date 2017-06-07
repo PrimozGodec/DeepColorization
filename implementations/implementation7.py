@@ -14,9 +14,9 @@ from random import shuffle
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
-b_size = 2
+b_size = 16
 dir_name = "../small_dataset"
-list_dir = os.listdir(dir_name)[:10]
+list_dir = os.listdir(dir_name)
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 40
@@ -83,11 +83,15 @@ model.summary()
 
 start_from = 0
 save_every_n_epoch = 10
-n_epochs = 100
+n_epochs = 1000
 
 
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
 
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    # model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     # model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
+
+model.fit_generator(g, steps_per_epoch=len(list_dir) // b_size, epochs=n_epochs)
+
+model.save_weights("../weights/imp7.h5")
