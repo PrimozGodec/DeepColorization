@@ -16,7 +16,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 b_size = 2
 dir_name = "../small_dataset"
-list_dir = os.listdir(dir_name)
+list_dir = os.listdir(dir_name)[:10]
 shuffle(list_dir)
 list_dir = list_dir
 num_classes = 40
