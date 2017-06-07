@@ -130,20 +130,24 @@ class ImageDownloadGenerator:
             if os.path.isfile(path):
                 return os.path.abspath(path)
             # else
+
             with request.urlopen(link) as url:
                 s = url.read()
-                # print(s)
+
                 if "<html" in str(s):  #.startswith("b'<html"):
+
                     return "error"
                 im = Image.open(BytesIO(s))
                 [w, h, c] = np.array(im).shape
-                # print(w, h, c)
+
                 # image must be color and has size at least 256x256
                 if w > 256 and h > 256 and c == 3:
                     im.save(path)
                     return os.path.abspath(path)
+
                 return "error"
         except:
+
             return "error"
 
     def download_images_generator(self):

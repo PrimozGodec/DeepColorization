@@ -19,7 +19,7 @@ from implementations.support_scripts.image_processing import load_images, images
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
-b_size = 16
+b_size = 8
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -168,36 +168,39 @@ model.compile(optimizer=opt,
 model.summary()
 
 
-save_every_n_epoch = 5
-start_from = 100
+# save_every_n_epoch = 5
+# start_from = 100
+#
+# # start image downloader
+# id = ImageDownloader("../h5_data_separate", "imp4_", mode="separate")
+# id.setDaemon(True)  # thread die when main thread die
+# id.start()
+#
+# file_picker = H5Choose(dir="../h5_data_separate")
+#
+# try:
+#     for epoch in range(n_epochs):
+#         # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
+#         file = file_picker.pick_next(id)
+#         X_train = HDF5Matrix(file, 'grayscale')
+#         y_train = HDF5Matrix(file, 'ab_hist')
+#
+#         print("Epoch " + str(epoch) + "/" + str(n_epochs))
+#         start = time.time()
+#         for b in range(len(y_train) // b_size):
+#             i, j = b * b_size, (b+1) * b_size
+#             model.train_on_batch(X_train[i:j], y_train[i:j])
+#         print("Spent: " + str(time.time() - start))
+#         if epoch % 5 == 4:
+#             print(model.evaluate(X_train[:16], y_train[:16], batch_size=16))
+#         if epoch % 10 == 9:
+#             model.save_weights("../weights/implementation6-" + str(epoch) + ".h5")
+#
+# except (KeyboardInterrupt, SystemExit):
+#     id.stop()
+#     sys.exit()
+#
+# id.stop()
 
-# start image downloader
-id = ImageDownloader("../h5_data_separate", "imp4_", mode="separate")
-id.setDaemon(True)  # thread die when main thread die
-id.start()
-
-file_picker = H5Choose(dir="../h5_data_separate")
-
-try:
-    for epoch in range(n_epochs):
-        # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-        file = file_picker.pick_next(id)
-        X_train = HDF5Matrix(file, 'grayscale')
-        y_train = HDF5Matrix(file, 'ab_hist')
-
-        print("Epoch " + str(epoch) + "/" + str(n_epochs))
-        start = time.time()
-        for b in range(len(y_train) // b_size):
-            i, j = b * b_size, (b+1) * b_size
-            model.train_on_batch(X_train[i:j], y_train[i:j])
-        print("Spent: " + str(time.time() - start))
-        if epoch % 5 == 4:
-            print(model.evaluate(X_train[:16], y_train[:16], batch_size=16))
-        if epoch % 10 == 9:
-            model.save_weights("../weights/implementation6-" + str(epoch) + ".h5")
-
-except (KeyboardInterrupt, SystemExit):
-    id.stop()
-    sys.exit()
-
-id.stop()
+model.load_weights("../weights/implementation6-589.h5")
+make_prediction_sample(model, b_size, "im6-589-")

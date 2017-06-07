@@ -7,7 +7,7 @@ import time
 from os.path import isfile, join
 from skimage import io, color
 from skimage.transform import resize
-from random import shuffle
+from random import shuffle, randint
 import os
 import scipy.stats as st
 
@@ -24,12 +24,12 @@ from PIL import Image
 from implementations.support_scripts.download_dataset import ImageDownloadGenerator
 
 
-def load_images(dir, file):
+def load_images(dir, file, size=(256, 256)):
 
     rgb = io.imread(os.path.join(dir, file))
     img = Image.fromarray(rgb, 'RGB')
 
-    img = img.resize((256, 256), Image.ANTIALIAS)
+    img = img.resize(size, Image.ANTIALIAS)
 
     img = img.convert(mode="RGB")  # ensure that image rgb
     rgb = np.array(img)
@@ -145,20 +145,46 @@ def gaussian_filter(data, sigma=5):
     return l.reshape(w, h, c)
 
 
-def image_generator(image_dir, batch_size):
+def image_generator(image_dir, batch_size, im_size=(256, 256)):
     n = 0
     while True:
         batch_im_names = image_dir[n:n+batch_size]
         print(len(batch_im_names))
 
-        batch_imputs = np.zeros((batch_size, 256, 256, 1))
-        batch_targets = np.zeros((batch_size, 256, 256, 2))
+        batch_imputs = np.zeros((batch_size, im_size[0], im_size[0], 1))
+        batch_targets = np.zeros((batch_size, im_size[0], im_size[0], 2))
         for i, image in enumerate(batch_im_names):
             im = load_images(image)
             batch_imputs[i] = images_to_l(im)[:, :, np.newaxis]
             batch_targets[i] = images_to_ab(im)
 
         yield (batch_imputs, batch_targets)
+        n += batch_size
+        if n + batch_size > len(image_dir):
+            n = 0
+            shuffle(image_dir)
+
+
+def image_generator_parts(image_dir, batch_size, im_size=(256, 256), part_size=(32, 32)):
+    n = 0
+    while True:
+        batch_im_names = image_dir[n:n+batch_size]
+        print(len(batch_im_names))
+
+        batch_imputs_part = np.zeros((batch_size, part_size[0], part_size[1], 1))
+        batch_imputs_full = np.zeros((batch_size, im_size[0], im_size[1], 3))
+        batch_targets = np.zeros((batch_size, part_size[0], part_size[1], 2))
+
+        for i, image in enumerate(batch_im_names):
+            im = load_images("../small_dataset", image, size=im_size)
+            random_i, random_j = randint(0, im.shape[0] - part_size[0]), randint(0, im.shape[1] - part_size[1])
+            im_part = im[random_i : random_i + part_size[0], random_j : random_j + part_size[1], :]
+            batch_imputs_part[i, :, :, :] = images_to_l(im_part)[:, :, np.newaxis]
+            batch_targets[i, :, :, :] = images_to_ab(im_part)
+            im_full = images_to_l(im)
+            batch_imputs_full[i, :, :, :] = np.stack((im_full, im_full, im_full), axis=2)
+
+        yield [batch_imputs_part, batch_imputs_full], batch_targets
         n += batch_size
         if n + batch_size > len(image_dir):
             n = 0
@@ -314,11 +340,11 @@ class ImageDownloader(threading.Thread):
 
     def generate_h5_separate(self, generator, size, name):
         import h5py
-        print("iii4")
+
         # generate examples
         x = np.zeros((size, 256, 256, 1))
         y = np.zeros((size, 256, 256, 40), dtype=bool)
-        print("iii")
+        print("new download")
         for i in range(size):
             # download image
             file_name = next(generator)
@@ -341,7 +367,7 @@ class ImageDownloader(threading.Thread):
         f.close()
 
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "imp6_", mode="separate")
+    id = ImageDownloader("../../h5_data", "imp6_", mode="separate", num_images=10, num_files=1)
     id.start() # todo: debug that
 
 
