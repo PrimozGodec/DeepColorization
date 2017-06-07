@@ -1,14 +1,12 @@
 import sys
 import os
 
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+
 from keras.applications import VGG16
 from keras.engine import Model
 
 from implementations.support_scripts import image_processing
-
-sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-
-
 from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate
