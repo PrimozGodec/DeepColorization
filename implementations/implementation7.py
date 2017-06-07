@@ -92,6 +92,8 @@ g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
     # model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     # model.save_weights("../weights/implementation1-" + str(i * save_every_n_epoch) + ".h5")
 
-model.fit_generator(g, steps_per_epoch=len(list_dir) // b_size, epochs=n_epochs)
+print((len(list_dir) // b_size))
+
+model.fit_generator(g, steps_per_epoch=(len(list_dir) // b_size), epochs=n_epochs)
 
 model.save_weights("../weights/imp7.h5")
