@@ -26,13 +26,11 @@ from implementations.support_scripts.download_dataset import ImageDownloadGenera
 
 def load_images(dir, file, size=(256, 256)):
 
-    rgb = io.imread(os.path.join(dir, file))
-
     selected = False
     while not selected:
         try:
+            rgb = io.imread(os.path.join(dir, file))
             img = Image.fromarray(rgb, 'RGB')
-            print("a")
             selected = True
         except (OSError, ValueError):
             print("Damaged:", file)
