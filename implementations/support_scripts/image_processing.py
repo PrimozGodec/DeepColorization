@@ -32,6 +32,7 @@ def load_images(dir, file, size=(256, 256)):
     while not selected:
         try:
             img = Image.fromarray(rgb, 'RGB')
+            print("a")
             selected = True
         except (OSError, ValueError):
             print("Damaged:", file)
