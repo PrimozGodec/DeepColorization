@@ -84,8 +84,8 @@ model.compile(optimizer=opt, loss="mean_squared_error")
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 1
-n_epochs = 6
+save_every_n_epoch = 10
+n_epochs = 100
 
 
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
@@ -98,10 +98,14 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     dir_name = "../small_dataset"
     list_dir_test = os.listdir(dir_name)
     g = image_processing.image_generator_parts(list_dir_test, 8, im_size=(224, 224))
-    make_prediction_sample_part(model, 8, "im7-0-", g)
+    make_prediction_sample_part(model, 8, "im7-" + str(i) + "-", g)
 
 
 # model.fit_generator(g, steps_per_epoch=(len(list_dir) // b_size), epochs=n_epochs)
 
-model.load_weights("../weights/implementation7-0.h5")
+# dir_name = "../small_dataset"
+# list_dir_test = os.listdir(dir_name)
+# g = image_processing.image_generator_parts(list_dir_test, 8, im_size=(224, 224))
+# make_prediction_sample_part(model, 8, "im7-2-", g)
+# model.load_weights("../weights/implementation7-2.h5")
 
