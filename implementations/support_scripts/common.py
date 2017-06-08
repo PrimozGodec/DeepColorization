@@ -17,8 +17,9 @@ from implementations.support_scripts.image_processing import image_generator_his
     histogram_to_ab_separate
 
 
-def make_prediction_sample(model, batch_size, name):
-    generator = image_generator_hist(None, "../test_set", batch_size)  # just generate batch of 10 images
+def make_prediction_sample(model, batch_size, name, generator=None):
+    if generator is None:
+        generator = image_generator_hist(None, "../test_set", batch_size)  # just generate batch of 10 images
     images_l = next(generator)[0]
     predictions_ab = model.predict(images_l)
 
@@ -30,6 +31,21 @@ def make_prediction_sample(model, batch_size, name):
             im = np.concatenate((images_l[i, :, :, :], histogram_to_ab(predictions_ab[i, :, :, :])), axis=2)
         im_rgb = color.lab2rgb(im)
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
+
+
+def make_prediction_sample_part(model, batch_size, name, generator=None):
+    if generator is None:
+        generator = image_generator_hist(None, "../test_set", batch_size)  # just generate batch of 10 images
+    images_l = next(generator)[0]
+    predictions_ab = model.predict(images_l)
+
+    for i in range(images_l[0].shape[0]):
+        # concatenate l and ab for each image
+        im = np.concatenate((images_l[0][i, :, :, :], predictions_ab[i, :, :, :]), axis=2)
+
+        im_rgb = color.lab2rgb(im)
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
+
 
 
 def data_to_onehot(data):

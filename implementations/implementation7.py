@@ -1,8 +1,10 @@
 import sys
 import os
 
-sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+from implementations.support_scripts.common import make_prediction_sample, make_prediction_sample_part
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -38,7 +40,7 @@ x = Conv2D(512, (3, 3), padding="same", activation="relu")(x)
 main_output = Conv2D(256, (3, 3), padding="same", activation="relu")(x)
 
 # VGG
-vgg16 = VGG16(weights=None, include_top=True)  # todo: change to imagenet
+vgg16 = VGG16(weights="imagenet", include_top=True)
 vgg_output = Dense(256, activation='softmax', name='predictions')(vgg16.layers[-2].output)
 
 def repeat_output(input):
@@ -92,6 +94,14 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     model.save_weights("../weights/implementation7-" + str(i * save_every_n_epoch) + ".h5")
 
+    # save sample images
+    dir_name = "../small_dataset"
+    list_dir_test = os.listdir(dir_name)
+    g = image_processing.image_generator_parts(list_dir_test, 8, im_size=(224, 224))
+    make_prediction_sample_part(model, 8, "im7-0-", g)
+
 
 # model.fit_generator(g, steps_per_epoch=(len(list_dir) // b_size), epochs=n_epochs)
+
+model.load_weights("../weights/implementation7-0.h5")
 
