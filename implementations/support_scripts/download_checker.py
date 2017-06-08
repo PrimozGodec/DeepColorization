@@ -188,7 +188,7 @@ if __name__ == "__main__":
     for t in range(f, to, 80000):
         threads = []
         for i in range(0, 80000, 10000):
-            print("start", i)
+            print("start", t + i)
             ig = ImageDownloadChecker(t + i, t + i + 10000)
             ig.start()
             threads.append(ig)
