@@ -202,5 +202,5 @@ model.summary()
 #
 # id.stop()
 
-model.load_weights("../weights/implementation6-589.h5")
-make_prediction_sample(model, b_size, "im6-589-")
+model.load_weights("../weights/implementation6-549.h5")
+make_prediction_sample(model, b_size, "im6-549-")
