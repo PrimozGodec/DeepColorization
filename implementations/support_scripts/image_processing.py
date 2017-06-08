@@ -27,7 +27,14 @@ from implementations.support_scripts.download_dataset import ImageDownloadGenera
 def load_images(dir, file, size=(256, 256)):
 
     rgb = io.imread(os.path.join(dir, file))
-    img = Image.fromarray(rgb, 'RGB')
+
+    selected = False
+    while not selected:
+        try:
+            img = Image.fromarray(rgb, 'RGB')
+            selected = True
+        except (OSError, ValueError):
+            print("Damaged:", file)
 
     img = img.resize(size, Image.ANTIALIAS)
 
