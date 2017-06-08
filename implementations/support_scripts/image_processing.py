@@ -26,14 +26,12 @@ from implementations.support_scripts.download_dataset import ImageDownloadGenera
 
 def load_images(dir, file, size=(256, 256)):
 
-    selected = False
-    while not selected:
-        try:
-            rgb = io.imread(os.path.join(dir, file))
-            img = Image.fromarray(rgb, 'RGB')
-            selected = True
-        except (OSError, ValueError):
-            print("Damaged:", file)
+    try:
+        rgb = io.imread(os.path.join(dir, file))
+        img = Image.fromarray(rgb, 'RGB')
+    except (OSError, ValueError):
+        print("Damaged:", file)
+        return "error"
 
     img = img.resize(size, Image.ANTIALIAS)
 
@@ -174,27 +172,31 @@ def image_generator(image_dir, batch_size, im_size=(256, 256)):
 def image_generator_parts(image_dir, batch_size, im_size=(256, 256), part_size=(32, 32)):
     n = 0
     while True:
-        batch_im_names = image_dir[n:n+batch_size]
-        print(len(batch_im_names))
 
         batch_imputs_part = np.zeros((batch_size, part_size[0], part_size[1], 1))
         batch_imputs_full = np.zeros((batch_size, im_size[0], im_size[1], 3))
         batch_targets = np.zeros((batch_size, part_size[0], part_size[1], 2))
 
-        for i, image in enumerate(batch_im_names):
+        i = 0
+        while i < batch_size:
+            image = image_dir[n]
+            n += 1
+            if n >= len(image_dir):
+                n = 0
+                shuffle(image_dir)
             im = load_images("../small_dataset", image, size=im_size)
+            if im == "error":
+                continue
             random_i, random_j = randint(0, im.shape[0] - part_size[0]), randint(0, im.shape[1] - part_size[1])
             im_part = im[random_i : random_i + part_size[0], random_j : random_j + part_size[1], :]
             batch_imputs_part[i, :, :, :] = images_to_l(im_part)[:, :, np.newaxis]
             batch_targets[i, :, :, :] = images_to_ab(im_part)
             im_full = images_to_l(im)
             batch_imputs_full[i, :, :, :] = np.stack((im_full, im_full, im_full), axis=2)
+            i += 1
 
         yield [batch_imputs_part, batch_imputs_full], batch_targets
-        n += batch_size
-        if n + batch_size > len(image_dir):
-            n = 0
-            shuffle(image_dir)
+
 
 
 def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
