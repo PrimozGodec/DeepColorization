@@ -103,8 +103,10 @@ ENV/
 .mypy_cache/
 
 # all stuff that are data not code
-imagenet/fall11_urls.txt
+imagenet/*
 small_dataset/*
 test_set/*.jpg
 result_images/*.jpg
 weights/*.h5
+h5_data/*
+h5_data_separate/*
