@@ -44,6 +44,12 @@ def load_images(dir, file, size=(256, 256)):
         print(file)
 
 
+def resize_image(im, size):
+    img = Image.fromarray(im, 'L')
+    img = img.resize(size, Image.ANTIALIAS)
+    return np.array(img)
+
+
 def images_to_l(image):
     return image[:, :, 0]
 
