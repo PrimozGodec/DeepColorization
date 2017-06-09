@@ -62,8 +62,8 @@ last = Conv2D(64, (3, 3), padding="same", activation="sigmoid")(last)
 # last = Conv2D(64, (3, 3), padding="same", activation="sigmoid")(last)
 
 last = UpSampling2D(size=(2, 2))(last)
-last = Conv2D(32, (3, 3), padding="same", activation="sigmoid")(last)
-# last = Conv2D(2, (3, 3), padding="same", activation="sigmoid")(last)
+# last = Conv2D(32, (3, 3), padding="same", activation="sigmoid")(last)
+last = Conv2D(2, (3, 3), padding="same", activation="sigmoid")(last)
 
 def resize_image(x):
     return K.resize_images(x, 2, 2, "channels_last")
