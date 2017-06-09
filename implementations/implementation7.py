@@ -99,8 +99,8 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     test_whole_image(model, 20, "imp7-" + str(i) + "-")
 
     # save history
-    output = open('../history/imp7-' + str(i) + ".pkl", 'wb')
-    pickle.dump(history, output)
+    output = open('../history/imp7-{:0=4d}.pkl'.format(i), 'wb')
+    pickle.dump(history.history, output)
     output.close()
 
 
