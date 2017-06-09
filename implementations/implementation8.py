@@ -90,6 +90,7 @@ n_epochs = 100
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
     model.save_weights("../weights/implementation8-" + str(i * save_every_n_epoch) + ".h5")
 
