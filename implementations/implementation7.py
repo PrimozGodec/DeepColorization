@@ -88,7 +88,7 @@ start_from = 100
 save_every_n_epoch = 10
 n_epochs = 300
 
-model.load_weights("implementation7-90.h5")
+model.load_weights("../weights/implementation7-90.h5")
 
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
 
