@@ -8,6 +8,8 @@ import os
 from os.path import isfile, join
 
 import inspect
+
+from keras.utils import HDF5Matrix
 from skimage import color
 import keras.backend as K
 
@@ -125,3 +127,21 @@ class H5Choose:
         print("Selected dataset: ", selected)
         downloader.set_current_file(selected)
         return join(self.dir, selected)
+
+
+def h5_small_vgg_generator(batch_size, dir):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    x2 = None
+    y = None
+    n = 0
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            file = file_picker.pick_next(id)
+            x1 = HDF5Matrix(file, 'small')
+            x2 = HDF5Matrix(file, 'vgg224')
+            y = HDF5Matrix(file, 'ab_hist')
+            n = 0
+        yield [x1[n:n+batch_size], x2[n:n+batch_size], y[n:n+batch_size]]
+        n += batch_size

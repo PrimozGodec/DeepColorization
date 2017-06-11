@@ -6,17 +6,16 @@ import time
 
 from os.path import isfile, join
 
-from keras.utils import HDF5Matrix
+
 from skimage import io, color
-from skimage.transform import resize
+
 from random import shuffle, randint
 import os
 import scipy.stats as st
 
 import scipy.ndimage
 import scipy.signal
-# import matplotlib.pyplot as plt
-# from scipy.misc import imread
+
 
 
 from PIL import Image
@@ -242,24 +241,6 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
         if n + batch_size > len(image_dir):
             n = 0
             shuffle(image_dir)
-
-
-def h5_small_vgg_generator(batch_size, dir):
-    file_picker = H5Choose(dir=dir)
-    x1 = None
-    x2 = None
-    y = None
-    n = 0
-
-    while True:
-        if x1 is None or n > len(x1) - batch_size:
-            file = file_picker.pick_next(id)
-            x1 = HDF5Matrix(file, 'small')
-            x2 = HDF5Matrix(file, 'vgg224')
-            y = HDF5Matrix(file, 'ab_hist')
-            n = 0
-        yield [x1[n:n+batch_size], x2[n:n+batch_size], y[n:n+batch_size]]
-        n += batch_size
 
 
 class ImageDownloader(threading.Thread):

@@ -3,13 +3,11 @@ import sys
 import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-import time
-from keras.utils import HDF5Matrix
+
 
 from implementations.support_scripts.image_processing import ImageDownloader, h5_small_vgg_generator
 
-from implementations.support_scripts.common import make_prediction_sample, make_prediction_sample_part, \
-    test_whole_image, H5Choose
+from implementations.support_scripts.common import test_whole_image
 from keras.applications import VGG16
 from keras.engine import Model
 
