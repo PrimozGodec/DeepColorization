@@ -129,7 +129,7 @@ class H5Choose:
         return join(self.dir, selected)
 
 
-def h5_small_vgg_generator(batch_size, dir):
+def h5_small_vgg_generator(batch_size, dir, downloader):
     file_picker = H5Choose(dir=dir)
     x1 = None
     x2 = None
@@ -138,7 +138,7 @@ def h5_small_vgg_generator(batch_size, dir):
 
     while True:
         if x1 is None or n > len(x1) - batch_size:
-            file = file_picker.pick_next(id)
+            file = file_picker.pick_next(downloader)
             x1 = HDF5Matrix(file, 'small')
             x2 = HDF5Matrix(file, 'vgg224')
             y = HDF5Matrix(file, 'ab_hist')

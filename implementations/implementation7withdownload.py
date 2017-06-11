@@ -101,7 +101,7 @@ n_epochs = 10000
 id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, num_files=5)
 id.start()
 
-g = h5_small_vgg_generator(b_size, "../h5_data")
+g = h5_small_vgg_generator(b_size, "../h5_data", id)
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
