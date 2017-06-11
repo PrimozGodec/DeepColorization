@@ -81,10 +81,13 @@ def unormalise(x):
 last = Lambda(resize_image)(last)
 last = Lambda(unormalise)(last)
 
+def custom_mse(y_true, y_pred):
+    return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
+
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss="mean_squared_error")
+model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
