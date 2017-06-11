@@ -90,20 +90,19 @@ start_from = 100
 save_every_n_epoch = 10
 n_epochs = 300
 
-model.load_weights("../weights/implementation7-90.h5")
 
 g = image_processing.image_generator_parts(list_dir, b_size, im_size=(224, 224))
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=len(list_dir)//b_size, epochs=save_every_n_epoch)
-    model.save_weights("../weights/implementation7-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/implementation7l-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    test_whole_image(model, 20, "imp7-" + str(i) + "-")
+    test_whole_image(model, 20, "imp7l-" + str(i) + "-")
 
     # save history
-    output = open('../history/imp7-{:0=4d}.pkl'.format(i), 'wb')
+    output = open('../history/imp7l-{:0=4d}.pkl'.format(i), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
