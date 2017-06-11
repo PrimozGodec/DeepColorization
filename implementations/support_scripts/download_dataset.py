@@ -90,7 +90,7 @@ class ImageDownloadGenerator:
 
     def read_new_file(self):
         files = [x for x in os.listdir(self.url_files) if x != "fall11_urls.txt"]
-        file = files[randint(0, len(files))]
+        file = files[randint(0, len(files) - 1)]
         with open(os.path.join(self.url_files, file)) as f:
             self.urls = [line.rstrip('\n').split() for line in f]
             shuffle(self.urls)

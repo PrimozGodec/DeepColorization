@@ -6,8 +6,7 @@ sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 import time
 from keras.utils import HDF5Matrix
 
-from implementations.support_scripts.image_processing import ImageDownloader
-
+from implementations.support_scripts.image_processing import ImageDownloader, h5_small_vgg_generator
 
 from implementations.support_scripts.common import make_prediction_sample, make_prediction_sample_part, \
     test_whole_image, H5Choose
@@ -72,15 +71,19 @@ last = UpSampling2D(size=(2, 2))(last)
 last = Conv2D(32, (3, 3), padding="same", activation="sigmoid")(last)
 last = Conv2D(2, (3, 3), padding="same", activation="sigmoid")(last)
 
+
 def resize_image(x):
     return K.resize_images(x, 2, 2, "channels_last")
+
 
 def unormalise(x):
     # outputs in range [0, 1] resized to range [-100, 100]
     return (x * 200) - 100
 
+
 last = Lambda(resize_image)(last)
 last = Lambda(unormalise)(last)
+
 
 def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
@@ -92,31 +95,25 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 100
-save_every_n_epoch = 10
-n_epochs = 300
+start_from = 0
+save_every_n_epoch = 100
+n_epochs = 10000
 
 # start image downloader
-id = ImageDownloader("../h5_data", "imp7-", num_images=1024, num_files=5)
+id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, num_files=5)
 id.start()
 
-file_picker = H5Choose(dir="../h5_data")
+g = h5_small_vgg_generator(b_size, "../h5_data")
 
+for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    print("START", i * save_every_n_epoch, "/", n_epochs)
+    history = model.fit_generator(g, steps_per_epoch=1024/b_size, epochs=save_every_n_epoch)
+    model.save_weights("../weights/implementation7l-" + str(i * save_every_n_epoch) + ".h5")
 
-for epoch in range(start_from, n_epochs):
-    # Instantiating HDF5Matrix for the training set, which is a slice of the first 150 elements
-    file = file_picker.pick_next(id)
-    X_train = HDF5Matrix(file, 'grayscale')
-    y_train = HDF5Matrix(file, 'ab_hist')
+    # save sample images
+    test_whole_image(model, 20, "imp7d-" + str(i) + "-")
 
-    print("Epoch " + str(epoch) + "/" + str(n_epochs))
-    start = time.time()
-    for b in range(len(y_train) // b_size):
-        i, j = b * b_size, (b+1) * b_size
-        model.train_on_batch(X_train[i:j], y_train[i:j])
-    print("Spent: " + str(time.time() - start))
-
-    print(model.evaluate(X_train[:16], y_train[:16], batch_size=16))
-    if epoch % 100 == 99:
-        model.save_weights("../weights/implementation7d-" + str(epoch) + ".h5")
-        test_whole_image(model, 20, "imp7d-" + str(epoch) + "-")
+    # save history
+    output = open('../history/imp7d-{:0=4d}.pkl'.format(i), 'wb')
+    pickle.dump(history.history, output)
+    output.close()

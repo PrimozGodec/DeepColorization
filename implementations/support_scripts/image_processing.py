@@ -5,6 +5,8 @@ import numpy as np
 import time
 
 from os.path import isfile, join
+
+from keras.utils import HDF5Matrix
 from skimage import io, color
 from skimage.transform import resize
 from random import shuffle, randint
@@ -21,6 +23,7 @@ from PIL import Image
 
 
 # load data
+from implementations.support_scripts.common import H5Choose
 from implementations.support_scripts.download_dataset import ImageDownloadGenerator
 
 
@@ -241,12 +244,30 @@ def image_generator_hist(image_dir, image_dir_name, batch_size, mode="one-hot"):
             shuffle(image_dir)
 
 
+def h5_small_vgg_generator(batch_size, dir):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    x2 = None
+    y = None
+    n = 0
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            file = file_picker.pick_next(id)
+            x1 = HDF5Matrix(file, 'small')
+            x2 = HDF5Matrix(file, 'vgg224')
+            y = HDF5Matrix(file, 'ab_hist')
+            n = 0
+        yield [x1[n:n+batch_size], x2[n:n+batch_size], y[n:n+batch_size]]
+        n += batch_size
+
+
 class ImageDownloader(threading.Thread):
     """
     This class is used to download images and save them in H5 files
     """
 
-    def __init__(self, dir, prefix, num_images=1024, num_files=None, mode="full-im"):
+    def __init__(self, dir, prefix, num_images=1024, num_files=None, mode="full-im", im_size=(256, 256)):
         super(ImageDownloader, self).__init__()
         self.things_lock = threading.Lock()
         self.dir = dir
@@ -258,6 +279,7 @@ class ImageDownloader(threading.Thread):
         self.num_files = num_files
         self.current_file = ""
         self.mode = mode
+        self.im_size = im_size
 
     def run(self):
         print('run')
@@ -287,7 +309,7 @@ class ImageDownloader(threading.Thread):
         k = len(self.prefix)
         only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
-        keep_files = 3 if self.mode == "separate" else 10
+        keep_files = 3 if self.mode == "separate" else (30 if self.mode == "samll-vgg" else 10)
 
         while len(only_files) > keep_files and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir, only_files[0]))
@@ -310,6 +332,8 @@ class ImageDownloader(threading.Thread):
             start = time.time()
             if self.mode == "separate":
                 self.generate_h5_separate(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
+            elif self.mode == "small-vgg":
+                self.generate_h5_small_vgg(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             else:
                 self.generate_h5(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             self.n += 1
@@ -330,9 +354,9 @@ class ImageDownloader(threading.Thread):
         import h5py
 
         # generate examples
-        x = np.zeros((size, 256, 256, 1))
-        y = np.zeros((size, 256, 256))
-
+        x = np.zeros((size, self.im_size[0], self.im_size[0], 1))
+        y = np.zeros((size, self.im_size[0], self.im_size[0]))
+        print(y.shape)
         i = 0
         while i < size:
             # download image
@@ -341,7 +365,7 @@ class ImageDownloader(threading.Thread):
             rel_path = "./../small_dataset"
             abs_file_path = os.path.join(script_dir, rel_path)
 
-            lab_im = load_images(abs_file_path, file_name)
+            lab_im = load_images(abs_file_path, file_name, size=self.im_size)
             # remove already used file
             os.remove(os.path.join(abs_file_path, file_name))
             if lab_im == "error":
@@ -354,10 +378,57 @@ class ImageDownloader(threading.Thread):
 
         f = h5py.File(os.path.join(self.dir, name), 'w')
         # Creating dataset to store features
-        X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
+        X_dset = f.create_dataset('grayscale', (size, self.im_size[0], self.im_size[0], 1), dtype='float')
         X_dset[:] = x
         # Creating dataset to store labels
-        y_dset = f.create_dataset('ab_hist', (size, 256, 256), dtype='int32')
+        y_dset = f.create_dataset('ab_hist', (size, self.im_size[0], self.im_size[0]), dtype='int32')
+        y_dset[:] = y
+        f.close()
+
+    def generate_h5_small_vgg(self, generator, size, name):
+        import h5py
+
+        # generate examples
+        x1 = np.zeros((size, 32, 32, 1))
+        x2 = np.zeros((size, 224, 224, 1))
+        y = np.zeros((size, 32, 32, 2))
+
+        i = 0
+        while i < size:
+            # download image
+            file_name = next(generator)
+            script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
+            rel_path = "./../small_dataset"
+            abs_file_path = os.path.join(script_dir, rel_path)
+
+            lab_im = load_images(abs_file_path, file_name, size=self.im_size)
+            # remove already used file
+            os.remove(os.path.join(abs_file_path, file_name))
+            if lab_im == "error":
+                continue
+
+            h, w, _ = lab_im.shape
+
+            random_i, random_j = randint(0, h - 32), randint(0, w - 32)
+            im_part = lab_im[random_i: random_i + 32, random_j: random_j + 32, :]
+
+            x1[i, :, :, :] = images_to_l(im_part)[:, :, np.newaxis]
+            x2[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
+            y[i, :, :] = images_to_ab(im_part)
+
+            i += 1
+
+
+
+        f = h5py.File(os.path.join(self.dir, name), 'w')
+        # Creating dataset to store features
+        X1_dset = f.create_dataset('small', (size, 32, 32, 1), dtype='float')
+        X1_dset[:] = x1
+
+        X2_dset = f.create_dataset('vgg224', (size, self.im_size[0], self.im_size[0], 1), dtype='float')
+        X2_dset[:] = x2
+        # Creating dataset to store labels
+        y_dset = f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='int32')
         y_dset[:] = y
         f.close()
 
@@ -390,7 +461,7 @@ class ImageDownloader(threading.Thread):
         f.close()
 
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "imp7-", num_images=1024, num_files=5)
+    id = ImageDownloader("../../h5_data", "imp7d-", num_images=1024, num_files=5, im_size=(224, 224), mode="small-vgg")
     id.run() # todo: debug that
 
 
