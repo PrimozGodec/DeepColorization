@@ -97,7 +97,7 @@ save_every_n_epoch = 10
 n_epochs = 300
 
 # start image downloader
-id = ImageDownloader("../../h5_data", "imp7-", num_images=1024, num_files=5)
+id = ImageDownloader("../h5_data", "imp7-", num_images=1024, num_files=5)
 id.start()
 
 file_picker = H5Choose(dir="../h5_data")
