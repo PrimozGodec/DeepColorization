@@ -246,7 +246,7 @@ class ImageDownloader(threading.Thread):
     This class is used to download images and save them in H5 files
     """
 
-    def __init__(self, dir, prefix, num_images=1024, num_files=None, mode="separate"):
+    def __init__(self, dir, prefix, num_images=1024, num_files=None, mode="full-im"):
         super(ImageDownloader, self).__init__()
         self.things_lock = threading.Lock()
         self.dir = dir
@@ -304,14 +304,16 @@ class ImageDownloader(threading.Thread):
         num_files : int
             Number of files function generates before stop - if None continue until stopped
         """
+        g = self.image_generator.download_images_generator()
 
         def gen():
-            g = self.image_generator.download_images_generator()
+            start = time.time()
             if self.mode == "separate":
                 self.generate_h5_separate(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             else:
                 self.generate_h5(g, num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
             self.n += 1
+            print(time.time() - start)
 
         if num_files is None:
             while not self.done:
@@ -331,17 +333,24 @@ class ImageDownloader(threading.Thread):
         x = np.zeros((size, 256, 256, 1))
         y = np.zeros((size, 256, 256))
 
-        for i in range(size):
+        i = 0
+        while i < size:
             # download image
             file_name = next(generator)
-
             script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
             rel_path = "./../small_dataset"
             abs_file_path = os.path.join(script_dir, rel_path)
 
             lab_im = load_images(abs_file_path, file_name)
+            # remove already used file
+            os.remove(os.path.join(abs_file_path, file_name))
+            if lab_im == "error":
+                continue
+
             x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
             y[i, :, :] = ab_to_indices(images_to_ab(lab_im))
+
+            i += 1
 
         f = h5py.File(os.path.join(self.dir, name), 'w')
         # Creating dataset to store features
@@ -381,7 +390,7 @@ class ImageDownloader(threading.Thread):
         f.close()
 
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "imp6_", mode="separate", num_images=10, num_files=1)
-    id.start() # todo: debug that
+    id = ImageDownloader("../../h5_data", "imp7-", num_images=1024, num_files=5)
+    id.run() # todo: debug that
 
 
