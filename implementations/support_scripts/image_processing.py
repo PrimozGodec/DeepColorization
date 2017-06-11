@@ -22,7 +22,6 @@ from PIL import Image
 
 
 # load data
-from implementations.support_scripts.common import H5Choose
 from implementations.support_scripts.download_dataset import ImageDownloadGenerator
 
 
