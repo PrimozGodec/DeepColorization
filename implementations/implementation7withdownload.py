@@ -5,9 +5,9 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 
-from implementations.support_scripts.image_processing import ImageDownloader, h5_small_vgg_generator
+from implementations.support_scripts.image_processing import ImageDownloader
 
-from implementations.support_scripts.common import test_whole_image
+from implementations.support_scripts.common import test_whole_image, h5_small_vgg_generator
 from keras.applications import VGG16
 from keras.engine import Model
 
