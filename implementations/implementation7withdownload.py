@@ -97,16 +97,22 @@ start_from = 0
 save_every_n_epoch = 100
 n_epochs = 10000
 
+model.load_weights("../weights/implementation7d-2100.h5")
+
+# print(model.layers[0].get_weights()[1])
+
 # start image downloader
 id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, im_size=(224, 224), mode="small-vgg")
 id.start()
+
+
 
 g = h5_small_vgg_generator(b_size, "../h5_data", id)
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=1024/b_size, epochs=save_every_n_epoch)
-    model.save_weights("../weights/implementation7l-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/implementation7d-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
     test_whole_image(model, 20, "imp7d-" + str(i) + "-")

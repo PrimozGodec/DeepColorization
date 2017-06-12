@@ -110,3 +110,5 @@ result_images/*.jpg
 weights/*.h5
 h5_data/*
 h5_data_separate/*
+
+*.pkl
