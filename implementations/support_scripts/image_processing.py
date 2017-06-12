@@ -1,3 +1,9 @@
+import os
+
+import sys
+
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+
 import inspect
 import threading
 
@@ -10,7 +16,6 @@ from os.path import isfile, join
 from skimage import io, color
 
 from random import shuffle, randint
-import os
 import scipy.stats as st
 
 import scipy.ndimage
