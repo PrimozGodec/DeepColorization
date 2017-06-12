@@ -100,7 +100,10 @@ class ImageDownloadGenerator:
             self.read_new_file()
             self.n = 0
 
-        return self.urls[self.n]
+        url = self.urls[self.n]
+        self.n +=1
+        return url
+
 
     @timeout(3, force_kill=True)
     def download_image(self, link, name):
@@ -137,6 +140,7 @@ class ImageDownloadGenerator:
         # while true waits for first successful download
         while True:
             name_link = self.select_photo()
+
             if len(name_link) != 2:  # != 2 means weird url
                 continue
             [name, link] = name_link

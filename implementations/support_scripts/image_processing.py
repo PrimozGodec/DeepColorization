@@ -28,6 +28,7 @@ from implementations.support_scripts.download_dataset import ImageDownloadGenera
 def load_images(dir, file, size=(256, 256)):
 
     try:
+
         rgb = io.imread(os.path.join(dir, file))
         img = Image.fromarray(rgb, 'RGB')
     except (OSError, ValueError):
@@ -38,6 +39,7 @@ def load_images(dir, file, size=(256, 256)):
 
     img = img.convert(mode="RGB")  # ensure that image rgb
     rgb = np.array(img)
+
 
     if len(rgb.shape) == 3 and (rgb.shape[2]) == 3:  # avoid black and white photos
         return color.rgb2lab(rgb)
@@ -382,8 +384,9 @@ class ImageDownloader(threading.Thread):
             abs_file_path = os.path.join(script_dir, rel_path)
 
             lab_im = load_images(abs_file_path, file_name, size=self.im_size)
+
             # remove already used file
-            os.remove(os.path.join(abs_file_path, file_name))
+            # os.remove(os.path.join(abs_file_path, file_name))  # commented too keep files
             if lab_im == "error":
                 continue
 
@@ -398,7 +401,7 @@ class ImageDownloader(threading.Thread):
 
             i += 1
 
-
+        # print(np.mean(y ** 2))
 
         f = h5py.File(os.path.join(self.dir, name), 'w')
         # Creating dataset to store features
@@ -408,7 +411,7 @@ class ImageDownloader(threading.Thread):
         X2_dset = f.create_dataset('vgg224', (size, self.im_size[0], self.im_size[0], 1), dtype='float')
         X2_dset[:] = x2
         # Creating dataset to store labels
-        y_dset = f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='int32')
+        y_dset = f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='float')
         y_dset[:] = y
         f.close()
 
@@ -431,6 +434,7 @@ class ImageDownloader(threading.Thread):
             x[i, :, :, :] = images_to_l(lab_im)[:, :, np.newaxis]
             y[i, :, :, :] = ab_to_histogram_separate(images_to_ab(lab_im)).astype(bool)
 
+
         f = h5py.File(os.path.join(self.dir, name), 'w')
         # Creating dataset to store features
         X_dset = f.create_dataset('grayscale', (size, 256, 256, 1), dtype='float')
@@ -441,7 +445,7 @@ class ImageDownloader(threading.Thread):
         f.close()
 
 if __name__ == "__main__":
-    id = ImageDownloader("../../h5_data", "imp7d-", num_images=1024, num_files=5, im_size=(224, 224), mode="small-vgg")
+    id = ImageDownloader("../../h5_data", "imp7d-", num_images=1024, num_files=10, im_size=(224, 224), mode="small-vgg")
     id.run() # todo: debug that
 
 
