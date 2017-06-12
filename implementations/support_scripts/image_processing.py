@@ -296,7 +296,7 @@ class ImageDownloader(threading.Thread):
         k = len(self.prefix)
         only_files = sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
 
-        keep_files = 3 if self.mode == "separate" else (30 if self.mode == "samll-vgg" else 10)
+        keep_files = 3 if self.mode == "separate" else (30 if self.mode == "small-vgg" else 10)
 
         while len(only_files) > keep_files and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir, only_files[0]))
