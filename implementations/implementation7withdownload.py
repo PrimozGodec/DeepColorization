@@ -98,7 +98,7 @@ save_every_n_epoch = 100
 n_epochs = 10000
 
 # start image downloader
-id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, mode="small-vgg")
+id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, im_size=(224, 224), mode="small-vgg")
 id.start()
 
 g = h5_small_vgg_generator(b_size, "../h5_data", id)
