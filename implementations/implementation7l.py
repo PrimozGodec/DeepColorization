@@ -86,7 +86,7 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 100
+start_from = 160
 save_every_n_epoch = 10
 n_epochs = 300
 
