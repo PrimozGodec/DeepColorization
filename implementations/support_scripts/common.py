@@ -125,7 +125,8 @@ class H5Choose:
         if selected not in self.used:
             self.used.append(selected)
         print("Selected dataset: ", selected)
-        downloader.set_current_file(selected)
+        if downloader is not None:
+            downloader.set_current_file(selected)
         return join(self.dir, selected)
 
 
