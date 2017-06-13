@@ -5,7 +5,6 @@ import os
 from skimage import color
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-import matplotlib.pyplot as plt
 
 from implementations.support_scripts.image_processing import ImageDownloader
 

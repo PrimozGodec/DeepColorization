@@ -12,7 +12,7 @@ import inspect
 from keras.utils import HDF5Matrix
 from skimage import color
 import keras.backend as K
-import matplotlib.pyplot as plt
+
 
 """
 This script contains functions that are common to all the implementations used
