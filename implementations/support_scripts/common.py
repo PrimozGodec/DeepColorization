@@ -12,6 +12,7 @@ import inspect
 from keras.utils import HDF5Matrix
 from skimage import color
 import keras.backend as K
+import matplotlib.pyplot as plt
 
 """
 This script contains functions that are common to all the implementations used
@@ -64,6 +65,7 @@ def test_whole_image(model, num_of_images, name):
         # get image
         image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
         image_l = images_to_l(image_lab)
+
         h, w = image_l.shape
 
         # split images to list of images
@@ -71,11 +73,12 @@ def test_whole_image(model, num_of_images, name):
         slices = np.zeros((slices_dim * slices_dim, 32, 32, 1))
         for a in range(slices_dim):
             for b in range(slices_dim):
-                slices[a * slices_dim + b] = image_l[a * 32, b * 32, np.newaxis]
+                slices[a * slices_dim + b] = image_l[a * 32 : (a + 1) * 32, b * 32 : (b + 1) * 32, np.newaxis]
 
         # lover originals dimension to 224x224 to feed vgg and increase dim
-        image_l_224 = resize_image(image_l, (224, 224))
-        image_l_224 = np.repeat(image_l_224[:, :, np.newaxis], 3, axis=2)
+        image_l_224_b = resize_image(image_l, (224, 224))
+        image_l_224 = np.repeat(image_l_224_b[:, :, np.newaxis], 3, axis=2).astype(float)
+
 
         # append together booth lists
         input_data = [slices, np.array([image_l_224,] * slices_dim ** 2)]
@@ -91,6 +94,7 @@ def test_whole_image(model, num_of_images, name):
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
+        # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
         im_rgb = color.lab2rgb(color_im)
 
         # save

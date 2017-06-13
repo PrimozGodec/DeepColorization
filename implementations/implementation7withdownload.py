@@ -2,8 +2,10 @@ import pickle
 import sys
 import os
 
-sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+from skimage import color
 
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+import matplotlib.pyplot as plt
 
 from implementations.support_scripts.image_processing import ImageDownloader
 
@@ -16,6 +18,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate
 from random import shuffle
+import numpy as np
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
@@ -93,13 +96,11 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 2100
+start_from = 5400
 save_every_n_epoch = 100
 n_epochs = 10000
 
-model.load_weights("../weights/implementation7d-2100.h5")
-
-# print(model.layers[0].get_weights()[1])
+model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
 id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, im_size=(224, 224), mode="small-vgg")
@@ -121,3 +122,4 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     output = open('../history/imp7d-{:0=4d}.pkl'.format(i), 'wb')
     pickle.dump(history.history, output)
     output.close()
+

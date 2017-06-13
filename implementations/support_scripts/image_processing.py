@@ -53,9 +53,10 @@ def load_images(dir, file, size=(256, 256)):
 
 
 def resize_image(im, size):
-    img = Image.fromarray(im, 'L')
-    img = img.resize(size, Image.ANTIALIAS)
-    return np.array(img)
+    return scipy.misc.imresize(im, size).astype(float) / 256 * 100
+    # img = Image.fromarray(im, 'L')
+    # img = img.resize(size, Image.ANTIALIAS)
+    # return np.array(img)
 
 
 def images_to_l(image):
