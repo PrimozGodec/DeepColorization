@@ -101,7 +101,7 @@ class ImageDownloadGenerator:
             self.n = 0
 
         url = self.urls[self.n]
-        self.n +=1
+        self.n += 1
         return url
 
 
@@ -150,6 +150,20 @@ class ImageDownloadGenerator:
                 continue
             if r != "error":
                 yield r  # then r contains path
+
+    def download_images_util_stopped(self):
+        # while true waits for first successful download
+        while True:
+            name_link = self.select_photo()
+
+            if len(name_link) != 2:  # != 2 means weird url
+                continue
+            [name, link] = name_link
+            try:
+                r = self.download_image(link, name)
+                print(r)
+            except TimeoutException as err:
+                continue
 
 
 if __name__ == "__main__":
