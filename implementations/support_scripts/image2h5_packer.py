@@ -148,5 +148,6 @@ class ImagePacker(threading.Thread):
         f.close()
 
 
-ip = ImagePacker("../../small_dataset", "../../h5_data",  "a", num_images=1024, num_files=2)
-ip.start()
+if __name__ == "__main__":
+    ip = ImagePacker("../../small_dataset", "../../h5_data",  "validation", num_images=128, num_files=1)
+    ip.start()
