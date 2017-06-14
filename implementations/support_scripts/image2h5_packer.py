@@ -65,7 +65,7 @@ class ImagePacker(threading.Thread):
         k = len(self.prefix)
         only_files = get_files()
 
-        keep_files = 600
+        keep_files = 2000
 
         while len(only_files) > keep_files and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir_to, only_files[0]))
@@ -150,5 +150,5 @@ class ImagePacker(threading.Thread):
 
 
 if __name__ == "__main__":
-    ip = ImagePacker("../../small_dataset", "../../h5_data",  "imp4d1-", num_images=1024, num_files=None)
+    ip = ImagePacker("../../small_dataset", "../../h5_data",  "imp4-", num_images=1024, num_files=None)
     ip.start()
