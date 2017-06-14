@@ -90,7 +90,6 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 500
 n_epochs = 10000
-exit()
 # model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
