@@ -100,7 +100,7 @@ start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
 # model.load_weights("../weights/implementation7d-5400.h5")
-exit()
+
 # start image downloader
 ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
 ip.start()
