@@ -25,7 +25,7 @@ class ImagePacker(threading.Thread):
         self.num_images = num_images
         self.num_files = num_files
         self.current_file = ""
-        self.images_list = os.listdir(self.dir_from)
+        self.images_list = []
         self.im_size = (224, 224)
 
     def run(self):
@@ -86,6 +86,9 @@ class ImagePacker(threading.Thread):
 
             self.n += 1
             print("New file", time.time() - start)
+
+        # load list of files only once
+        self.images_list = os.listdir(self.dir_from)
 
         if self.num_files is None:
             while not self.done:
