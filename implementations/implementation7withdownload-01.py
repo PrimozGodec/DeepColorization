@@ -94,14 +94,15 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 0
+start_from = 10
 save_every_n_epoch = 5
 n_epochs = 10000
-# model.load_weights("../weights/implementation7d-5400.h5")
+model.load_weights("../weights/implementation7d-01-5.h5")
 
 # start image downloader
-ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-01-", num_images=1024, num_files=None)
-ip.start()
+# ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-01-", num_images=1024, num_files=None)
+# ip.start()
+ip = None
 
 g = h5_small_vgg_generator(b_size, "../h5_data", ip)
 gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
