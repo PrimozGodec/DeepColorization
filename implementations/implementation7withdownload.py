@@ -99,7 +99,6 @@ ip.start()
 g = h5_small_vgg_generator(b_size, "../h5_data", ip)
 gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
 
-print((128/b_size))
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
