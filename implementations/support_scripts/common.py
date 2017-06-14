@@ -148,6 +148,6 @@ def h5_small_vgg_generator(batch_size, dir, downloader):
             x2 = HDF5Matrix(file, 'vgg224')
             y = HDF5Matrix(file, 'ab_hist')
             n = 0
-            print(len(x1))
+        print(len(x1))
         yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], y[n:n+batch_size]
         n += batch_size
