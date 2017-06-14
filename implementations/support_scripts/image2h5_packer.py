@@ -62,7 +62,7 @@ class ImagePacker(threading.Thread):
         k = len(self.prefix)
         only_files = get_files()
 
-        keep_files = 60
+        keep_files = 200
 
         while len(only_files) > keep_files and only_files[0] != self.current_file:
             os.remove(os.path.join(self.dir_to, only_files[0]))
