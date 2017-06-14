@@ -19,10 +19,10 @@ for file in files:
     with open("../../history/" + file, "rb") as f:
         data = pickle.load(f)
         loss += data["loss"]
-        # val_loss += data["val_loss"]
+        val_loss += data["val_loss"]
 
 plt.plot(loss)
-# plt.plot(val_loss)
+plt.plot(val_loss)
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
