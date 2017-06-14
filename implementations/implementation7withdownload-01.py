@@ -44,9 +44,7 @@ x = Conv2D(512, (3, 3), padding="same", activation="relu")(x)
 main_output = Conv2D(256, (3, 3), padding="same", activation="relu")(x)
 
 # VGG
-vgg_input = Input(shape=input_shape_vgg, name='vgg_input')
-vgg_input_1 = Lambda(normalize)(vgg_input)
-vgg16 = VGG16(weights="imagenet", include_top=True, input_tensor=vgg_input_1)
+vgg16 = VGG16(weights="imagenet", include_top=True)
 vgg_output = Dense(256, activation='softmax', name='predictions')(vgg16.layers[-2].output)
 
 def repeat_output(input):
@@ -90,7 +88,7 @@ def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
 
 
-model = Model(inputs=[main_input, vgg_input], output=last)
+model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_mse)
 
