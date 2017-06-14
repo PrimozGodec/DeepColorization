@@ -2,22 +2,18 @@ import pickle
 import sys
 import os
 
-from skimage import color
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 from implementations.support_scripts.image2h5_packer import ImagePacker
-
-from implementations.support_scripts.image_processing import ImageDownloader
 
 from implementations.support_scripts.common import test_whole_image, h5_small_vgg_generator
 from keras.applications import VGG16
 from keras.engine import Model
 
-from implementations.support_scripts import image_processing
 from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate
 from random import shuffle
-import numpy as np
+
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
@@ -98,7 +94,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 500
 n_epochs = 10000
-
+exit()
 # model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
