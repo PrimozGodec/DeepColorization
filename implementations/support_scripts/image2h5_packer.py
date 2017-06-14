@@ -49,7 +49,7 @@ class ImagePacker(threading.Thread):
             Number that tells from where to number the h5 files in dir
         """
         k = len(self.prefix)
-        only_files = [f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix]
+        only_files = [f for f in os.listdir(self.dir_to) if isfile(join(self.dir_to, f)) and f[:k] == self.prefix]
         return max([-1] + [int(x[k:k + 4]) for x in only_files]) + 1  # files has name with format prefxxxx.h5 - x is a number
 
     def remove_oldest(self):
@@ -57,7 +57,8 @@ class ImagePacker(threading.Thread):
         Function removes files that are the oldest to release some space
         """
         def get_files():
-            return sorted([f for f in os.listdir(self.dir) if isfile(join(self.dir, f)) and f[:k] == self.prefix])
+            return sorted([f for f in os.listdir(self.dir_to) if isfile(join(self.dir_to, f)) and f[:k] == self.prefix])
+
         k = len(self.prefix)
         only_files = get_files()
 
@@ -67,7 +68,7 @@ class ImagePacker(threading.Thread):
             os.remove(os.path.join(self.dir_to, only_files[0]))
             only_files = get_files()
 
-    def generate_files(self, num_images=1024, num_files=None):
+    def generate_files(self):
         """
         Function generates h5 files with image data
 
@@ -81,18 +82,18 @@ class ImagePacker(threading.Thread):
 
         def gen():
             start = time.time()
-            self.images_list = os.listdir(self.dir_to)
-            self.generate_h5_small_vgg(num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
+            self.images_list = os.listdir(self.dir_from)
+            self.generate_h5_small_vgg(self.num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
 
             self.n += 1
-            print(time.time() - start)
+            print("New file", time.time() - start)
 
-        if num_files is None:
+        if self.num_files is None:
             while not self.done:
                 gen()
                 self.remove_oldest()
         else:
-            for _ in range(num_files):
+            for _ in range(self.num_files):
                 if self.done:
                     break
                 gen()
@@ -109,18 +110,18 @@ class ImagePacker(threading.Thread):
         x2 = np.zeros((size, 224, 224, 1))
         y = np.zeros((size, 32, 32, 2))
 
+        script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+        rel_path = self.dir_from
+        abs_file_path = os.path.join(script_dir, rel_path)
+
         i = 0
         while i < size:
+            # print(i)
             # download image
             file_name = self.select_file()
-            script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) # script directory
-            rel_path = self.dir_from
-            abs_file_path = os.path.join(script_dir, rel_path)
-
             lab_im = load_images(abs_file_path, file_name, size=self.im_size)
 
-
-            if lab_im == "error":
+            if type(lab_im) is not np.ndarray or lab_im == "error":
                 continue
 
             h, w, _ = lab_im.shape
@@ -134,7 +135,7 @@ class ImagePacker(threading.Thread):
 
             i += 1
 
-        f = h5py.File(os.path.join(self.dir, name), 'w')
+        f = h5py.File(os.path.join(self.dir_to, name), 'w')
         # Creating dataset to store features
         X1_dset = f.create_dataset('small', (size, 32, 32, 1), dtype='float')
         X1_dset[:] = x1
@@ -145,3 +146,7 @@ class ImagePacker(threading.Thread):
         y_dset = f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='float')
         y_dset[:] = y
         f.close()
+
+
+ip = ImagePacker("../../small_dataset", "../../h5_data",  "a", num_images=1024, num_files=2)
+ip.start()
