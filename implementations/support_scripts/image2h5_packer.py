@@ -7,6 +7,9 @@ from os.path import isfile, join
 import numpy as np
 import time
 
+import sys
+
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 from implementations.support_scripts.image_processing import load_images, images_to_l, images_to_ab
 
 
