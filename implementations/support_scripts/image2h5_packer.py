@@ -25,7 +25,7 @@ class ImagePacker(threading.Thread):
         self.num_images = num_images
         self.num_files = num_files
         self.current_file = ""
-        self.images_list = []
+        self.images_list = os.listdir(self.dir_from)
         self.im_size = (224, 224)
 
     def run(self):
@@ -82,7 +82,6 @@ class ImagePacker(threading.Thread):
 
         def gen():
             start = time.time()
-            self.images_list = os.listdir(self.dir_from)
             self.generate_h5_small_vgg(self.num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
 
             self.n += 1
@@ -110,16 +109,12 @@ class ImagePacker(threading.Thread):
         x2 = np.zeros((size, 224, 224, 1))
         y = np.zeros((size, 32, 32, 2))
 
-        script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
-        rel_path = self.dir_from
-        abs_file_path = os.path.join(script_dir, rel_path)
-
         i = 0
         while i < size:
             # print(i)
             # download image
             file_name = self.select_file()
-            lab_im = load_images(abs_file_path, file_name, size=self.im_size)
+            lab_im = load_images(self.dir_from, file_name, size=self.im_size)
 
             if type(lab_im) is not np.ndarray or lab_im == "error":
                 continue
