@@ -3,10 +3,8 @@ import sys
 import os
 
 from skimage import color
-
-from implementations.support_scripts.image2h5_packer import ImagePacker
-
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
+from implementations.support_scripts.image2h5_packer import ImagePacker
 
 from implementations.support_scripts.image_processing import ImageDownloader
 
