@@ -93,7 +93,7 @@ n_epochs = 10000
 # model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
-ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d", num_images=1024, num_files=None)
+ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
 ip.start()
 
 g = h5_small_vgg_generator(b_size, "../h5_data", ip)
