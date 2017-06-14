@@ -128,7 +128,7 @@ class H5Choose:
 
         if selected not in self.used:
             self.used.append(selected)
-        with open("../log/datasets-used.txt", "a") as file:
+        with open("../log/datasets-used.txt", "w") as file:
             file.write(os.path.basename(__file__) + " " + selected)
         if downloader is not None:
             downloader.set_current_file(selected)
