@@ -23,7 +23,7 @@ import numpy as np
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
-b_size = 16
+b_size = 32
 dir_name = "../small_dataset"
 list_dir = os.listdir(dir_name)
 shuffle(list_dir)
@@ -97,11 +97,11 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 5400
-save_every_n_epoch = 100
+start_from = 0
+save_every_n_epoch = 500
 n_epochs = 10000
 
-model.load_weights("../weights/implementation7d-5400.h5")
+# model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
 ip = ImagePacker("../small_dataset", "../h5_data",  "imp7l", num_images=1024, num_files=2)
@@ -113,14 +113,14 @@ gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=1024/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=6)
+                                  validation_data=gval, validation_steps=128/b_size)
     model.save_weights("../weights/implementation7d-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    test_whole_image(model, 20, "imp7d-" + str(i) + "-")
+    test_whole_image(model, 20, "imp7d-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/imp7d-{:0=4d}.pkl'.format(i), 'wb')
+    output = open('../history/imp7d-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
