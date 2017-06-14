@@ -4,6 +4,8 @@ import os
 
 from skimage import color
 
+from implementations.support_scripts.image2h5_packer import ImagePacker
+
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.image_processing import ImageDownloader
@@ -102,10 +104,10 @@ n_epochs = 10000
 model.load_weights("../weights/implementation7d-5400.h5")
 
 # start image downloader
-id = ImageDownloader("../h5_data", "imp7d-", num_images=1024, im_size=(224, 224), mode="small-vgg")
-id.start()
+ip = ImagePacker("../small_dataset", "../h5_data",  "imp7l", num_images=1024, num_files=2)
+ip.start()
 
-g = h5_small_vgg_generator(b_size, "../h5_data", id)
+g = h5_small_vgg_generator(b_size, "../h5_data", ip)
 gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
