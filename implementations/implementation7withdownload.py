@@ -12,16 +12,12 @@ from keras.engine import Model
 from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate
-from random import shuffle
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 b_size = 32
-dir_name = "../small_dataset"
-list_dir = os.listdir(dir_name)
-shuffle(list_dir)
-list_dir = list_dir
+
 num_classes = 40
 input_shape = (32, 32, 1)
 
