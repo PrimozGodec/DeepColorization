@@ -81,7 +81,7 @@ model.compile(optimizer=opt, loss=custom_mse)
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 1
+save_every_n_epoch = 5
 n_epochs = 10000
 # model.load_weights("../weights/implementation7d-90.h5")
 
