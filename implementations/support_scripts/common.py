@@ -182,8 +182,8 @@ class H5Choose:
 
         if selected not in self.used:
             self.used.append(selected)
-        with open("../log/datasets-used.txt", "w") as file:
-            file.write(os.path.basename(__file__) + " " + selected)
+        # with open("../log/datasets-used.txt", "w") as file:
+        #     file.write(os.path.basename(__file__) + " " + selected)
         if downloader is not None:
             downloader.set_current_file(selected)
         return join(self.dir, selected)
@@ -210,9 +210,11 @@ def h5_small_vgg_generator(batch_size, dir, downloader):
 def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
 
     def to_one_hot(x):
-        s = K.get_session()
-        a = K.one_hot(((x[:, :, :, 0] + 100) / 10).astype(int), 20).eval(session=s)   # 20 bins
-        b = K.one_hot(((x[:, :, :, 1] + 100) / 10).astype(int), 20).eval(session=s)
+        def one_hot(indices, num_classes):
+            return (np.arange(num_classes) == indices[:, :, :, None]).astype(int)
+
+        a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int), 20)  # 20 bins
+        b = one_hot(((x[:, :, :, 1] + 100) / 10).astype(int), 20)
         return np.concatenate((a, b), axis=3)
 
 
