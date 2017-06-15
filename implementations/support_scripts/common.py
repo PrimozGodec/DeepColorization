@@ -114,7 +114,7 @@ class H5Choose:
         self.used = []
 
     def all_files(self):
-        return [f for f in listdir(self.dir) if isfile(join(self.dir, f)) and f.endswith("h5")]
+        return [f for f in listdir(self.dir) if f.endswith("h5")]
 
     def pick_next(self, downloader):
         only_files = self.all_files()
