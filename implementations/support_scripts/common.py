@@ -175,7 +175,7 @@ def whole_image_check_hist(model, num_of_images, name):
         slices = np.zeros((slices_dim * slices_dim, 32, 32, 1))
         for a in range(slices_dim):
             for b in range(slices_dim):
-                slices[a * slices_dim + b] = image_l[a * 32 : (a + 1) * 32, b * 32 : (b + 1) * 32, np.newaxis]
+                slices[a * slices_dim + b] = image_l[a * 32: (a + 1) * 32, b * 32 : (b + 1) * 32, np.newaxis]
 
         # lover originals dimension to 224x224 to feed vgg and increase dim
         image_l_224_b = resize_image(image_l, (224, 224))
@@ -194,11 +194,11 @@ def whole_image_check_hist(model, num_of_images, name):
         predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
         print(predictions_a.shape)
         print(predictions_b.shape)
-        predictions_ab = np.stack((predictions_a, predictions_b))
+        predictions_ab = np.stack((predictions_a, predictions_b), axis=3)
         original_size_im = np.zeros((h, w, 2))
         for n in range(predictions_ab.shape[0]):
             a, b = n // slices_dim * 32, n % slices_dim * 32
-            original_size_im[a:a+32, b:b+32, :] = predictions_ab[n, :, :]
+            original_size_im[a:a+32, b:b+32, :] = predictions_ab[n, :, :, :]
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
