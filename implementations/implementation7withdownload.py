@@ -87,10 +87,10 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 95
+start_from = 110
 save_every_n_epoch = 5
 n_epochs = 10000
-model.load_weights("../weights/implementation7d-90.h5")
+model.load_weights("../weights/implementation7d-105.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
