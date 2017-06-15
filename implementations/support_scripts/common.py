@@ -102,6 +102,57 @@ def whole_image_check(model, num_of_images, name):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
 
+# def whole_image_check_overlapping(model, num_of_images, name):
+#
+#     # find directory
+#     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+#     rel_path = "../../test_set"
+#     abs_file_path = os.path.join(script_dir, rel_path)
+#     image_list = os.listdir(abs_file_path)
+#
+#     # repeat for each image
+#     # lets take first n images
+#     for i in range(num_of_images):
+#         # get image
+#         image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
+#         image_l = images_to_l(image_lab)
+#
+#         h, w = image_l.shape
+#
+#         # split images to list of images
+#         slices_dim = 256//32
+#         slices = np.zeros((slices_dim * slices_dim * 4, 32, 32, 1))
+#         for a in range(slices_dim * 2):
+#             for b in range(slices_dim * 2):
+#                 slices[a * slices_dim + b] = image_l[a*32/2: a*32/2 + 32, b*32/2: b*32/2 + 32, np.newaxis]
+#
+#         # lover originals dimension to 224x224 to feed vgg and increase dim
+#         image_l_224_b = resize_image(image_l, (224, 224))
+#         image_l_224 = np.repeat(image_l_224_b[:, :, np.newaxis], 3, axis=2).astype(float)
+#
+#
+#         # append together booth lists
+#         input_data = [slices, np.array([image_l_224,] * slices_dim ** 2)]
+#
+#         # predict
+#         predictions_ab = model.predict(input_data)
+#
+#         # reshape back
+#         original_size_im = np.zeros((h, w, 2))
+#         for n in range(predictions_ab.shape[0]):
+#             a, b = n // slices_dim * 32 / 2, n % slices_dim * 32 / 2
+#             original_size_im[a:a+32, b:b+32, :] += predictions_ab[n, :, :] *
+#
+#         # to rgb
+#         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
+#         # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
+#         im_rgb = color.lab2rgb(color_im)
+#
+#         # save
+#         abs_svave_path = os.path.join(script_dir, '../../result_images/')
+#         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+
+
 def whole_image_check_hist(model, num_of_images, name):
 
     # find directory
@@ -137,9 +188,12 @@ def whole_image_check_hist(model, num_of_images, name):
         # predict
         predictions_hist = model.predict(input_data)
 
+        print(predictions_hist)
         # reshape back
         predictions_a = np.argmax(predictions_hist[:, :, :, :20], axis=3) * 10 - 100 + 5
         predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
+        print(predictions_a.shape)
+        print(predictions_b.shape)
         predictions_ab = np.stack((predictions_a, predictions_b))
         original_size_im = np.zeros((h, w, 2))
         for n in range(predictions_ab.shape[0]):
