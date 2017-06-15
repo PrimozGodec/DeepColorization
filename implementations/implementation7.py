@@ -5,7 +5,7 @@ import os
 
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-from implementations.support_scripts.common import make_prediction_sample, make_prediction_sample_part, test_whole_image
+from implementations.support_scripts.common import make_prediction_sample, make_prediction_sample_part, whole_image_check
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -98,7 +98,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/implementation7-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    test_whole_image(model, 20, "imp7-" + str(i) + "-")
+    whole_image_check(model, 20, "imp7-" + str(i) + "-")
 
     # save history
     output = open('../history/imp7-{:0=4d}.pkl'.format(i), 'wb')

@@ -5,7 +5,7 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 from implementations.support_scripts.image2h5_packer import ImagePacker
 
-from implementations.support_scripts.common import test_whole_image, h5_small_vgg_generator
+from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -108,7 +108,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/implementation7d-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    test_whole_image(model, 20, "imp7d-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check(model, 20, "imp7d-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/imp7d-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
