@@ -109,13 +109,13 @@ xv, yv = np.meshgrid(vec, vec)
 weight_m = xv * yv
 weight_left = np.hstack((one[:, :16], xv[:, 16:])) * yv
 weight_right = np.hstack((xv[:, :16], one[:, 16:])) * yv
-weight_top = np.hstack((one[:16, :], yv[16:, :])) * xv
-weight_bottom = np.hstack((yv[:16, :], one[16:, :])) * xv
+weight_top = np.vstack((one[:16, :], yv[16:, :])) * xv
+weight_bottom = np.vstack((yv[:16, :], one[16:, :])) * xv
 
-weight_top_left = np.hstack((one[:, :16], xv[:, 16:])) * np.hstack((one[:16, :], yv[16:, :]))
-weight_top_right = np.hstack((xv[:, :16], one[:, 16:])) * np.hstack((one[:16, :], yv[16:, :]))
-weight_bottom_left = np.hstack((one[:, :16], xv[:, 16:])) * np.hstack((yv[:16, :], one[16:, :]))
-weight_bottom_right = np.hstack((xv[:, :16], one[:, 16:])) * np.hstack((yv[:16, :], one[16:, :]))
+weight_top_left = np.hstack((one[:, :16], xv[:, 16:])) * np.vstack((one[:16, :], yv[16:, :]))
+weight_top_right = np.hstack((xv[:, :16], one[:, 16:])) * np.vstack((one[:16, :], yv[16:, :]))
+weight_bottom_left = np.hstack((one[:, :16], xv[:, 16:])) * np.vstack((yv[:16, :], one[16:, :]))
+weight_bottom_right = np.hstack((xv[:, :16], one[:, 16:])) * np.vstack((yv[:16, :], one[16:, :]))
 
 
 def whole_image_check_overlapping(model, num_of_images, name):
