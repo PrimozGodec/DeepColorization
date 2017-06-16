@@ -146,7 +146,7 @@ def whole_image_check_overlapping(model, num_of_images, name):
 
         for n in range(predictions_ab.shape[0]):
             a, b = n // slices_dim * 32 // 2, n % slices_dim * 32 // 2
-            if a + 32 > 256 and b + 32 > 256:
+            if a + 32 > 256 or b + 32 > 256:
                 continue
             print(a, b)
             im_a = predictions_ab[n, :, :, 0] * weight_m
