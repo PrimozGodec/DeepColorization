@@ -102,6 +102,22 @@ def whole_image_check(model, num_of_images, name):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
 
+# matrices for multiplying that needs to calculate only once
+vec = np.hstack((np.linspace(1/16, 1 - 1/16, 16), np.flip(np.linspace(1/16, 1 - 1/16, 16), axis=0)))
+one = np.ones((32, 32))
+xv, yv = np.meshgrid(vec, vec)
+weight_m = xv * yv
+weight_left = np.hstack((one[:, :16], xv[:, 16:])) * yv
+weight_right = np.hstack((xv[:, :16], one[:, 16:])) * yv
+weight_top = np.hstack((one[:16, :], yv[16:, :])) * xv
+weight_bottom = np.hstack((yv[:16, :], one[16:, :])) * xv
+
+weight_top_left = np.hstack((one[:, :16], xv[:, 16:])) * np.hstack((one[:16, :], yv[16:, :]))
+weight_top_right = np.hstack((xv[:, :16], one[:, 16:])) * np.hstack((one[:16, :], yv[16:, :]))
+weight_bottom_left = np.hstack((one[:, :16], xv[:, 16:])) * np.hstack((yv[:16, :], one[16:, :]))
+weight_bottom_right = np.hstack((xv[:, :16], one[:, 16:])) * np.hstack((yv[:16, :], one[16:, :]))
+
+
 def whole_image_check_overlapping(model, num_of_images, name):
 
     # find directory
@@ -140,9 +156,6 @@ def whole_image_check_overlapping(model, num_of_images, name):
 
         # reshape back
         original_size_im = np.zeros((h, w, 2))
-        vec = np.hstack((np.linspace(1/16, 1 - 1/16, 16), np.flip(np.linspace(1/16, 1 - 1/16, 16), axis=0)))
-        xv, xy = np.meshgrid(vec, vec)
-        weight_m = xv * xy
 
         for n in range(predictions_ab.shape[0]):
             a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
@@ -150,8 +163,28 @@ def whole_image_check_overlapping(model, num_of_images, name):
             if a + 32 > 256 or b + 32 > 256:
                 continue  # it is empty edge
 
-            im_a = predictions_ab[n, :, :, 0] * weight_m
-            im_b = predictions_ab[n, :, :, 1] * weight_m
+            # weight decision
+            if a == 0 and b == 0:
+                weight = weight_top_left
+            elif a == 0 and b == 224:
+                weight = weight_top_right
+            elif a == 0:
+                weight = weight_top
+            elif a == 224 and b == 0:
+                weight = weight_bottom_left
+            elif b == 0:
+                weight = weight_left
+            elif a == 224 and b == 224:
+                weight = weight_bottom_right
+            elif a == 224:
+                weight = weight_bottom
+            elif b == 224:
+                weight = weight_right
+            else:
+                weight = weight_m
+
+            im_a = predictions_ab[n, :, :, 0] * weight
+            im_b = predictions_ab[n, :, :, 1] * weight
 
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
