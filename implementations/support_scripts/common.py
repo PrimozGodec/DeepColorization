@@ -125,7 +125,7 @@ def whole_image_check_overlapping(model, num_of_images, name):
         for a in range(slices_dim * 2 - 1):
             for b in range(slices_dim * 2 - 1):
 
-                slices[a * slices_dim + b] = image_l[a*32//2: a*32//2 + 32, b*32//2: b*32//2 + 32, np.newaxis]
+                slices[a * slices_dim * 2 + b] = image_l[a*32//2: a*32//2 + 32, b*32//2: b*32//2 + 32, np.newaxis]
 
         # lover originals dimension to 224x224 to feed vgg and increase dim
         image_l_224_b = resize_image(image_l, (224, 224))
@@ -149,12 +149,11 @@ def whole_image_check_overlapping(model, num_of_images, name):
 
             if a + 32 > 256 or b + 32 > 256:
                 continue  # it is empty edge
-            print(a, b)
+
             im_a = predictions_ab[n, :, :, 0] * weight_m
             im_b = predictions_ab[n, :, :, 1] * weight_m
 
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
-            print(original_size_im[50:52, 50:52, :])
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
