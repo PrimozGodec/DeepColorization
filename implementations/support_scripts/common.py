@@ -152,7 +152,7 @@ def whole_image_check_overlapping(model, num_of_images, name):
             print(a, b)
             im_a = predictions_ab[n, :, :, 0] * weight_m
             im_b = predictions_ab[n, :, :, 1] * weight_m
-
+            print(np.stack((im_a, im_b), axis=2))
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
         # to rgb
