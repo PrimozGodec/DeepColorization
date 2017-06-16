@@ -122,9 +122,10 @@ def whole_image_check_overlapping(model, num_of_images, name):
         # split images to list of images
         slices_dim = 256//32
         slices = np.zeros((slices_dim * slices_dim * 4, 32, 32, 1))
-        for a in range(slices_dim * 2):
-            for b in range(slices_dim * 2):
-                slices[a * slices_dim + b] = image_l[a*32/2: a*32/2 + 32, b*32/2: b*32/2 + 32, np.newaxis]
+        for a in range(slices_dim * 2 - 1):
+            for b in range(slices_dim * 2 - 1):
+                print(a, b)
+                slices[a * slices_dim + b] = image_l[a*32//2: a*32//2 + 32, b*32//2: b*32//2 + 32, np.newaxis]
 
         # lover originals dimension to 224x224 to feed vgg and increase dim
         image_l_224_b = resize_image(image_l, (224, 224))
@@ -132,10 +133,10 @@ def whole_image_check_overlapping(model, num_of_images, name):
 
 
         # append together booth lists
-        input_data = [slices, np.array([image_l_224,] * slices_dim ** 2)]
+        input_data = [slices, np.array([image_l_224,] * slices_dim ** 2 * 4)]
 
         # predict
-        predictions_ab = model.predict(input_data)
+        predictions_ab = model.predict(input_data, batch_size=32)
 
         # reshape back
         original_size_im = np.zeros((h, w, 2))
@@ -144,8 +145,12 @@ def whole_image_check_overlapping(model, num_of_images, name):
         weight_m = xv * xy
 
         for n in range(predictions_ab.shape[0]):
-            a, b = n // slices_dim * 32 / 2, n % slices_dim * 32 / 2
-            original_size_im[a:a+32, b:b+32, :] += predictions_ab[n, :, :] * weight_m
+            a, b = n // slices_dim * 32 // 2, n % slices_dim * 32 // 2
+            if a + 32 > 256 and b + 32 > 256:
+                continue
+            im_a = predictions_ab[n, :, :, 0] * weight_m
+            im_b = predictions_ab[n, :, :, 1] * weight_m
+            original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
