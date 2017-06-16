@@ -146,12 +146,13 @@ def whole_image_check_overlapping(model, num_of_images, name):
 
         for n in range(predictions_ab.shape[0]):
             a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
+            print(a, b)
             if a + 32 > 256 or b + 32 > 256:
                 continue  # it is empty edge
 
             im_a = predictions_ab[n, :, :, 0] * weight_m
             im_b = predictions_ab[n, :, :, 1] * weight_m
-            print(np.stack((im_a, im_b), axis=2).shape)
+
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
         # to rgb
