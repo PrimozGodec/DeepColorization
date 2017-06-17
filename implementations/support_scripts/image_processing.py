@@ -31,33 +31,18 @@ from implementations.support_scripts.download_dataset import ImageDownloadGenera
 
 
 def load_images(dir, file, size=(256, 256)):
-
     try:
-        # rgb = io.imread(os.path.join(dir, file))
-        t = time.time()
         img = Image.open(os.path.join(dir, file))
-        t = time.time()
-        print(time.time() - t)
         img = img.resize(size, Image.ANTIALIAS)
-        t = time.time()
-        print(time.time() - t)
+
     except (OSError, ValueError, IOError):
         print("Damaged:", file)
         return "error"
 
     img = img.convert(mode="RGB")  # ensure that image rgb
-    t = time.time()
-    print(time.time() - t)
     rgb = np.array(img)
-    t = time.time()
-    print(time.time() - t)
-
     if len(rgb.shape) == 3 and (rgb.shape[2]) == 3:  # avoid black and white photos
-        t = time.time()
-        print(time.time() - t)
-        a = color.rgb2lab(rgb)
-        print(time.time() - t)
-        return a
+        return color.rgb2lab(rgb)
     else:
         print(file)
 
