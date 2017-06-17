@@ -4,16 +4,16 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
-from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
+from implementations.support_scripts.common import h5_small_vgg_generator, \
     whole_image_check_overlapping
 from keras.applications import VGG16
 from keras.engine import Model
 
 from keras import backend as K, Input
 from keras import optimizers
-from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers
+from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, Conv2DTranspose
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 b_size = 32
 
@@ -42,9 +42,11 @@ main_output = Conv2D(256, (3, 3), padding="same", activation="relu",
 vgg16 = VGG16(weights="imagenet", include_top=True)
 vgg_output = Dense(256, activation='softmax', name='predictions')(vgg16.layers[-2].output)
 
+
 def repeat_output(input):
     shape = K.shape(x)
     return K.reshape(K.repeat(input, 4 * 4), (shape[0], 4, 4, 256))
+
 
 vgg_output = Lambda(repeat_output)(vgg_output)
 
@@ -57,11 +59,13 @@ merged = concatenate([vgg_output, main_output], axis=3)
 
 last = Conv2D(128, (3, 3), padding="same")(merged)
 
-last = UpSampling2D(size=(2, 2))(last)
+last = Conv2DTranspose(128, (3, 3), strides=(2, 2), padding="same", activation="relu",
+                       kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(64, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(64, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 
-last = UpSampling2D(size=(2, 2))(last)
+last = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding="same", activation="relu",
+                       kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(32, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(2, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 
@@ -100,18 +104,16 @@ ip = None
 g = h5_small_vgg_generator(b_size, "../h5_data", ip)
 gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
 
-
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(128//b_size))
-    model.save_weights("../weights/implementation8-" + str(i * save_every_n_epoch) + ".h5")
+    history = model.fit_generator(g, steps_per_epoch=60000 / b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(128 // b_size))
+    model.save_weights("../weights/implementation8-trans-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_overlapping(model, 40, "imp8-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_overlapping(model, 40, "imp8-trans-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/imp8-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/imp8-trans-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
-
