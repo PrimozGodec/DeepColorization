@@ -111,7 +111,7 @@ opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
-exit()
+
 
 start_from = 0
 save_every_n_epoch = 5

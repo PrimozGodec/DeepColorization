@@ -63,8 +63,6 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-exit()
-
 start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
