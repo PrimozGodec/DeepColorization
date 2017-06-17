@@ -6,7 +6,8 @@ from PIL import Image
 from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
-file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
+# file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
+file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg"]
 
 plt.rcParams.update({'font.size': 8})
 
@@ -64,6 +65,8 @@ for image_name in im_names_all:
                 ax1.set_title(alg, fontsize=9)
 
 
-    plt.savefig("../../result_merged/" + image_name[:-4] + ".pdf", format='pdf', bbox_inches='tight')
-    exit()
+    plt.savefig(
+        "../../result_merged/" + image_name[:-4] + "-" + "_".join(file_prefix) + ".pdf",
+        format='pdf', bbox_inches='tight')
+
 

@@ -8,14 +8,17 @@ This script show data chart analysis for training
 import os
 import pickle
 
-implementation = "imp7d-"
+implementation = "imp7d-reg"
 
 # list all history files
-files = sorted([x for x in os.listdir("../../history") if x.startswith(implementation)])
+files = sorted([x for x in os.listdir("../../history")
+                if x.startswith(implementation) and len(x[len(implementation) + 1:].split("-")) == 1
+                and x[len(implementation)] == "-"])
 
 loss = []
 val_loss = []
 for file in files:
+    print(file)
     with open("../../history/" + file, "rb") as f:
         data = pickle.load(f)
         loss += data["loss"]
@@ -27,4 +30,4 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+plt.savefig("../../hist_graphs/" + implementation + ".jpg")
