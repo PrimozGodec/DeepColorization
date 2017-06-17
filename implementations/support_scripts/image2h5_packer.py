@@ -135,6 +135,7 @@ class ImagePacker(threading.Thread):
             y[i, :, :] = images_to_ab(im_part)
 
             i += 1
+            exit()
 
         f = h5py.File(os.path.join(self.dir_to, name), 'w')
         # Creating dataset to store features
