@@ -13,7 +13,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 32
 
@@ -105,12 +105,12 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(128//b_size))
-    model.save_weights("../weights/implementation8-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/implementation8-pool-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_overlapping(model, 40, "imp8-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_overlapping(model, 40, "imp8-pool-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/imp8-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/imp8-pool-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
