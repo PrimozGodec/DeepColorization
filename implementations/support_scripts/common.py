@@ -233,12 +233,10 @@ def whole_image_check_hist(model, num_of_images, name):
         # predict
         predictions_hist = model.predict(input_data)
 
-        print(predictions_hist)
         # reshape back
         predictions_a = np.argmax(predictions_hist[:, :, :, :20], axis=3) * 10 - 100 + 5
         predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
-        print(predictions_a.shape)
-        print(predictions_b.shape)
+
         predictions_ab = np.stack((predictions_a, predictions_b), axis=3)
         original_size_im = np.zeros((h, w, 2))
         for n in range(predictions_ab.shape[0]):
