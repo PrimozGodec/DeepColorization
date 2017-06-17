@@ -183,7 +183,7 @@ def threads_running(threads):
 if __name__ == "__main__":
     num_lines = sum(1 for line in open('../../imagenet/fall11_urls.txt', encoding = "ISO-8859-1"))
 
-    f = 3200000
+    f = 3620000
     to = num_lines
     for t in range(f, to, 80000):
         threads = []
