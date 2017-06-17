@@ -14,7 +14,7 @@ from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, MaxPooling2D, \
     AveragePooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 32
 
@@ -94,7 +94,7 @@ start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
 # model.load_weights("../weights/implementation7d-reg-55.h5")
-exit()
+
 # start image downloader
 ip = None
 
