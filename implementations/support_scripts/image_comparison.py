@@ -6,7 +6,7 @@ from PIL import Image
 from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
-file_prefix = "imp7d"
+file_prefix = "imp7d-hist"
 plots_per_row = 8
 plt.rcParams.update({'font.size': 8})
 
@@ -18,11 +18,12 @@ image_names = sorted(list(set(list(zip(*split_files))[1])))
 
 
 for image_name in image_names:
+    print(image_name)
     # for each image make graphics
     iterations = sorted([x[0] for x in split_files if x[1] == image_name], key=int)
     num_rows = int(math.ceil(len(iterations) / plots_per_row))
 
-    plt.figure(figsize=(plots_per_row + 1, num_rows + 1))
+    plt.figure(figsize=(plots_per_row * 2.5 + 1, num_rows * 2.5 + 1))
     gs1 = gridspec.GridSpec(num_rows, plots_per_row, width_ratios=[1] * plots_per_row,
          wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
     # gs1.update(wspace=0, hspace=0)  # set the spacing between axes.
@@ -45,6 +46,6 @@ for image_name in image_names:
         ax1.axis('off')
 
 
-    plt.savefig("../../result_merged/" + file_prefix + "-" + image_name, bbox_inches='tight')
+    plt.savefig("../../result_merged/" + file_prefix + "-" + image_name[:-4] + ".pdf", format='pdf', bbox_inches='tight')
 
-    exit()
+
