@@ -89,7 +89,7 @@ def custom_mse(y_true, y_pred):
 
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
-opt = optimizers.Adam(lr=1E-3, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+opt = optimizers.Adam(lr=1E-2, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
