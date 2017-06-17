@@ -304,6 +304,20 @@ def h5_small_vgg_generator(batch_size, dir, downloader):
         n += batch_size
 
 
+def h5_vgg_generator(batch_size, dir, downloader):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    n = 0
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            file = file_picker.pick_next(downloader)
+            x1 = HDF5Matrix(file, 'im')
+            n = 0
+        yield np.tile(x1[n:n+batch_size, :, :, 0],  (1, 1, 1, 3)), x1[n:n+batch_size, :, :, 1:3]
+        n += batch_size
+
+
 def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
 
     def to_one_hot(x):
