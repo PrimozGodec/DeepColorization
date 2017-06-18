@@ -6,7 +6,7 @@ from PIL import Image
 from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
-file_prefixes = ["imp8", "imp8-deep", "imp8-res", "imp8-pool", "imp8-poola", "imp8-trans", "imp8-bn"]
+file_prefixes = ["imp8-pool"]
 plots_per_row = 8
 plt.rcParams.update({'font.size': 8})
 
@@ -46,6 +46,7 @@ for file_prefix in file_prefixes:
                      color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
 
             ax1.axis('off')
+            image.close()
 
 
         plt.savefig("../../result_merged/" + file_prefix + "-" + image_name[:-4] + ".pdf", format='pdf', bbox_inches='tight')
