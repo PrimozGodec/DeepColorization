@@ -138,17 +138,13 @@ class ImagePacker(threading.Thread):
 
         f = h5py.File(os.path.join(self.dir_to, name), 'w')
         # Creating dataset to store features
-        X1_dset = f.create_dataset('small', (size, 32, 32, 1), dtype='float')
-        X1_dset[:] = x1
-
-        X2_dset = f.create_dataset('vgg224', (size, self.im_size[0], self.im_size[0], 1), dtype='float')
-        X2_dset[:] = x2
+        f.create_dataset('small', (size, 32, 32, 1), dtype='float',  data=x1)
+        f.create_dataset('vgg224', (size, self.im_size[0], self.im_size[0], 1), dtype='float', data=x2)
         # Creating dataset to store labels
-        y_dset = f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='float')
-        y_dset[:] = y
+        f.create_dataset('ab_hist', (size, 32, 32, 2), dtype='float', data=y)
         f.close()
 
 
 if __name__ == "__main__":
-    ip = ImagePacker("../../small_dataset", "../../h5_data",  "imp7d-big-", num_images=10240, num_files=None)
+    ip = ImagePacker("../../small_dataset", "../../h5_data",  "data-1024-", num_images=1024, num_files=None)
     ip.start()

@@ -1,5 +1,6 @@
 from random import shuffle
 
+import h5py
 import numpy as np
 import scipy.misc
 from os import listdir
@@ -294,11 +295,15 @@ def h5_small_vgg_generator(batch_size, dir, downloader):
     n = 0
 
     while True:
+        f = None
         if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
             file = file_picker.pick_next(downloader)
-            x1 = HDF5Matrix(file, 'small')
-            x2 = HDF5Matrix(file, 'vgg224')
-            y = HDF5Matrix(file, 'ab_hist')
+            f = h5py.File(file, 'r')
+            x1 = f['small']
+            x2 = f['vgg224']
+            y = f['ab_hist']
             n = 0
         yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], y[n:n+batch_size]
         n += batch_size
@@ -308,11 +313,15 @@ def h5_vgg_generator(batch_size, dir, downloader):
     file_picker = H5Choose(dir=dir)
     x1 = None
     n = 0
+    f = None
 
     while True:
         if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
             file = file_picker.pick_next(downloader)
-            x1 = HDF5Matrix(file, 'im')
+            f = h5py.File(file, 'r')
+            x1 = f['im']
             n = 0
         yield np.tile(x1[n:n+batch_size, :, :, 0],  (1, 1, 1, 3)), x1[n:n+batch_size, :, :, 1:3]
         n += batch_size
@@ -334,18 +343,23 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
     x2 = None
     y = None
     n = 0
+    f = None
 
     while True:
         if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
             file = file_picker.pick_next(downloader)
-            x1 = HDF5Matrix(file, 'small')
-            x2 = HDF5Matrix(file, 'vgg224')
-            y = HDF5Matrix(file, 'ab_hist')
+            f = h5py.File(file, 'r')
+            x1 = f['small']
+            x2 = f['vgg224']
+            y = f['ab_hist']
             n = 0
         yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], to_one_hot(y[n:n+batch_size])
         n += batch_size
 
 
 if __name__ == "__main__":
-    g = h5_small_vgg_generator_onehot(2, "../../h5_data", None)
-    print(next(g)[1][0, :2, :2, :])
+    g = h5_small_vgg_generator(2, "../../h5_data", None)
+    for i in range(50):
+        print(next(g)[1][0, :2, :2, :])
