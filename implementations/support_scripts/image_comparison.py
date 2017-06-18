@@ -50,5 +50,5 @@ for file_prefix in file_prefixes:
 
 
         plt.savefig("../../result_merged/" + file_prefix + "-" + image_name[:-4] + ".pdf", format='pdf', bbox_inches='tight')
-
+        plt.close()
 
