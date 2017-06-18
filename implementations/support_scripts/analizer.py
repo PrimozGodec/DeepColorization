@@ -8,7 +8,7 @@ This script show data chart analysis for training
 import os
 import pickle
 
-implementation = "imp7d-reg"
+implementation = "imp8-bn"
 
 # list all history files
 files = sorted([x for x in os.listdir("../../history")
