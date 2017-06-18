@@ -70,5 +70,6 @@ for image_name in im_names_all:
     plt.savefig(
         "../../result_merged/" + image_name[:-4] + "-" + "_".join(file_prefix) + ".pdf",
         format='pdf', bbox_inches='tight')
+    plt.close()
 
 
