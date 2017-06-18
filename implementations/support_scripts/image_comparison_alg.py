@@ -64,6 +64,8 @@ for image_name in im_names_all:
             if ax1.is_first_row():
                 ax1.set_title(alg, fontsize=9)
 
+            image.close()
+
 
     plt.savefig(
         "../../result_merged/" + image_name[:-4] + "-" + "_".join(file_prefix) + ".pdf",
