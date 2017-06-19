@@ -68,15 +68,31 @@ last = Conv2D(40, (3, 3), padding="same", activation="sigmoid")(last)
 def resize_image(x):
     return K.resize_images(x, 2, 2, "channels_last")
 
+
+# multidimensional softmax
+def custom_softmax(x):
+    # e = K.exp(x - K.max(x, axis=1, keepdims=True))
+    # s = K.sum(e, axis=1, keepdims=True)
+    # return e / s
+    x = K.reshape(x, (b_size * 64 * 64, num_classes))
+    x = K.softmax(x)
+    x = K.reshape(x, (b_size, 64, 64, num_classes))
+    return x
+
+
+last = Lambda(custom_softmax)(last)
 last = Lambda(resize_image)(last)
 
-def custom_mse(y_true, y_pred):
-    return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
+
+def custom_kullback_leibler_divergence(y_true, y_pred):
+    y_true = K.clip(y_true, K.epsilon(), 1)
+    y_pred = K.clip(y_pred, K.epsilon(), 1)
+    return K.mean(K.sum(y_true * K.log(y_true / y_pred), axis=-1), axis=[1, 2])
 
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-2, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss=custom_mse)
+model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
 
 model.summary()
 
