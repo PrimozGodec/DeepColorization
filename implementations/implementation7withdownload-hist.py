@@ -11,8 +11,7 @@ from keras.engine import Model
 
 from keras import backend as K, Input
 from keras import optimizers
-from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate
-
+from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, Activation
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
@@ -77,7 +76,7 @@ def custom_softmax(x):
     return x
 
 
-last = Lambda(custom_softmax)(last)
+last = Activation(custom_softmax)(last)
 last = Lambda(resize_image)(last)
 
 
