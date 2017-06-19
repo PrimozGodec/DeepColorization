@@ -52,14 +52,14 @@ for layer in vgg16.layers:
 # concatenated net
 merged = concatenate([vgg_output, main_output], axis=3)
 
-last = Conv2D(128, (3, 3), padding="same")(merged)
+last = Conv2D(256, (3, 3), padding="same")(merged)
 
 last = UpSampling2D(size=(2, 2))(last)
-last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
-last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
+last = Conv2D(256, (3, 3), padding="same", activation="relu")(last)
+last = Conv2D(256, (3, 3), padding="same", activation="relu")(last)
 
 last = UpSampling2D(size=(2, 2))(last)
-last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
+last = Conv2D(256, (3, 3), padding="same", activation="relu")(last)
 last = Conv2D(400, (3, 3), padding="same", activation="relu")(last)
 
 
@@ -87,7 +87,7 @@ def custom_kullback_leibler_divergence(y_true, y_pred):
 
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
-opt = optimizers.Adam(lr=1E-2, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
 
 model.summary()
