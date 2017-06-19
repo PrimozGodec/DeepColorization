@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 """
 This script show data chart analysis for training
@@ -26,8 +27,15 @@ for file in files:
 
 plt.plot(loss)
 plt.plot(val_loss)
+
+print(len(loss))
+print(np.mean(loss[80:135]))
+print(np.mean(val_loss[80:135]))
+
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
+plt.ylim([160, 280])
+
 plt.savefig("../../hist_graphs/" + implementation + ".jpg")
