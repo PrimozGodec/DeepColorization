@@ -18,7 +18,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 b_size = 32
 
-num_classes = 40
+num_classes = 400
 input_shape = (32, 32, 1)
 
 # main network
