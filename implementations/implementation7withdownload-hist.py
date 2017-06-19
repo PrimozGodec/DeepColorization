@@ -71,12 +71,10 @@ def resize_image(x):
 
 # multidimensional softmax
 def custom_softmax(x):
-    # e = K.exp(x - K.max(x, axis=1, keepdims=True))
-    # s = K.sum(e, axis=1, keepdims=True)
-    # return e / s
-    x = K.reshape(x, (b_size * 64 * 64, num_classes))
+    sh = K.shape(x)
+    x = K.reshape(x, (sh[0] * sh[1] * sh[2], num_classes))
     x = K.softmax(x)
-    x = K.reshape(x, (b_size, 64, 64, num_classes))
+    x = K.reshape(x, (sh[0], sh[1], sh[2], num_classes))
     return x
 
 
