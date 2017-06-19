@@ -19,7 +19,7 @@ import keras.backend as K
 This script contains functions that are common to all the implementations used
 """
 from implementations.support_scripts.image_processing import image_generator_hist, histogram_to_ab, \
-    histogram_to_ab_separate, load_images, images_to_l, resize_image
+    histogram_to_ab_separate, load_images, images_to_l, resize_image, lab2rgb
 
 
 def make_prediction_sample(model, batch_size, name, generator=None):
@@ -235,8 +235,12 @@ def whole_image_check_hist(model, num_of_images, name):
         predictions_hist = model.predict(input_data)
 
         # reshape back
-        predictions_a = np.argmax(predictions_hist[:, :, :, :20], axis=3) * 10 - 100 + 5
-        predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
+        # predictions_a = np.argmax(predictions_hist[:, :, :, :20], axis=3) * 10 - 100 + 5
+        # predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
+        indices = np.argmax(predictions_hist[:, :, :, :], axis=3)
+
+        predictions_a = indices // 20 * 10 - 100 + 5
+        predictions_b = indices % 20 * 10 - 100 + 5  # +5 to set in the middle box
 
         predictions_ab = np.stack((predictions_a, predictions_b), axis=3)
         original_size_im = np.zeros((h, w, 2))
@@ -329,13 +333,21 @@ def h5_vgg_generator(batch_size, dir, downloader):
 
 def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
 
+    # def to_one_hot(x):
+    #     def one_hot(indices, num_classes):
+    #         return (np.arange(num_classes) == indices[:, :, :, None]).astype(int)
+    #
+    #     a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int), 20)  # 20 bins
+    #     b = one_hot(((x[:, :, :, 1] + 100) / 10).astype(int), 20)
+    #     return np.concatenate((a, b), axis=3)
+
     def to_one_hot(x):
         def one_hot(indices, num_classes):
             return (np.arange(num_classes) == indices[:, :, :, None]).astype(int)
 
-        a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int), 20)  # 20 bins
-        b = one_hot(((x[:, :, :, 1] + 100) / 10).astype(int), 20)
-        return np.concatenate((a, b), axis=3)
+        a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int) * 20 +
+                    ((x[:, :, :, 1] + 100) / 10).astype(int), 400)  # 20 bins
+        return a
 
 
     file_picker = H5Choose(dir=dir)
@@ -359,7 +371,9 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
         n += batch_size
 
 
+
 if __name__ == "__main__":
-    g = h5_small_vgg_generator(2, "../../h5_data", None)
+    g = h5_small_vgg_generator_onehot(2, "../../h5_data", None)
+    import matplotlib.pyplot as plt
     for i in range(50):
-        print(next(g)[1][0, :2, :2, :])
+        a = next(g)

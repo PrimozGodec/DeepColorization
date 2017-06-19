@@ -3,7 +3,6 @@ import sys
 import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-from implementations.support_scripts.image2h5_packer import ImagePacker
 
 from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
     h5_small_vgg_generator_onehot, whole_image_check_hist
@@ -57,12 +56,12 @@ merged = concatenate([vgg_output, main_output], axis=3)
 last = Conv2D(128, (3, 3), padding="same")(merged)
 
 last = UpSampling2D(size=(2, 2))(last)
-last = Conv2D(64, (3, 3), padding="same", activation="sigmoid")(last)
-last = Conv2D(64, (3, 3), padding="same", activation="sigmoid")(last)
+last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
+last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
 
 last = UpSampling2D(size=(2, 2))(last)
-last = Conv2D(64, (3, 3), padding="same", activation="sigmoid")(last)
-last = Conv2D(40, (3, 3), padding="same", activation="sigmoid")(last)
+last = Conv2D(64, (3, 3), padding="same", activation="relu")(last)
+last = Conv2D(400, (3, 3), padding="same", activation="relu")(last)
 
 
 def resize_image(x):
