@@ -6,7 +6,7 @@ from PIL import Image
 from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
-file_prefixes = ["imp8-pool"]
+file_prefixes = ["imp7d-hist"]
 plots_per_row = 8
 plt.rcParams.update({'font.size': 8})
 

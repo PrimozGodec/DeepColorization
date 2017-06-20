@@ -95,6 +95,8 @@ model.summary()
 start_from = 70
 save_every_n_epoch = 5
 n_epochs = 10000
+
+print("weights loaded")
 model.load_weights("../weights/implementation7d-hist-65.h5")
 
 # start image downloader
