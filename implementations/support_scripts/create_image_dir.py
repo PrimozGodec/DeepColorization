@@ -56,15 +56,19 @@ if not os.path.isfile(os.path.join(dir_to, "validation")):
 
 # copy files to dir and write file with names
 with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
-    for d in dir_choices_train:
+    for i, d in enumerate(dir_choices_train):
         images = os.listdir(os.path.join(dataset_dir, d))
         ch = choice(images)
         copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "train", ch))
         print(ch, file=handle)
+        if i % 1000 == 0:
+            print(i)
 
 with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
-    for d in dir_choices_validation:
+    for i, d in enumerate(dir_choices_validation):
         images = os.listdir(os.path.join(dataset_dir, d))
         ch = choice(images)
         copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation", ch))
         print(ch, file=handle)
+        if i % 1000 == 0:
+            print(i)
