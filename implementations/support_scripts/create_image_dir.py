@@ -21,7 +21,7 @@ validation_set_len = 10000
 #     if i % 100 == 0:
 #         print(i)
 #
-# if not os.path.isfile(dir_to):
+# if not os.path.isdir(dir_to):
 #     os.mkdir(dir_to)
 file_name = os.path.join(dir_to, "file_dist.pkl")
 
@@ -49,9 +49,9 @@ dir_choices_train = np.random.choice(image_dirs, train_set_len, p=dir_probabilit
 dir_choices_validation = np.random.choice(image_dirs, train_set_len, p=dir_probabilities)
 
 # create directories to save image if does not exist
-if not os.path.isfile(os.path.join(dir_to, "train")):
+if not os.path.isdir(os.path.join(dir_to, "train")):
     os.mkdir(os.path.join(dir_to, "train"))
-if not os.path.isfile(os.path.join(dir_to, "validation")):
+if not os.path.isdir(os.path.join(dir_to, "validation")):
     os.mkdir(os.path.join(dir_to, "validation"))
 
 # copy files to dir and write file with names
