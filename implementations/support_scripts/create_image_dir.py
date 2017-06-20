@@ -21,7 +21,9 @@ for i, im_dir in enumerate(image_dirs):
     if i % 100 == 0:
         print(i)
 
-file_name = os.path.join(dir_to, "file_dist")
+if not os.path.isfile(dir_to):
+    os.mkdir(dir_to)
+file_name = os.path.join(dir_to, "file_dist.pkl")
 
 # save to pickle that new calculation is not required every time
 with open(file_name, 'wb') as handle:
