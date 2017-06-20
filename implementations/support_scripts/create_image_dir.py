@@ -13,21 +13,21 @@ validation_set_len = 10000
 
 """ This part list the dir and count number of images in subdirectories """
 
-image_dirs = os.listdir(dataset_dir)
-
-sizes = []
-for i, im_dir in enumerate(image_dirs):
-    sizes.append(len(os.listdir(os.path.join(dataset_dir, im_dir))))
-    if i % 100 == 0:
-        print(i)
-
-if not os.path.isfile(dir_to):
-    os.mkdir(dir_to)
+# image_dirs = os.listdir(dataset_dir)
+#
+# sizes = []
+# for i, im_dir in enumerate(image_dirs):
+#     sizes.append(len(os.listdir(os.path.join(dataset_dir, im_dir))))
+#     if i % 100 == 0:
+#         print(i)
+#
+# if not os.path.isfile(dir_to):
+#     os.mkdir(dir_to)
 file_name = os.path.join(dir_to, "file_dist.pkl")
 
 # save to pickle that new calculation is not required every time
-with open(file_name, 'wb') as handle:
-    pickle.dump((image_dirs, sizes), handle, protocol=pickle.HIGHEST_PROTOCOL)
+# with open(file_name, 'wb') as handle:
+#     pickle.dump((image_dirs, sizes), handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 with open(file_name, 'rb') as handle:
     image_dirs, sizes = pickle.load(handle)
@@ -35,7 +35,6 @@ with open(file_name, 'rb') as handle:
 # just test if everything is right with sizes
 print(sum(sizes))
 
-exit()
 """ Script to generate a subset """
 
 # calculate probabilities for a directory, more files higher probability for image to be chosen
@@ -69,7 +68,3 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
         ch = choice(images)
         copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation"))
         print(ch, file=handle)
-
-
-
-
