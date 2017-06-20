@@ -6,10 +6,28 @@ from random import choice
 import numpy as np
 from shutil import copyfile
 
+import time
+from PIL import Image
+
 dataset_dir = "../../../imagenet"
 dir_to = "../../../subset100_000"
 train_set_len = 100000
 validation_set_len = 10000
+
+def check_if_ok(path):
+    try:
+        img = Image.open(path)
+
+    except (OSError, ValueError, IOError):
+        print("Damaged:", path)
+        return False
+
+    rgb = np.array(img)
+    if len(rgb.shape) == 3 and (rgb.shape[2]) == 3:  # avoid black and white photos
+        return True
+    else:
+        return False
+
 
 """ This part list the dir and count number of images in subdirectories """
 
@@ -54,21 +72,46 @@ if not os.path.isdir(os.path.join(dir_to, "train")):
 if not os.path.isdir(os.path.join(dir_to, "validation")):
     os.mkdir(os.path.join(dir_to, "validation"))
 
+
+# function to copy image
+def copy_im(image_dir, goal_dir, h):
+    images = os.listdir(os.path.join(dataset_dir, image_dir))
+    ch = choice(images)
+    if check_if_ok(os.path.join(dataset_dir, d, ch)):
+        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, goal_dir, ch))
+        print(ch, file=h)
+
+t = time.time()
+
 # copy files to dir and write file with names
 with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
-    for i, d in enumerate(dir_choices_train):
-        images = os.listdir(os.path.join(dataset_dir, d))
-        ch = choice(images)
-        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "train", ch))
-        print(ch, file=handle)
-        if i % 1000 == 0:
-            print(i)
+    count_im = 0
+    for d in dir_choices_train:
+        copy_im(d, "train", handle)
+        if count_im % 1000 == 0:
+            print(count_im)
+        count_im += 1
 
-with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
-    for i, d in enumerate(dir_choices_validation):
-        images = os.listdir(os.path.join(dataset_dir, d))
-        ch = choice(images)
-        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation", ch))
-        print(ch, file=handle)
-        if i % 1000 == 0:
-            print(i)
+    # add to match data-set size
+    while count_im >= train_set_len:
+        d = np.random.choice(image_dirs, 1, p=dir_probabilities)
+        copy_im(d, "train", handle)
+        if count_im % 1000 == 0:
+            print(count_im, time.time() - t)
+        count_im += 1
+
+with open(os.path.join(dir_to, "validation.txt"), 'w') as handle:
+    count_im = 0
+    for d in dir_choices_validation:
+        copy_im(d, "validation", handle)
+        if count_im % 1000 == 0:
+            print(count_im)
+        count_im += 1
+
+        # add to match data-set size
+    while count_im >= train_set_len:
+        d = np.random.choice(image_dirs, 1, p=dir_probabilities)
+        copy_im(d, "validation", handle)
+        if count_im % 1000 == 0:
+            print(count_im, time.time() - t)
+        count_im += 1
