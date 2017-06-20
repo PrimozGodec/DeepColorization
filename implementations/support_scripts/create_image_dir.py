@@ -10,7 +10,7 @@ dir_to = "../../../subset100_000"
 image_dirs = os.listdir(dataset_dir)
 
 sizes = []
-for i, im_dir in image_dirs:
+for i, im_dir in enumerate(image_dirs):
     sizes.append(len(os.listdir(os.path.join(dataset_dir, im_dir))))
     if i % 100 == 0:
         print(i)
