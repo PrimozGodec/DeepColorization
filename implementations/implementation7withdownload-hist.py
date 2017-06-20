@@ -87,15 +87,15 @@ def custom_kullback_leibler_divergence(y_true, y_pred):
 
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
-opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
+opt = optimizers.Adam(lr=1E-3, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
 
 model.summary()
 
-start_from = 0
+start_from = 70
 save_every_n_epoch = 5
 n_epochs = 10000
-# model.load_weights("../weights/implementation7d-hist-0.h5")
+model.load_weights("../weights/implementation7d-hist-65.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
