@@ -53,14 +53,20 @@ if not os.path.isfile(os.path.join(dir_to, "train")):
 if not os.path.isfile(os.path.join(dir_to, "validation")):
     os.mkdir(os.path.join(dir_to, "validation"))
 
-# copy files to dir
-for d in dir_choices_train:
-    images = os.listdir(os.path.join(dataset_dir, d))
-    copyfile(os.path.join(dataset_dir, d, choice(images)), os.path.join(dir_to, "train"))
+# copy files to dir and write file with names
+with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
+    for d in dir_choices_train:
+        images = os.listdir(os.path.join(dataset_dir, d))
+        ch = choice(images)
+        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "train"))
+        print(ch, file=handle)
 
-for d in dir_choices_validation:
-    images = os.listdir(os.path.join(dataset_dir, d))
-    copyfile(os.path.join(dataset_dir, d, choice(images)), os.path.join(dir_to, "validation"))
+with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
+    for d in dir_choices_validation:
+        images = os.listdir(os.path.join(dataset_dir, d))
+        ch = choice(images)
+        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation"))
+        print(ch, file=handle)
 
 
 
