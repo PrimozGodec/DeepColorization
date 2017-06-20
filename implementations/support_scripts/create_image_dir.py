@@ -89,7 +89,7 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
     for d in dir_choices_train:
         copy_im(d, "train", handle)
         if count_im % 1000 == 0:
-            print(count_im)
+            print(count_im, time.time() - t)
         count_im += 1
 
     # add to match data-set size
@@ -105,7 +105,7 @@ with open(os.path.join(dir_to, "validation.txt"), 'w') as handle:
     for d in dir_choices_validation:
         copy_im(d, "validation", handle)
         if count_im % 1000 == 0:
-            print(count_im)
+            print(count_im, time.time() - t)
         count_im += 1
 
         # add to match data-set size
