@@ -59,12 +59,12 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
     for d in dir_choices_train:
         images = os.listdir(os.path.join(dataset_dir, d))
         ch = choice(images)
-        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "train"))
+        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "train", ch))
         print(ch, file=handle)
 
 with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
     for d in dir_choices_validation:
         images = os.listdir(os.path.join(dataset_dir, d))
         ch = choice(images)
-        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation"))
+        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, "validation", ch))
         print(ch, file=handle)
