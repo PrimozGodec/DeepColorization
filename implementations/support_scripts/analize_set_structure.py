@@ -47,5 +47,7 @@ print("Num unique: ", len(co.keys()))
 f0 = os.listdir(os.path.join(set_dir, "train"))
 f1 = os.listdir(os.path.join(set_dir, "validation"))
 
-print(set(f0).intersection(f1))
+a =set(f0).intersection(f1)
+for i in a:
+    os.remove(os.path.join(set_dir, "validation", i))
 
