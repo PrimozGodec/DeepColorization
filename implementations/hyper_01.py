@@ -87,8 +87,8 @@ n_epochs = 10000
 # start image downloader
 ip = None
 
-g = h5_vgg_generator(b_size, "../h5_data", ip)
-gval = h5_vgg_generator(b_size, "../h5_validate", None)
+g = h5_vgg_generator(b_size, "../h5_data_224", ip)
+gval = h5_vgg_generator(b_size, "../h5_data_224_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
