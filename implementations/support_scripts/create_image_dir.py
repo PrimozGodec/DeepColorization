@@ -98,10 +98,10 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
         count_im += 1
 
     count_im = len(os.listdir(os.path.join(dir_to, "train")))
-    # add to match data-set size
+    # add to match data-set s(ize
     while count_im <= train_set_len:
         d = np.random.choice(image_dirs, 1, p=dir_probabilities)
-        if copy_im(d[0], "train", handle):
+        if copy_im(str(d), "train", handle):
             if count_im % 1000 == 0:
                 print(count_im, time.time() - t)
             count_im += 1
@@ -121,7 +121,7 @@ with open(os.path.join(dir_to, "validation.txt"), 'w') as handle:
     # add to match data-set size
     while count_im <= validation_set_len:
         d = np.random.choice(image_dirs, 1, p=dir_probabilities)
-        if copy_im(d[0], "validation", handle):
+        if copy_im(str(d), "validation", handle):
             if count_im % 1000 == 0:
                 print(count_im, time.time() - t)
             count_im += 1
