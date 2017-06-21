@@ -58,7 +58,7 @@ def image_check(model, num_of_images, name):
     abs_file_path = os.path.join(script_dir, rel_path)
     image_list = os.listdir(abs_file_path)
 
-    all_images = np.zeros((num_of_images, 256, 256, 1))
+    all_images = np.zeros((num_of_images, 224, 224, 1))
     for i in range(num_of_images):
         # get image
         image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
