@@ -69,10 +69,8 @@ def image_check(model, num_of_images, name):
 
     for i in range(num_of_images):
         # to rgb
-        print(color_im.shape)
-        color_im = np.concatenate((all_images[i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
-        print("a")
-        im_rgb = color.lab2rgb(color_im)
+        lab_im = np.concatenate((all_images[i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
+        im_rgb = color.lab2rgb(lab_im)
 
         # save
         abs_svave_path = os.path.join(script_dir, '../../result_images/')
