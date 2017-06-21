@@ -61,7 +61,7 @@ def image_check(model, num_of_images, name):
     all_images = np.zeros((num_of_images, 224, 224, 1))
     for i in range(num_of_images):
         # get image
-        image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
+        image_lab = load_images(abs_file_path, image_list[i], size=(224, 224))  # image is of size 256x256
         image_l = images_to_l(image_lab)
         all_images[i, :, :, :] = image_l[:, :, np.newaxis]
 
