@@ -32,40 +32,36 @@ for layer in vgg16.layers:
     layer.trainable = False
 
 def resize(x):
-    return tf.image.resize_images(x, (56, 56), method=ResizeMethod.BILINEAR)
+    return tf.image.resize_images(x, (224, 224), method=ResizeMethod.BILINEAR)
 
 
-block2_conv1 = Lambda(resize)(layer_dict["block2_conv1"].output)
+# block2_conv1 = Lambda(resize)(layer_dict["block2_conv1"].output)
 block2_conv2 = Lambda(resize)(layer_dict["block2_conv2"].output)
 
-block3_conv1 = Lambda(resize)(layer_dict["block3_conv1"].output)
-block3_conv2 = Lambda(resize)(layer_dict["block3_conv2"].output)
+# block3_conv1 = Lambda(resize)(layer_dict["block3_conv1"].output)
+# block3_conv2 = Lambda(resize)(layer_dict["block3_conv2"].output)
 block3_conv3 = Lambda(resize)(layer_dict["block3_conv3"].output)
 
-block4_conv1 = Lambda(resize)(layer_dict["block4_conv1"].output)
-block4_conv2 = Lambda(resize)(layer_dict["block4_conv2"].output)
+# block4_conv1 = Lambda(resize)(layer_dict["block4_conv1"].output)
+# block4_conv2 = Lambda(resize)(layer_dict["block4_conv2"].output)
 block4_conv3 = Lambda(resize)(layer_dict["block4_conv3"].output)
 
-block5_conv1 = Lambda(resize)(layer_dict["block5_conv1"].output)
-block5_conv2 = Lambda(resize)(layer_dict["block5_conv2"].output)
+# block5_conv1 = Lambda(resize)(layer_dict["block5_conv1"].output)
+# block5_conv2 = Lambda(resize)(layer_dict["block5_conv2"].output)
 block5_conv3 = Lambda(resize)(layer_dict["block5_conv3"].output)
 
-block1_conv1 = MaxPooling2D((4, 4), strides=(4, 4))(layer_dict["block1_conv1"].output)
-block1_conv2 = MaxPooling2D((4, 4), strides=(4, 4))(layer_dict["block1_conv2"].output)
 
 
 def repeat_output(input):
     shape = K.shape(input)
-    return K.reshape(K.repeat(input, 56 * 56), (shape[0], 56, 56, 4096))
+    return K.reshape(K.repeat(input, 224 * 224), (shape[0], 224, 224, 4096))
 
 
-fc1 = Lambda(repeat_output)(layer_dict["fc1"].output)
-fc2 = Lambda(repeat_output)(layer_dict["fc2"].output)
+# fc1 = Lambda(repeat_output)(layer_dict["fc1"].output)
+# fc2 = Lambda(repeat_output)(layer_dict["fc2"].output)
 
-hypercolumns = concatenate([block1_conv1, block1_conv2,
-                            block2_conv1, block2_conv2,
-                            block3_conv1, block3_conv2, block3_conv3, block4_conv1, block4_conv2, block4_conv3,
-                            block5_conv1, block5_conv2, block5_conv3, fc1, fc2], axis=3)
+hypercolumns = concatenate([layer_dict["block1_conv2"].output, block2_conv2,
+                            block3_conv3, block4_conv3,block5_conv3], axis=3)
 
 # hypercolumns = concatenate([fc1, fc2], axis=3)
 
@@ -81,7 +77,7 @@ opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
-
+exit()
 start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
