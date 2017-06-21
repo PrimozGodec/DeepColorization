@@ -58,12 +58,12 @@ def image_check(model, num_of_images, name):
     abs_file_path = os.path.join(script_dir, rel_path)
     image_list = os.listdir(abs_file_path)
 
-    all_images = np.zeros((num_of_images, 224, 224, 1))
+    all_images = np.zeros((num_of_images, 224, 224, 3))
     for i in range(num_of_images):
         # get image
         image_lab = load_images(abs_file_path, image_list[i], size=(224, 224))  # image is of size 256x256
         image_l = images_to_l(image_lab)
-        all_images[i, :, :, :] = image_l[:, :, np.newaxis]
+        all_images[i, :, :, :] = np.tile(image_l[:, :, np.newaxis], (1, 1, 1, 3))
 
     color_im = model.predict(all_images)
 
