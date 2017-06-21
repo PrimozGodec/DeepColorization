@@ -69,8 +69,8 @@ def image_check(model, num_of_images, name):
 
     for i in range(num_of_images):
         # to rgb
-
-        color_im = np.concatenate((all_images[i, :, :, [0]][:, :, np.newaxis], color_im[i, :, :, :]), axis=2)
+        print(all_images[i, :, :, 0][:, :, np.newaxis], color_im[i, :, :, :])
+        color_im = np.concatenate((all_images[i, :, :, 0][:, :, np.newaxis], color_im[i, :, :, :]), axis=2)
         im_rgb = color.lab2rgb(color_im)
 
         # save
