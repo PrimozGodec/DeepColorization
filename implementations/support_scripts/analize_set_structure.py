@@ -43,3 +43,9 @@ co = dict(Counter(f))
 print("Groups: ", sorted(co.items(), key=itemgetter(1))[-15:])
 print("Num unique: ", len(co.keys()))
 
+# is overlapping between sets?
+f0 = os.listdir(os.path.join(set_dir, "train"))
+f1 = os.listdir(os.path.join(set_dir, "validation"))
+
+print(set(f0).intersection(f1))
+
