@@ -88,39 +88,40 @@ t = time.time()
 
 # copy files to dir and write file with names
 with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
-    count_im_in_dir = len(os.listdir(os.path.join(dir_to, "train")))
-    count_im = 0
+    count_im = len(os.listdir(os.path.join(dir_to, "train")))
     for d in dir_choices_train:
-        if copy_im(d, "train", handle):
-            if count_im % 1000 == 0:
-                print(count_im, time.time() - t)
-            count_im += 1
-            count_im_in_dir += 1
-            if count_im_in_dir >= 100000:
-                break
+        if count_im >= train_set_len:
+            break
+        copy_im(d, "train", handle)
+        if count_im % 1000 == 0:
+            print(count_im, time.time() - t)
+        count_im += 1
 
-    count_im = count_im_in_dir
+    count_im = len(os.listdir(os.path.join(dir_to, "train")))
     # add to match data-set size
-    while count_im >= train_set_len:
+    while count_im <= train_set_len:
         d = np.random.choice(image_dirs, 1, p=dir_probabilities)
         if copy_im(d[0], "train", handle):
             if count_im % 1000 == 0:
                 print(count_im, time.time() - t)
             count_im += 1
 
-
+print("validation")
 with open(os.path.join(dir_to, "validation.txt"), 'w') as handle:
-    count_im = 0
+    count_im = len(os.listdir(os.path.join(dir_to, "validation")))
     for d in dir_choices_validation:
+        if count_im > train_set_len:
+            break
         copy_im(d, "validation", handle)
         if count_im % 1000 == 0:
             print(count_im, time.time() - t)
         count_im += 1
 
-        # add to match data-set size
-    while count_im >= train_set_len:
+    count_im = len(os.listdir(os.path.join(dir_to, "validation")))
+    # add to match data-set size
+    while count_im <= validation_set_len:
         d = np.random.choice(image_dirs, 1, p=dir_probabilities)
-        copy_im(d[0], "validation", handle)
-        if count_im % 1000 == 0:
-            print(count_im, time.time() - t)
-        count_im += 1
+        if copy_im(d[0], "validation", handle):
+            if count_im % 1000 == 0:
+                print(count_im, time.time() - t)
+            count_im += 1
