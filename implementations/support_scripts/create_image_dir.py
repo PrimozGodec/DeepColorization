@@ -77,8 +77,8 @@ if not os.path.isdir(os.path.join(dir_to, "validation")):
 def copy_im(image_dir, goal_dir, h):
     images = os.listdir(os.path.join(dataset_dir, image_dir))
     ch = choice(images)
-    if check_if_ok(os.path.join(dataset_dir, d, ch)):
-        copyfile(os.path.join(dataset_dir, d, ch), os.path.join(dir_to, goal_dir, ch))
+    if check_if_ok(os.path.join(dataset_dir, image_dir, ch)):
+        copyfile(os.path.join(dataset_dir, image_dir, ch), os.path.join(dir_to, goal_dir, ch))
         print(ch, file=h)
         return True
     else:
@@ -101,8 +101,6 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
     # add to match data-set s(ize
     while count_im <= train_set_len:
         d = np.random.choice(image_dirs, 1, p=dir_probabilities)
-        print(str(d[0]))
-        print(d[0])
         if copy_im(str(d[0]), "train", handle):
             if count_im % 1000 == 0:
                 print(count_im, time.time() - t)
