@@ -17,7 +17,7 @@ from keras.layers import concatenate, Conv2D, Lambda
 
 import tensorflow as tf
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 b_size = 32
 
