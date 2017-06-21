@@ -20,6 +20,6 @@ print("Num unique: ", len(co.keys()))
 f = [x[:9] for x in os.listdir(os.path.join(set_dir, "train"))]
 
 co = dict(Counter(f))
-print("Groups: ", sorted(dict.items(), key=itemgetter(1))[:15])
+print("Groups: ", sorted(co.items(), key=itemgetter(1))[:15])
 print("Num unique: ", len(co.keys()))
 
