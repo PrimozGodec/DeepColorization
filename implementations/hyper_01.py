@@ -13,7 +13,7 @@ from keras.engine import Model
 
 from keras import backend as K, Input
 from keras import optimizers
-from keras.layers import concatenate, Conv2D, Lambda
+from keras.layers import concatenate, Conv2D, Lambda, UpSampling2D, MaxPooling2D
 
 import tensorflow as tf
 
@@ -32,7 +32,7 @@ for layer in vgg16.layers:
     layer.trainable = False
 
 def resize(x):
-    return tf.image.resize_images(x, (224, 224), method=ResizeMethod.BILINEAR)
+    return tf.image.resize_images(x, (56, 56), method=ResizeMethod.BILINEAR)
 
 
 block2_conv1 = Lambda(resize)(layer_dict["block2_conv1"].output)
@@ -50,24 +50,27 @@ block5_conv1 = Lambda(resize)(layer_dict["block5_conv1"].output)
 block5_conv2 = Lambda(resize)(layer_dict["block5_conv2"].output)
 block5_conv3 = Lambda(resize)(layer_dict["block5_conv3"].output)
 
+block1_conv1 = MaxPooling2D((4, 4), strides=(4, 4))(layer_dict["block1_conv1"].output)
+block1_conv2 = MaxPooling2D((4, 4), strides=(4, 4))(layer_dict["block1_conv2"].output)
+
 
 def repeat_output(input):
     shape = K.shape(input)
-    return K.reshape(K.repeat(input, 224 * 224), (shape[0], 224, 224, 4096))
+    return K.reshape(K.repeat(input, 56 * 56), (shape[0], 56, 56, 4096))
 
 
 fc1 = Lambda(repeat_output)(layer_dict["fc1"].output)
 fc2 = Lambda(repeat_output)(layer_dict["fc2"].output)
 
-hypercolumns = concatenate([layer_dict["block1_conv1"].output, layer_dict["block1_conv2"].output,
+hypercolumns = concatenate([block1_conv1, block1_conv2,
                             block2_conv1, block2_conv2,
                             block3_conv1, block3_conv2, block3_conv3, block4_conv1, block4_conv2, block4_conv3,
                             block5_conv1, block5_conv2, block5_conv3, fc1, fc2], axis=3)
 
 # hypercolumns = concatenate([fc1, fc2], axis=3)
 
-
 output = Conv2D(2, (3, 3), padding="same", activation="relu")(hypercolumns)
+output = UpSampling2D((4, 4))(output)
 
 def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
