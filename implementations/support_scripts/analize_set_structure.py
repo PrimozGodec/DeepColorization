@@ -48,6 +48,7 @@ f0 = os.listdir(os.path.join(set_dir, "train"))
 f1 = os.listdir(os.path.join(set_dir, "validation"))
 
 a =set(f0).intersection(f1)
+print(a)
 for i in a:
     os.remove(os.path.join(set_dir, "validation", i))
 
