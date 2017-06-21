@@ -66,7 +66,7 @@ hypercolumns = concatenate([layer_dict["block1_conv2"].output, block2_conv2,
 # hypercolumns = concatenate([fc1, fc2], axis=3)
 
 output = Conv2D(2, (3, 3), padding="same", activation="relu")(hypercolumns)
-output = UpSampling2D((4, 4))(output)
+# output = UpSampling2D((4, 4))(output)
 
 def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
