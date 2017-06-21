@@ -110,7 +110,7 @@ print("validation")
 with open(os.path.join(dir_to, "validation.txt"), 'w') as handle:
     count_im = len(os.listdir(os.path.join(dir_to, "validation")))
     for d in dir_choices_validation:
-        if count_im > train_set_len:
+        if count_im >= validation_set_len:
             break
         copy_im(d, "validation", handle)
         if count_im % 1000 == 0:
