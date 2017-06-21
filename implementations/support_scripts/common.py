@@ -52,6 +52,31 @@ def make_prediction_sample_part(model, batch_size, name, generator=None):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
 
 
+def image_check(model, num_of_images, name):
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+    rel_path = "../../test_set"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    image_list = os.listdir(abs_file_path)
+
+    all_images = np.zeros((num_of_images, 256, 256, 1))
+    for i in range(num_of_images):
+        # get image
+        image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
+        image_l = images_to_l(image_lab)
+        all_images[i, :, :, :] = image_l[:, :, np.newaxis]
+
+    color_im = model.predict(all_images)
+
+    for i in range(num_of_images):
+        # to rgb
+        color_im = np.concatenate((all_images[i, :, :, :], color_im[i, :, :, :]), axis=2)
+        im_rgb = color.lab2rgb(color_im)
+
+        # save
+        abs_svave_path = os.path.join(script_dir, '../../result_images/')
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+
+
 def whole_image_check(model, num_of_images, name):
 
     # find directory

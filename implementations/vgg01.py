@@ -5,7 +5,7 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
-    whole_image_check_overlapping, h5_vgg_generator
+    whole_image_check_overlapping, h5_vgg_generator, image_check
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -66,7 +66,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
-# model.load_weights("../weights/implementation7d-reg-55.h5")
+model.load_weights("../weights/vgg1-0.h5")
 
 # start image downloader
 ip = None
@@ -76,13 +76,14 @@ gval = h5_vgg_generator(b_size, "../h5_data_224_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    image_check(model, 40, "vgg1-" + str(i * save_every_n_epoch) + "-")
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
     model.save_weights("../weights/vgg1-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_overlapping(model, 40, "vgg1-" + str(i * save_every_n_epoch) + "-")
+    image_check(model, 40, "vgg1-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/vgg1-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
