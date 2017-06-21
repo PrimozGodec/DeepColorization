@@ -96,7 +96,7 @@ with open(os.path.join(dir_to, "train.txt"), 'w') as handle:
                 print(count_im, time.time() - t)
             count_im += 1
             count_im_in_dir += 1
-            if count_im_in_dir >= 100:
+            if count_im_in_dir >= 100000:
                 break
 
     count_im = count_im_in_dir
