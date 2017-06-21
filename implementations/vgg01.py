@@ -63,7 +63,7 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 0
+start_from = 5
 save_every_n_epoch = 5
 n_epochs = 10000
 model.load_weights("../weights/vgg1-0.h5")
@@ -76,7 +76,6 @@ gval = h5_vgg_generator(b_size, "../h5_data_224_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    image_check(model, 40, "vgg1-" + str(i * save_every_n_epoch) + "-")
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
