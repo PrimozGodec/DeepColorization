@@ -17,7 +17,7 @@ from keras.layers import concatenate, Conv2D, Lambda, UpSampling2D, MaxPooling2D
 
 import tensorflow as tf
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 8
 
