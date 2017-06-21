@@ -327,7 +327,8 @@ def h5_vgg_generator(batch_size, dir, downloader):
             f = h5py.File(file, 'r')
             x1 = f['im']
             n = 0
-        yield np.tile(x1[n:n+batch_size, :, :, 0],  (1, 1, 1, 3)), x1[n:n+batch_size, :, :, 1:3]
+
+        yield np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3)), x1[n:n+batch_size, :, :, 1:3]
         n += batch_size
 
 
@@ -373,7 +374,13 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
 
 
 if __name__ == "__main__":
-    g = h5_small_vgg_generator_onehot(2, "../../h5_data", None)
+    g = h5_small_vgg_generator(2, "../../h5_data", None)
+    g1 = h5_vgg_generator(2, "../../h5_data_224", None)
     import matplotlib.pyplot as plt
     for i in range(50):
         a = next(g)
+        print(a[0][1].shape)
+
+        a = next(g1)
+        print(a[0].shape)
+        exit()
