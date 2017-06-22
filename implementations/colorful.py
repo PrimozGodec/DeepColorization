@@ -168,7 +168,7 @@ exit()
 start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
-model.load_weights("../weights/vgg1-0.h5")
+# model.load_weights("../weights/vgg1-0.h5")
 
 g = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224", None)
 gval = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224_validate", None)
