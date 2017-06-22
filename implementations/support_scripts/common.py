@@ -10,6 +10,7 @@ from os.path import isfile, join
 
 import inspect
 
+import time
 from keras.utils import HDF5Matrix
 from skimage import color
 import keras.backend as K
@@ -397,15 +398,58 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
         n += batch_size
 
 
+def h5_small_vgg_generator_onehot_neigh(batch_size, dir, downloader):
+
+    sigma = 5
+    distance = np.array([28.28, 20, 28.28, 20, 0, 20, 28.28, 20, 28.28])
+    kernel = np.exp(-distance ** 2 / sigma ** 2)
+
+    def to_one_hot(x):
+        def one_hot(indices, num_classes):
+            b, h, w = indices.shape
+            one_hot_mat = np.zeros((b, h, w, num_classes))
+            for i, w in zip([-21, -20, -19, -1, 0, 1, 19, 20, 21], kernel):
+                one_hot_mat += (np.arange(num_classes) == indices[:, :, :, None]+i).astype(float) * w
+
+            return one_hot_mat
+
+        a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int) * 20 +
+                    ((x[:, :, :, 1] + 100) / 10).astype(int), 400)  # 20 bins
+        return a
+
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    x2 = None
+    y = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['small']
+            x2 = f['vgg224']
+            y = f['ab_hist']
+            n = 0
+        yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], to_one_hot(y[n:n+batch_size])
+        n += batch_size
+
+
 
 if __name__ == "__main__":
-    g = h5_small_vgg_generator(2, "../../h5_data", None)
-    g1 = h5_vgg_generator(2, "../../h5_data_224", None)
-    import matplotlib.pyplot as plt
-    for i in range(50):
-        a = next(g)
-        print(a[0][1].shape)
+    g = h5_small_vgg_generator_onehot_neigh(2, "../../h5_data", None)
+    g1 = h5_small_vgg_generator_onehot(2, "../../h5_data", None)
 
-        a = next(g1)
-        print(a[0].shape)
-        exit()
+    t = time.time()
+    a = next(g)
+    print(time.time() - t)
+    t = time.time()
+    b = next(g1)
+    print(time.time() - t)
+
+    print(a[1][0, 1, 2, :])
+    print(np.argmax(b[1][0, 1, 2, :]))
+
