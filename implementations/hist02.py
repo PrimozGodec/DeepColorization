@@ -92,12 +92,12 @@ model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
 
 model.summary()
 
-start_from = 70
+start_from = 0
 save_every_n_epoch = 5
 n_epochs = 10000
 
 print("weights loaded")
-model.load_weights("../weights/implementation7d-hist-65.h5")
+# model.load_weights("../weights/implementation7d-hist-65.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
@@ -112,13 +112,13 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
-    model.save_weights("../weights/implementation7d-hist-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/hist02-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_hist(model, 20, "imp7d-hist-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_hist(model, 20, "hist02-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/imp7d-hist-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/hist02-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
