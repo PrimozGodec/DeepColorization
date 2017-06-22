@@ -162,7 +162,6 @@ opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=categorical_crossentropy_color)
 
 model.summary()
-exit()
 
 
 start_from = 0
