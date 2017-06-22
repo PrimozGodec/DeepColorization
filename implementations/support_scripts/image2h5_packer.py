@@ -146,5 +146,5 @@ class ImagePacker(threading.Thread):
 
 
 if __name__ == "__main__":
-    ip = ImagePacker("../../small_dataset", "../../h5_data",  "data-1024-", num_images=1024, num_files=None)
+    ip = ImagePacker("../../../subset10_000", "../../data/h5_small_train",  "train-1024-", num_images=1024, num_files=None)
     ip.start()
