@@ -15,7 +15,7 @@ from implementations.support_scripts.common import h5_small_vgg_generator_onehot
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
-b_size = 32
+b_size = 16
 
 model = Sequential()
 
