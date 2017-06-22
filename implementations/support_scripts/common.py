@@ -390,7 +390,7 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
                 f.close()
             file = file_picker.pick_next(downloader)
             f = h5py.File(file, 'r')
-            x1 = f['im']
+            x1 = f['small']
             x2 = f['vgg224']
             y = f['ab_hist']
             n = 0
@@ -402,7 +402,7 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
 
     def to_one_hot(x):
         def one_hot(indices, num_classes):
-            return (np.arange(num_classes) == indices[:, :, :, None]).astype(int)
+            return np.eye(num_classes, dtype=np.uint8)[indices]
 
         a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int) * 20 +
                     ((x[:, :, :, 1] + 100) / 10).astype(int), 400)  # 20 bins
@@ -425,7 +425,7 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
 
         y_one_hot = to_one_hot(x1[n:n + batch_size, :, :, 1:])
         b, h, w, _ = y_one_hot.shape
-        y_one_hot = np.concatenate((y_one_hot, np.ones((b, h, w, 1))), axis=3)
+        y_one_hot = np.concatenate((y_one_hot, np.ones((b, h, w, 1), dtype=np.uint8)), axis=3)
 
         yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], y_one_hot
         n += batch_size
@@ -473,8 +473,8 @@ def h5_small_vgg_generator_onehot_neigh(batch_size, dir, downloader):
 
 
 if __name__ == "__main__":
-    g = h5_small_vgg_generator_onehot_neigh(2, "../../h5_data", None)
-    g1 = h5_small_vgg_generator_onehot(2, "../../h5_data", None)
+    g = h5_small_vgg_generator_onehot_weights(16, "../../h5_data_224", None)
+    g1 = h5_small_vgg_generator_onehot(16, "../../h5_data", None)
 
     t = time.time()
     a = next(g)
@@ -482,7 +482,4 @@ if __name__ == "__main__":
     t = time.time()
     b = next(g1)
     print(time.time() - t)
-
-    print(a[1][0, 1, 2, :])
-    print(np.argmax(b[1][0, 1, 2, :]))
 
