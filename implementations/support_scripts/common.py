@@ -398,6 +398,43 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
         n += batch_size
 
 
+def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
+
+    def to_one_hot(x):
+        def one_hot(indices, num_classes):
+            return (np.arange(num_classes) == indices[:, :, :, None]).astype(int)
+
+        a = one_hot(((x[:, :, :, 0] + 100) / 10).astype(int) * 20 +
+                    ((x[:, :, :, 1] + 100) / 10).astype(int), 400)  # 20 bins
+        return a
+
+
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    x2 = None
+    y = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['small']
+            x2 = f['vgg224']
+            y = f['ab_hist']
+            n = 0
+
+        y_one_hot = to_one_hot(y[n:n + batch_size])
+        b, h, w, _ = y_one_hot.shape
+        y_one_hot = np.concatenate((y_one_hot, np.ones((b, h, w, 1))), axis=3)
+
+        yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], y_one_hot
+        n += batch_size
+
+
 def h5_small_vgg_generator_onehot_neigh(batch_size, dir, downloader):
 
     sigma = 5
