@@ -427,7 +427,7 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
         b, h, w, _ = y_one_hot.shape
         y_one_hot = np.concatenate((y_one_hot, np.ones((b, h, w, 1))), axis=3)
 
-        yield x1[n:n+batch_size, :, :, 0], y_one_hot
+        yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], y_one_hot
         n += batch_size
 
 
