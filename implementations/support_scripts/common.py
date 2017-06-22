@@ -390,7 +390,7 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
                 f.close()
             file = file_picker.pick_next(downloader)
             f = h5py.File(file, 'r')
-            x1 = f['small']
+            x1 = f['im']
             x2 = f['vgg224']
             y = f['ab_hist']
             n = 0
@@ -411,8 +411,6 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
 
     file_picker = H5Choose(dir=dir)
     x1 = None
-    x2 = None
-    y = None
     n = 0
     f = None
 
@@ -422,16 +420,14 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
                 f.close()
             file = file_picker.pick_next(downloader)
             f = h5py.File(file, 'r')
-            x1 = f['small']
-            x2 = f['vgg224']
-            y = f['ab_hist']
+            x1 = f['im']
             n = 0
 
-        y_one_hot = to_one_hot(y[n:n + batch_size])
+        y_one_hot = to_one_hot(x1[n:n + batch_size, :, :, 1:])
         b, h, w, _ = y_one_hot.shape
         y_one_hot = np.concatenate((y_one_hot, np.ones((b, h, w, 1))), axis=3)
 
-        yield [x1[n:n+batch_size], np.tile(x2[n:n+batch_size],  (1, 1, 1, 3))], y_one_hot
+        yield x1[n:n+batch_size, :, :, 0], y_one_hot
         n += batch_size
 
 
