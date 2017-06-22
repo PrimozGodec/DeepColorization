@@ -52,7 +52,7 @@ def make_prediction_sample_part(model, batch_size, name, generator=None):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save('../result_images/' + name + str(i) + '.jpg')
 
 
-def image_check(model, num_of_images, name):
+def image_check(model, num_of_images, name, b_size=32):
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
     rel_path = "../../test_set"
     abs_file_path = os.path.join(script_dir, rel_path)
@@ -65,7 +65,7 @@ def image_check(model, num_of_images, name):
         image_l = images_to_l(image_lab)
         all_images[i, :, :, :] = np.tile(image_l[:, :, np.newaxis], (1, 1, 1, 3))
 
-    color_im = model.predict(all_images)
+    color_im = model.predict(all_images, batch_size=b_size)
 
     for i in range(num_of_images):
         # to rgb
