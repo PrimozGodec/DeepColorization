@@ -30,6 +30,7 @@ class ImagePacker(threading.Thread):
         self.current_file = ""
         self.images_list = []
         self.im_size = (224, 224)
+        self.current_im = 0
 
     def run(self):
         print('run')
@@ -91,10 +92,13 @@ class ImagePacker(threading.Thread):
             print("New file", time.time() - start)
 
         # load list of files only once
+        print("listing dir")
         self.images_list = os.listdir(self.dir_from)
+        print("shuffle")
+        random.shuffle(self.images_list)
 
         if self.num_files is None:
-            while not self.done:
+            while not self.done and self.current_im < len(self.images_list):
                 gen()
                 self.remove_oldest()
         else:
@@ -105,7 +109,12 @@ class ImagePacker(threading.Thread):
                 self.remove_oldest()
 
     def select_file(self):
-        return random.choice(self.images_list)
+        selected = self.images_list[self.current_im]
+        self.current_im += 1
+        with open("../../../subset100_000/224_selected.txt", "a") as h:
+            print(selected, file=h)
+
+        return selected
 
     def generate_h5_small_vgg(self, size, name):
         import h5py
@@ -114,7 +123,7 @@ class ImagePacker(threading.Thread):
         x1 = np.zeros((size, 224, 224, 3))
 
         i = 0
-        while i < size:
+        while i < size and self.current_im < len(self.images_list):
             # print(i)
             # download image
             file_name = self.select_file()
@@ -138,5 +147,5 @@ class ImagePacker(threading.Thread):
 
 
 if __name__ == "__main__":
-    ip = ImagePacker("../../small_dataset", "../../h5_data_224",  "data224-1024-", num_images=1024, num_files=None)
+    ip = ImagePacker("../../../subset100_000/train", "../../data/h5_224_train",  "train-1024-", num_images=1024, num_files=None)
     ip.start()
