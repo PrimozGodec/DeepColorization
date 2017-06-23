@@ -1,6 +1,7 @@
 import os
 import h5py
 import numpy as np
+from scipy.ndimage import gaussian_filter
 
 from scipy.signal import gaussian, convolve
 
@@ -33,6 +34,9 @@ def compute_color_prior(size=64, do_plot=False):
         # We turn this into a color probability
         prior_prob = prior_prob / (1.0 * np.sum(prior_prob))
 
+        for i in range(20):
+            print(" ".join(['%.4f' % prior_prob[i * 20 + j] for j in range(20)]))
+
         # Save
         np.save(os.path.join(data_dir, "images_%s_prior_prob.npy" % size), prior_prob)
 
@@ -47,9 +51,7 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
 
     # Smooth with gaussian
     yy = prior_prob.reshape((20, 20))
-    window = gaussian(10, sigma)  # 2000 pts in the window, sigma=5
-    print(window)
-    smoothed = convolve(yy, window / window.sum(), mode='same')
+    smoothed = gaussian_filter(yy)
 
     prior_prob_smoothed = smoothed.ravel()
     prior_prob_smoothed = prior_prob_smoothed / np.sum(prior_prob_smoothed)
@@ -57,6 +59,8 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
     # Save
     file_name = os.path.join(data_dir, "images_%s_prior_prob_smoothed.npy" % size)
     np.save(file_name, prior_prob_smoothed)
+    for i in range(20):
+        print(" ".join(['%.4f' % prior_prob_smoothed[i * 20 + j] for j in range(20)]))
 
 
 def compute_prior_factor(size=64, gamma=0.5, alpha=1, do_plot=False):
