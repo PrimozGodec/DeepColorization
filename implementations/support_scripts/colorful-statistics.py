@@ -51,7 +51,7 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
 
     # Smooth with gaussian
     yy = prior_prob.reshape((20, 20))
-    smoothed = gaussian_filter(yy)
+    smoothed = gaussian_filter(yy, sigma=5)
 
     prior_prob_smoothed = smoothed.ravel()
     prior_prob_smoothed = prior_prob_smoothed / np.sum(prior_prob_smoothed)
