@@ -48,6 +48,7 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
     # Smooth with gaussian
     yy = prior_prob.reshape((20, 20))
     window = gaussian(10, sigma)  # 2000 pts in the window, sigma=5
+    print(window)
     smoothed = convolve(yy, window / window.sum(), mode='same')
 
     prior_prob_smoothed = smoothed.ravel()
