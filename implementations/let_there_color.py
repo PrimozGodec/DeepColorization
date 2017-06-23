@@ -43,7 +43,7 @@ vgg_output = Dense(256, activation='relu', name='predictions')(vgg16.layers[-2].
 
 def repeat_output(input):
     shape = K.shape(x)
-    return K.reshape(K.repeat(input, 4 * 4), (shape[0], 4, 4, 256))
+    return K.reshape(K.repeat(input, 28 * 28), (shape[0], 28, 28, 256))
 
 vgg_output = Lambda(repeat_output)(vgg_output)
 
