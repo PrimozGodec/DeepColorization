@@ -95,7 +95,7 @@ def image_check_with_vgg(model, num_of_images, name, b_size=32):
     for i in range(num_of_images):
         all_vgg[i, :, :, :] = np.tile(all_images[i], (1, 1, 1, 3))
 
-    color_im = model.predict((all_images, all_vgg), batch_size=b_size)
+    color_im = model.predict([all_images, all_vgg], batch_size=b_size)
 
     for i in range(num_of_images):
         # to rgb
