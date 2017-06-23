@@ -1,7 +1,7 @@
 import os
 import h5py
 import numpy as np
-from scipy.interpolate import interp1d
+
 from scipy.signal import gaussian, convolve
 
 
@@ -16,8 +16,8 @@ def compute_color_prior(size=64, do_plot=False):
         X_b = np.ravel(X_ab[:, :, :, 1])
         X_ab = np.vstack((X_a, X_b)).T
 
-        print(np.min(X_a))
-        print(np.max(X_b))
+        print(np.min(X_a), print(np.max(X_a)))
+        print(np.min(X_b), print(np.max(X_b)))
 
         ind = ((X_a + 100) / 10).astype(int) * 20 + ((X_b + 100) / 10).astype(int)
         print(np.min(ind))
@@ -25,7 +25,10 @@ def compute_color_prior(size=64, do_plot=False):
         # We now count the number of occurrences of each color
         ind = np.ravel(ind)
         prior_prob = np.bincount(ind, minlength=400)
-        print(prior_prob)
+
+        for i in prior_prob.shape[0]:
+            print(" ".join(['%6d' % prior_prob[i, j] for j in range(prior_prob.shape[1])]))
+
 
         # We turn this into a color probability
         prior_prob = prior_prob / (1.0 * np.sum(prior_prob))
@@ -44,7 +47,7 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
 
     # Smooth with gaussian
     yy = prior_prob.reshape((20, 20))
-    window = gaussian(2000, sigma)  # 2000 pts in the window, sigma=5
+    window = gaussian(10, sigma)  # 2000 pts in the window, sigma=5
     smoothed = convolve(yy, window / window.sum(), mode='same')
 
     prior_prob_smoothed = smoothed.ravel()
