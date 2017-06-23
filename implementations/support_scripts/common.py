@@ -89,7 +89,7 @@ def image_check_with_vgg(model, num_of_images, name, b_size=32):
         # get image
         image_lab = load_images(abs_file_path, image_list[i], size=(224, 224))  # image is of size 256x256
         image_l = images_to_l(image_lab)
-        all_images[i, :, :, :] = image_l[i, :, :][:, :, np.newaxis]
+        all_images[i, :, :, :] = image_l[:, :, np.newaxis]
 
     all_vgg = np.zeros((num_of_images, 224, 224, 3))
     for i in range(num_of_images):
