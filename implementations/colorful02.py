@@ -13,7 +13,7 @@ from keras.models import Sequential
 from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights1, \
     image_check, image_check_hist, h5_small_vgg_generator_onehot_weights
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 b_size = 8
 
