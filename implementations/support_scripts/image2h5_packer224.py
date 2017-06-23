@@ -133,15 +133,13 @@ class ImagePacker(threading.Thread):
                 continue
 
             h, w, _ = lab_im.shape
-
             x1[i, :, :, :] = lab_im
-
             i += 1
 
         f = h5py.File(os.path.join(self.dir_to, name), 'w')
         # Creating dataset to store features
-        X1_dset = f.create_dataset('im', (size, 224, 224, 3), dtype='float')
-        X1_dset[:] = x1
+        X1_dset = f.create_dataset('im', (i, 224, 224, 3), dtype='float')
+        X1_dset[:] = x1[:i]
 
         f.close()
 
