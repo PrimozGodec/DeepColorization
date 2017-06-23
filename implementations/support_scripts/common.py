@@ -431,8 +431,8 @@ def h5_vgg_generator_let_there(batch_size, dir, downloader):
             x1 = f['im']
             n = 0
 
-        yield (x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],
-            np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3)),
+        yield ([x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],
+            np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3))],
             x1[n:n+batch_size, :, :, 1:3])
         n += batch_size
 
