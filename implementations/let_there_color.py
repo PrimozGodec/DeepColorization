@@ -98,6 +98,7 @@ gval = h5_vgg_generator_let_there(b_size, "../h5_data_224_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    image_check_with_vgg(model, 20, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(128//b_size))
