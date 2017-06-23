@@ -5,8 +5,7 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 
-from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
-    whole_image_check_overlapping, h5_vgg_generator_let_there, image_check_with_vgg
+from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -94,8 +93,8 @@ save_every_n_epoch = 5
 n_epochs = 10000
 # model.load_weights("../weights/let-there-color-50.h5")
 
-g = h5_vgg_generator_let_there(b_size, "../h5_data", None)
-gval = h5_vgg_generator_let_there(b_size, "../h5_validate", None)
+g = h5_vgg_generator_let_there(b_size, "../h5_data_244", None)
+gval = h5_vgg_generator_let_there(b_size, "../h5_validate_244", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
