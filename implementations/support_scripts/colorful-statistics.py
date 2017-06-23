@@ -20,7 +20,8 @@ def compute_color_prior(size=64, do_plot=False):
 
         # We now count the number of occurrences of each color
         ind = np.ravel(ind)
-        prior_prob = np.bincount(ind)
+        prior_prob = np.bincount(ind, minlength=400)
+        print(prior_prob)
 
         # We turn this into a color probability
         prior_prob = prior_prob / (1.0 * np.sum(prior_prob))
