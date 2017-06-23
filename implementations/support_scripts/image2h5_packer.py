@@ -30,6 +30,7 @@ class ImagePacker(threading.Thread):
         self.current_file = ""
         self.images_list = []
         self.im_size = (224, 224)
+        self.current_im = 0
 
     def run(self):
         print('run')
@@ -91,7 +92,10 @@ class ImagePacker(threading.Thread):
             print("New file", time.time() - start)
 
         # load list of files only once
+        print("listing dir")
         self.images_list = os.listdir(self.dir_from)
+        print("shuffle")
+        random.shuffle(self.images_list)
 
         if self.num_files is None:
             while not self.done:
@@ -105,7 +109,15 @@ class ImagePacker(threading.Thread):
                 self.remove_oldest()
 
     def select_file(self):
-        return random.choice(self.images_list)
+        selected = self.images_list[self.current_im]
+        self.current_im += 1
+        if self.current_im >= len(self.images_list):
+            self.current_im = 0
+        with open("../../../subset100_000/small_selected.txt", "a") as h:
+            print(selected, file=h)
+
+        return selected
+
 
     def generate_h5_small_vgg(self, size, name):
         import h5py
