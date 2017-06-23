@@ -11,7 +11,7 @@ from keras.layers import Conv2D, Activation, BatchNormalization, UpSampling2D, L
 from keras.models import Sequential
 
 from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights, \
-    image_check
+    image_check, image_check_hist
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
@@ -174,14 +174,14 @@ gval = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224_validate", 
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    image_check(model, 40, "colorful-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
+    image_check_hist(model, 40, "colorful-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
     model.save_weights("../weights/colorful-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check(model, 40, "colorful-" + str(i * save_every_n_epoch) + "-", dim=1)
+    image_check_hist(model, 40, "colorful-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
 
     # save history
     output = open('../history/colorful-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
