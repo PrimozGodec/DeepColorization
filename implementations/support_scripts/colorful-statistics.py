@@ -17,7 +17,8 @@ def compute_color_prior(size=64, do_plot=False):
         X_ab = np.vstack((X_a, X_b)).T
 
         ind = ((X_a + 100) / 10).astype(int) * 20 + ((X_b + 100) / 10).astype(int)
-
+        print(np.min(ind))
+        print(np.max(ind))
         # We now count the number of occurrences of each color
         ind = np.ravel(ind)
         prior_prob = np.bincount(ind, minlength=400)
