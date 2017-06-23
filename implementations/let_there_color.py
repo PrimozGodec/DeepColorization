@@ -93,8 +93,8 @@ save_every_n_epoch = 5
 n_epochs = 10000
 # model.load_weights("../weights/let-there-color-50.h5")
 
-g = h5_vgg_generator_let_there(b_size, "../h5_data_244", None)
-gval = h5_vgg_generator_let_there(b_size, "../h5_validate_244", None)
+g = h5_vgg_generator_let_there(b_size, "../h5_data_224", None)
+gval = h5_vgg_generator_let_there(b_size, "../h5_validate_224", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
