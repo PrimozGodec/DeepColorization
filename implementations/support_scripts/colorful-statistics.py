@@ -16,6 +16,9 @@ def compute_color_prior(size=64, do_plot=False):
         X_b = np.ravel(X_ab[:, :, :, 1])
         X_ab = np.vstack((X_a, X_b)).T
 
+        print(np.min(X_a))
+        print(np.max(X_b))
+
         ind = ((X_a + 100) / 10).astype(int) * 20 + ((X_b + 100) / 10).astype(int)
         print(np.min(ind))
         print(np.max(ind))
