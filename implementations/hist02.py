@@ -104,8 +104,8 @@ print("weights loaded")
 # ip.start()
 ip = None
 
-g = h5_small_vgg_generator_onehot_neigh(b_size, "../h5_data", ip)
-gval = h5_small_vgg_generator_onehot_neigh(b_size, "../h5_validate", None)
+g = h5_small_vgg_generator_onehot(b_size, "../h5_data", ip)
+gval = h5_small_vgg_generator_onehot(b_size, "../h5_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
