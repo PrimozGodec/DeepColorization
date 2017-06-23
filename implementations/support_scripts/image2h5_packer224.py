@@ -111,7 +111,7 @@ class ImagePacker(threading.Thread):
     def select_file(self):
         selected = self.images_list[self.current_im]
         self.current_im += 1
-        with open("../../../subset100_000/224_selected.txt", "a") as h:
+        with open("../../../subset100_000/224_val_selected.txt", "a") as h:
             print(selected, file=h)
 
         return selected
