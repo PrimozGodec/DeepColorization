@@ -26,8 +26,8 @@ def compute_color_prior(size=64, do_plot=False):
         ind = np.ravel(ind)
         prior_prob = np.bincount(ind, minlength=400)
 
-        for i in range(prior_prob.shape[0]):
-            print(" ".join(['%6d' % prior_prob[i, j] for j in range(prior_prob.shape[1])]))
+        for i in range(20):
+            print(" ".join(['%6d' % prior_prob[i * 20 + j] for j in range(20)]))
 
 
         # We turn this into a color probability
