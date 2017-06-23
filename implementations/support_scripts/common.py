@@ -78,6 +78,35 @@ def image_check(model, num_of_images, name, b_size=32, dim=3):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
 
+def image_check_with_vgg(model, num_of_images, name, b_size=32):
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+    rel_path = "../../test_set"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    image_list = os.listdir(abs_file_path)
+
+    all_images = np.zeros((num_of_images, 224, 224, 1))
+    for i in range(num_of_images):
+        # get image
+        image_lab = load_images(abs_file_path, image_list[i], size=(224, 224))  # image is of size 256x256
+        image_l = images_to_l(image_lab)
+        all_images = image_l[i, :, :, np.newaxis]
+
+    all_vgg = np.zeros((num_of_images, 224, 224, 3))
+    for i in range(num_of_images):
+        all_vgg[i, :, :, :] = np.tile(all_images[i], (1, 1, 1, 3))
+
+    color_im = model.predict((all_images, all_vgg), batch_size=b_size)
+
+    for i in range(num_of_images):
+        # to rgb
+        lab_im = np.concatenate((all_images[i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
+        im_rgb = color.lab2rgb(lab_im)
+
+        # save
+        abs_svave_path = os.path.join(script_dir, '../../result_images/')
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+
+
 def image_check_hist(model, num_of_images, name, b_size=32, dim=3):
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
     rel_path = "../../test_set"
@@ -384,6 +413,27 @@ def h5_vgg_generator(batch_size, dir, downloader):
             n = 0
 
         yield np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3)), x1[n:n+batch_size, :, :, 1:3]
+        n += batch_size
+
+
+def h5_vgg_generator_let_there(batch_size, dir, downloader):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['im']
+            n = 0
+
+        yield (x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],
+            np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3)),
+            x1[n:n+batch_size, :, :, 1:3])
         n += batch_size
 
 
