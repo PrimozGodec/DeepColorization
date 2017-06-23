@@ -174,7 +174,6 @@ gval = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224_validate", 
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    image_check_hist(model, 40, "colorful-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
