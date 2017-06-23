@@ -11,7 +11,7 @@ def compute_color_prior(size=64, do_plot=False):
     with h5py.File(os.path.join(data_dir, "images_%s_data.h5" % size), "a") as hf:
         # Compute the color prior over a subset of the training set
         # Otherwise it is quite long
-        X_ab = hf["train_lab_data"][:100][:, :, :, 1:]
+        X_ab = hf["train_lab_data"][:100000][:, :, :, 1:]
         npts, c, h, w = X_ab.shape
         X_a = np.ravel(X_ab[:, :, :, 0])
         X_b = np.ravel(X_ab[:, :, :, 1])
