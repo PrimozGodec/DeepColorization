@@ -29,7 +29,7 @@ def compute_color_prior(size=64, do_plot=False):
 
         for i in range(20):
             print(" ".join(['%6d' % prior_prob[i * 20 + j] for j in range(20)]))
-            print()
+        print()
 
 
         # We turn this into a color probability
