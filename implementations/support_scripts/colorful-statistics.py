@@ -29,6 +29,7 @@ def compute_color_prior(size=64, do_plot=False):
 
         for i in range(20):
             print(" ".join(['%6d' % prior_prob[i * 20 + j] for j in range(20)]))
+            print()
 
 
         # We turn this into a color probability
@@ -36,6 +37,7 @@ def compute_color_prior(size=64, do_plot=False):
 
         for i in range(20):
             print(" ".join(['%.4f' % prior_prob[i * 20 + j] for j in range(20)]))
+        print()
 
         # Save
         np.save(os.path.join(data_dir, "images_%s_prior_prob.npy" % size), prior_prob)
@@ -61,6 +63,7 @@ def smooth_color_prior(size=64, sigma=5, do_plot=False):
     np.save(file_name, prior_prob_smoothed)
     for i in range(20):
         print(" ".join(['%.4f' % prior_prob_smoothed[i * 20 + j] for j in range(20)]))
+    print()
 
 
 def compute_prior_factor(size=64, gamma=0.5, alpha=1, do_plot=False):
@@ -79,6 +82,8 @@ def compute_prior_factor(size=64, gamma=0.5, alpha=1, do_plot=False):
 
     file_name = os.path.join(data_dir, "images_%s_prior_factor.npy" % size)
     np.save(file_name, prior_factor)
+    for i in range(20):
+        print(" ".join(['%.4f' % prior_factor[i * 20 + j] for j in range(20)]))
 
 
 data_dir = "../../../subset100_000"
