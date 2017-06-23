@@ -427,7 +427,7 @@ def h5_small_vgg_generator_onehot(batch_size, dir, downloader):
         n += batch_size
 
 
-def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
+def h5_small_vgg_generator_onehot_weights1(batch_size, dir, downloader):
 
     def to_one_hot(x):
         def one_hot(indices, num_classes):
@@ -459,6 +459,41 @@ def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
         yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], y_one_hot
         n += batch_size
 
+
+def h5_small_vgg_generator_onehot_weights(batch_size, dir, downloader):
+
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+    rel_path = "../../../subset100_000/images_256_prior_factor.npy"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    weights = np.load(abs_file_path)
+
+    def to_one_hot(x):
+        def one_hot(indices, num_classes):
+            return np.eye(num_classes, dtype=np.uint8)[indices]
+
+        indices = ((x[:, :, :, 0] + 100) / 10).astype(int) * 20 + ((x[:, :, :, 1] + 100) / 10).astype(int)
+        a = one_hot(indices, 400)  # 20 bins
+        return np.concatenate((a, weights[indices][:, :, :, np.newaxis]), axis=3)
+
+
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['im']
+            n = 0
+
+        y_one_hot = to_one_hot(x1[n:n + batch_size, :, :, 1:])
+
+        yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], y_one_hot
+        n += batch_size
 
 def h5_small_vgg_generator_onehot_neigh(batch_size, dir, downloader):
 
@@ -508,7 +543,9 @@ if __name__ == "__main__":
     t = time.time()
     a = next(g)
     print(time.time() - t)
+
     t = time.time()
     b = next(g1)
     print(time.time() - t)
 
+    print(a[1].shape)

@@ -10,7 +10,7 @@ from keras import optimizers
 from keras.layers import Conv2D, Activation, BatchNormalization, UpSampling2D, Lambda
 from keras.models import Sequential
 
-from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights, \
+from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights1, \
     image_check, image_check_hist
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
@@ -169,8 +169,8 @@ save_every_n_epoch = 5
 n_epochs = 10000
 model.load_weights("../weights/colorful-0.h5")
 
-g = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224", None)
-gval = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224_validate", None)
+g = h5_small_vgg_generator_onehot_weights1(b_size, "../h5_data_224", None)
+gval = h5_small_vgg_generator_onehot_weights1(b_size, "../h5_data_224_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
