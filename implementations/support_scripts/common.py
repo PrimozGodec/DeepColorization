@@ -329,6 +329,9 @@ def whole_image_check_hist(model, num_of_images, name):
         for n in range(predictions_ab.shape[0]):
             a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
 
+            if a + 32 > 256 or b + 32 > 256:
+                continue  # it is empty edge
+
             # weight decision
             if a == 0 and b == 0:
                 weight = weight_top_left

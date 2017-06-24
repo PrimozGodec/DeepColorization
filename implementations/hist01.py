@@ -113,12 +113,12 @@ model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
 
 model.summary()
 
-start_from = 0
+start_from = 5
 save_every_n_epoch = 5
 n_epochs = 10000
 
 print("weights loaded")
-# model.load_weights("../weights/implementation7d-hist-65.h5")
+model.load_weights("../weights/hist01.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
@@ -130,6 +130,7 @@ gval = h5_small_vgg_generator_onehot(b_size, "../h5_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    model.save_weights("../weights/hist01-" + str(i * save_every_n_epoch) + ".h5")
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
