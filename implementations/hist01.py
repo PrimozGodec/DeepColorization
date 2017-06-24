@@ -71,13 +71,15 @@ merged = concatenate([vgg_output, main_output], axis=3)
 
 last = Conv2D(128, (3, 3), padding="same")(merged)
 
-last = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding="same", activation="relu",
-                       kernel_regularizer=regularizers.l2(0.01))(last)
+# last = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding="same", activation="relu",
+#                        kernel_regularizer=regularizers.l2(0.01))(last)
+last = UpSampling2D(size=(2, 2))(last)
 last = Conv2D(64, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(64, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 
-last = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding="same", activation="relu",
-                       kernel_regularizer=regularizers.l2(0.01))(last)
+# last = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding="same", activation="relu",
+#                        kernel_regularizer=regularizers.l2(0.01))(last)
+last = UpSampling2D(size=(2, 2))(last)
 last = Conv2D(32, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(400, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(last)
 
