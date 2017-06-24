@@ -14,7 +14,7 @@ from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, Activation, MaxPooling2D, add, \
     regularizers, Conv2DTranspose
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 b_size = 32
 
@@ -156,7 +156,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     whole_image_check_hist(model, 20, "hist04-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('hist04-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/hist04-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 

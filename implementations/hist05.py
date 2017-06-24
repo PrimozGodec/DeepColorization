@@ -5,7 +5,8 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
-    h5_small_vgg_generator_onehot, whole_image_check_hist, h5_small_vgg_generator_onehot_neigh
+    h5_small_vgg_generator_onehot, whole_image_check_hist, h5_small_vgg_generator_onehot_neigh, \
+    h5_small_vgg_generator_onehot_weight_hist04
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -13,7 +14,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, Activation
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 b_size = 32
 
@@ -80,15 +81,30 @@ last = Activation(custom_softmax)(last)
 last = Lambda(resize_image)(last)
 
 
-def custom_kullback_leibler_divergence(y_true, y_pred):
-    y_true = K.clip(y_true, K.epsilon(), 1)
-    y_pred = K.clip(y_pred, K.epsilon(), 1)
-    return K.mean(K.sum(y_true * K.log(y_true / y_pred), axis=-1), axis=[1, 2])
+def categorical_crossentropy_color(y_true, y_pred):
+
+    # Flatten
+    shape = K.shape(y_pred)
+    y_pred = K.reshape(y_pred, (shape[0] * shape[1] * shape[2], shape[3]))
+    y_true = K.reshape(y_true, (shape[0] * shape[1] * shape[2], shape[3]))
+
+    weights = y_true[:, 400:]  # extract weight from y_true
+    weights = K.concatenate([weights] * 400, axis=1)
+    y_true = y_true[:, :-1]  # remove last column
+    y_pred = y_pred[:, :-1]  # remove last column
+
+    # multiply y_true by weights
+    y_true = y_true * weights
+
+    cross_ent = K.categorical_crossentropy(y_pred, y_true)
+    cross_ent = K.mean(cross_ent, axis=-1)
+
+    return cross_ent
 
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence)
+model.compile(optimizer=opt, loss=categorical_crossentropy_color())
 
 model.summary()
 
@@ -104,21 +120,21 @@ print("weights loaded")
 # ip.start()
 ip = None
 
-g = h5_small_vgg_generator_onehot(b_size, "../h5_data", ip)
-gval = h5_small_vgg_generator_onehot(b_size, "../h5_validate", None)
+g = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../h5_data", ip)
+gval = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../h5_validate", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(1024//b_size))
-    model.save_weights("../weights/hist02-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/hist05-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_hist(model, 20, "hist02-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_hist(model, 20, "hist05-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/hist02-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/hist05-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
