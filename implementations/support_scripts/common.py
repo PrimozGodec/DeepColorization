@@ -355,7 +355,7 @@ def whole_image_check_hist(model, num_of_images, name):
             im_a = predictions_ab[n, :, :, 0] * weight
             im_b = predictions_ab[n, :, :, 1] * weight
 
-            original_size_im[a:a+32, b:b+32, :] = np.stack((im_a, im_b), axis=2)
+            original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
