@@ -113,7 +113,7 @@ class ImagePacker(threading.Thread):
         self.current_im += 1
         if self.current_im >= len(self.images_list):
             self.current_im = 0
-        with open("../../../subset100_000/small_selected.txt", "a") as h:
+        with open("../../../subset100_000/small_selected_val.txt", "a") as h:
             print(selected, file=h)
 
         return selected
@@ -158,5 +158,5 @@ class ImagePacker(threading.Thread):
 
 
 if __name__ == "__main__":
-    ip = ImagePacker("../../../subset100_000/train", "../../data/h5_small_train",  "train-1024-", num_images=1024, num_files=None)
+    ip = ImagePacker("../../../subset100_000/validation", "../../data/h5_small_validation",  "validation-10000-", num_images=10000, num_files=1)
     ip.start()
