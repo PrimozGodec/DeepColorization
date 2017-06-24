@@ -118,7 +118,7 @@ save_every_n_epoch = 5
 n_epochs = 10000
 
 print("weights loaded")
-model.load_weights("../weights/hist01.h5")
+model.load_weights("../weights/hist01-0.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
