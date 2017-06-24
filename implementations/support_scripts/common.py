@@ -302,10 +302,10 @@ def whole_image_check_hist(model, num_of_images, name):
 
         # split images to list of images
         slices_dim = 256//32
-        slices = np.zeros((slices_dim * slices_dim, 32, 32, 1))
-        for a in range(slices_dim):
-            for b in range(slices_dim):
-                slices[a * slices_dim + b] = image_l[a * 32: (a + 1) * 32, b * 32 : (b + 1) * 32, np.newaxis]
+        slices = np.zeros((slices_dim * slices_dim * 4, 32, 32, 1))
+        for a in range(slices_dim * 2 - 1):
+            for b in range(slices_dim * 2 - 1):
+                slices[a * slices_dim * 2 + b] = image_l[a*32//2: a*32//2+32, b*32//2: b*32//2+32, np.newaxis]
 
         # lover originals dimension to 224x224 to feed vgg and increase dim
         image_l_224_b = resize_image(image_l, (224, 224))
@@ -313,14 +313,12 @@ def whole_image_check_hist(model, num_of_images, name):
 
 
         # append together booth lists
-        input_data = [slices, np.array([image_l_224,] * slices_dim ** 2)]
+        input_data = [slices, np.array([image_l_224,] * slices_dim ** 2 * 4)]
 
         # predict
         predictions_hist = model.predict(input_data)
 
         # reshape back
-        # predictions_a = np.argmax(predictions_hist[:, :, :, :20], axis=3) * 10 - 100 + 5
-        # predictions_b = np.argmax(predictions_hist[:, :, :, 20:], axis=3) * 10 - 100 + 5  # +5 to set in the middle box
         indices = np.argmax(predictions_hist[:, :, :, :], axis=3)
 
         predictions_a = indices // 20 * 10 - 100 + 5
@@ -329,8 +327,32 @@ def whole_image_check_hist(model, num_of_images, name):
         predictions_ab = np.stack((predictions_a, predictions_b), axis=3)
         original_size_im = np.zeros((h, w, 2))
         for n in range(predictions_ab.shape[0]):
-            a, b = n // slices_dim * 32, n % slices_dim * 32
-            original_size_im[a:a+32, b:b+32, :] = predictions_ab[n, :, :, :]
+            a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
+
+            # weight decision
+            if a == 0 and b == 0:
+                weight = weight_top_left
+            elif a == 0 and b == 224:
+                weight = weight_top_right
+            elif a == 0:
+                weight = weight_top
+            elif a == 224 and b == 0:
+                weight = weight_bottom_left
+            elif b == 0:
+                weight = weight_left
+            elif a == 224 and b == 224:
+                weight = weight_bottom_right
+            elif a == 224:
+                weight = weight_bottom
+            elif b == 224:
+                weight = weight_right
+            else:
+                weight = weight_m
+
+            im_a = predictions_ab[n, :, :, 0] * weight
+            im_b = predictions_ab[n, :, :, 1] * weight
+
+            original_size_im[a:a+32, b:b+32, :] = np.stack((im_a, im_b), axis=2)
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
