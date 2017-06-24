@@ -139,7 +139,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     whole_image_check_hist(model, 20, "hist01-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('hist01-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/hist01-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
