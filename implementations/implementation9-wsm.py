@@ -109,7 +109,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 3
 n_epochs = 10000
-# model.load_weights("../weights/implementation7d-reg-55.h5")
+# model.load_weights("../weights/implementation9-wsm-24.h5")
 
 # start image downloader
 ip = None
@@ -122,13 +122,13 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/implementation9-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../weights/implementation9-wsm-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_overlapping(model, 80, "imp9-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_overlapping(model, 80, "imp9-wsm-" + str(i * save_every_n_epoch) + "-")
 
     # save history
-    output = open('../history/imp9-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../history/imp9-wsm-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
 
