@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
 
 from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg
 from keras.applications import VGG16
@@ -84,27 +85,27 @@ def custom_mse(y_true, y_pred):
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss=custom_mse)
+model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, mean_squared_error])
 
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 5
+save_every_n_epoch = 3
 n_epochs = 10000
 # model.load_weights("../weights/let-there-color-50.h5")
 
-g = h5_vgg_generator_let_there(b_size, "../h5_data_224", None)
-gval = h5_vgg_generator_let_there(b_size, "../h5_data_224_validate", None)
+g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
+gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(128//b_size))
+    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(10000//b_size))
     model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check_with_vgg(model, 20, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+    image_check_with_vgg(model, 80, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
 
     # save history
     output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

@@ -5,6 +5,8 @@ import pickle
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
+
 from keras import backend as K
 from keras import optimizers
 from keras.layers import Conv2D, Activation, BatchNormalization, UpSampling2D, Lambda
@@ -13,7 +15,7 @@ from keras.models import Sequential
 from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights1, \
     image_check, image_check_hist, h5_small_vgg_generator_onehot_weights
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 b_size = 8
 
@@ -159,28 +161,28 @@ def categorical_crossentropy_color(y_true, y_pred):
     return cross_ent
 
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss=categorical_crossentropy_color)
+model.compile(optimizer=opt, loss=categorical_crossentropy_color, metrics=[root_mean_squared_error, mean_squared_error])
 
 model.summary()
 
 
 start_from = 0
-save_every_n_epoch = 5
+save_every_n_epoch = 3
 n_epochs = 10000
 # model.load_weights("../weights/colorful-0.h5")
 
-g = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224", None)
-gval = h5_small_vgg_generator_onehot_weights(b_size, "../h5_data_224_validate", None)
+g = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_train", None)
+gval = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(1024//b_size))
+    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(10000//b_size))
     model.save_weights("../weights/colorful2-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check_hist(model, 40, "colorful2-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
+    image_check_hist(model, 80, "colorful2-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
 
     # save history
     output = open('../history/colorful2-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

@@ -9,7 +9,7 @@ This script show data chart analysis for training
 import os
 import pickle
 
-implementation = "imp7d-hist"
+implementation = "hist01"
 
 # list all history files
 files = sorted([x for x in os.listdir("../../history")
@@ -36,6 +36,6 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-# plt.ylim([160, 280])
+plt.ylim([2, 4])
 
 plt.savefig("../../hist_graphs/" + implementation + ".jpg")

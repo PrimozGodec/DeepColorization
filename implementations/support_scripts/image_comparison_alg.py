@@ -7,7 +7,7 @@ from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
 # file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
-file_prefix = ["imp8", "imp8-deep", "imp8-res", "imp8-pool", "imp8-poola", "imp8-trans", "imp8-bn"]
+file_prefix = ["hist01", "hist02", "hist03", "hist04", "hist05"]
 
 plt.rcParams.update({'font.size': 8})
 

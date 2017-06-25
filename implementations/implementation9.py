@@ -4,6 +4,8 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
+
 from implementations.support_scripts.common import h5_small_vgg_generator, \
     whole_image_check_overlapping
 from keras.applications import VGG16
@@ -14,7 +16,7 @@ from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, Add, add, \
     Conv2DTranspose, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 b_size = 32
 
@@ -100,30 +102,30 @@ def custom_mse(y_true, y_pred):
 
 model = Model(inputs=[main_input, vgg16.input], output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-model.compile(optimizer=opt, loss=custom_mse)
+model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, mean_squared_error])
 
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 5
+save_every_n_epoch = 3
 n_epochs = 10000
 # model.load_weights("../weights/implementation7d-reg-55.h5")
 
 # start image downloader
 ip = None
 
-g = h5_small_vgg_generator(b_size, "../h5_data", ip)
-gval = h5_small_vgg_generator(b_size, "../h5_validate", None)
+g = h5_small_vgg_generator(b_size, "../data/h5_small_train", ip)
+gval = h5_small_vgg_generator(b_size, "../data/h5_small_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(1024//b_size))
+    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(10000//b_size))
     model.save_weights("../weights/implementation9-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_overlapping(model, 40, "imp9-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_overlapping(model, 80, "imp9-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/imp9-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
