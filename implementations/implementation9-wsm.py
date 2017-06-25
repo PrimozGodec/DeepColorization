@@ -106,10 +106,10 @@ model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, 
 
 model.summary()
 
-start_from = 0
+start_from = 15
 save_every_n_epoch = 3
 n_epochs = 10000
-# model.load_weights("../weights/implementation9-wsm-24.h5")
+model.load_weights("../weights/implementation9-wsm-12.h5")
 
 # start image downloader
 ip = None
