@@ -7,7 +7,7 @@ import scipy.misc
 
 import numpy as np
 
-from implementations.support_scripts.image_processing import load_images, images_to_l, resize_image
+from implementations.support_scripts.image_processing import load_images, images_to_l, resize_image, load_images_rgb
 
 
 def get_abs_path(relative):
@@ -20,6 +20,11 @@ def rmse(im1, im2):
     return RMSE
 
 
+def psnr(im1, im2):
+    PSNR = 20 * np.log10(255 / np.mean((im1 - im2) ** 2, axis=[-1, -2, -3]) ** 0.5)
+    return PSNR
+
+
 def image_error_full_vgg(model, name, b_size=32):
     """
     Used to test let-there-be-color
@@ -30,16 +35,20 @@ def image_error_full_vgg(model, name, b_size=32):
     num_of_images = len(image_list)
 
     rmses = []
+    psnrs = []
 
     for batch_n in range(num_of_images // b_size):
         all_images_l = np.zeros((b_size, 224, 224, 1))
         all_images = np.zeros((b_size, 224, 224, 3))
+        all_images_rgb = np.zeros((b_size, 224, 224, 3))
         for i in range(b_size):
             # get image
-            image_lab = load_images(abs_file_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+            image_rgb = load_images_rgb(abs_file_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+            image_lab = color.rgb2lab(image_rgb)
             image_l = images_to_l(image_lab)
             all_images_l[i, :, :, :] = image_l[:, :, np.newaxis]
             all_images[i, :, :, :] = image_lab
+            all_images_rgb[i, :, :, :] = image_rgb
 
         all_vgg = np.zeros((num_of_images, 224, 224, 3))
         for i in range(num_of_images):
@@ -55,10 +64,14 @@ def image_error_full_vgg(model, name, b_size=32):
             lab_im = np.concatenate((all_images_l[i, :, :, :], color_im[i]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
+            # calculate psnr
+            psnrs.append(psnr(image_rgb, all_images_rgb[i, :, : :]))
+
             # save
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
+    print("PSNR:", np.mean(psnr))
 
 
 # matrices for multiplying that needs to calculate only once
@@ -88,11 +101,13 @@ def image_error_small_vgg(model, name):
     num_of_images = len(image_list)
 
     rmses = []
+    psnrs = []
     # repeat for each image
     # lets take first n images
     for i in range(num_of_images):
         # get image
-        image_lab = load_images(test_set_dir_path, image_list[i])  # image is of size 256x256
+        image_rgb = load_images_rgb(test_set_dir_path, image_list[i])  # image is of size 256x256
+        image_lab = color.rgb2lab(image_rgb)
         image_l = images_to_l(image_lab)
 
         h, w = image_l.shape
@@ -157,11 +172,15 @@ def image_error_small_vgg(model, name):
         # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
         im_rgb = color.lab2rgb(color_im)
 
+        # calculate psnr
+        psnrs.append(psnr(im_rgb, image_rgb))
+
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
+    print("PSNR:", np.mean(psnr))
 
 
 def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
@@ -170,16 +189,21 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
     num_of_images = len(image_list)
 
     rmses = []
+    psnrs = []
 
     for batch_n in range(num_of_images // b_size):
         all_images = np.zeros((b_size, 224, 224, 3))
+        all_images_rgb = np.zeros((b_size, 224, 224, 3))
         all_images_l = np.zeros((b_size, 224, 224, dim))
         for i in range(num_of_images):
             # get image
-            image_lab = load_images(test_set_dir_path, image_list[batch_n * b_size + i], size=(224, 224))
+            image_rgb = load_images_rgb(test_set_dir_path, image_list[batch_n * b_size + i], size=(224, 224))
+            image_lab = color.rgb2lab(image_rgb)
             all_images[i, :, :, :] = image_lab
             image_l = images_to_l(image_lab)
             all_images_l[i, :, :, :] = np.tile(image_l[:, :, np.newaxis], (1, 1, 1, dim))
+            all_images_rgb[i, :, :, :] = image_rgb
+
 
         color_im = model.predict(all_images_l, batch_size=b_size)
 
@@ -191,10 +215,14 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
             lab_im = np.concatenate((all_images_l[i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
+            # psnr
+            psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
+
             # save
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
+    print("PSNR:", np.mean(psnrs))
 
 
 def image_error_small_hist(model, name):
@@ -204,12 +232,14 @@ def image_error_small_hist(model, name):
     num_of_images = len(image_list)
 
     rmses = []
+    psnrs = []
 
     # repeat for each image
     # lets take first n images
     for i in range(num_of_images):
         # get image
-        image_lab = load_images(test_set_dir_path, image_list[i])  # image is of size 256x256
+        image_rgb = load_images_rgb(test_set_dir_path, image_list[i])  # image is of size 256x256
+        image_lab = color.rgb2lab(image_rgb)
         image_l = images_to_l(image_lab)
 
         h, w = image_l.shape
@@ -278,11 +308,14 @@ def image_error_small_hist(model, name):
         # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
         im_rgb = color.lab2rgb(color_im)
 
+        psnrs.append(psnr(im_rgb * 256, image_rgb))
+
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
+    print("PSNR:", np.mean(psnrs))
 
 
 def image_error_hist(model, name, b_size=32):
@@ -291,16 +324,20 @@ def image_error_hist(model, name, b_size=32):
     num_of_images = len(image_list)
 
     rmses = []
+    psnrs = []
 
     for batch_n in range(num_of_images // b_size):
         all_images = np.zeros((b_size, 224, 224, 3))
+        all_images_rgb = np.zeros((b_size, 224, 224, 3))
         all_images_l = np.zeros((b_size, 224, 224, 1))
         for i in range(num_of_images):
             # get image
-            image_lab = load_images(test_set_dir_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+            image_rgb = load_images_rgb(test_set_dir_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+            image_lab = color.rgb2lab(image_rgb)
             all_images[i, :, :, :] = image_lab
             image_l = images_to_l(image_lab)
             all_images_l[i, :, :, :] = image_l[:, :, np.newaxis]
+            all_images_rgb[i, :, :, :] = image_rgb
 
         color_im = model.predict(all_images_l, batch_size=b_size)
 
@@ -315,8 +352,11 @@ def image_error_hist(model, name, b_size=32):
                                      a[:, :, np.newaxis], b[:, :, np.newaxis]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
+            psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
+
             # save
             abs_svave_path = os.path.join(script_dir, '../../result_images/')
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
+    print("PSNR:", np.mean(psnrs))

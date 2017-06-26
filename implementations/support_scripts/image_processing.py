@@ -47,6 +47,22 @@ def load_images(dir, file, size=(256, 256)):
         print(file)
 
 
+def load_images_rgb(dir, file, size=(256, 256)):
+    try:
+        img = Image.open(os.path.join(dir, file))
+        img = img.resize(size, Image.ANTIALIAS)
+
+    except (OSError, ValueError, IOError):
+        print("Damaged:", file)
+        return "error"
+
+    img = img.convert(mode="RGB")  # ensure that image rgb
+    rgb = np.array(img)
+    if len(rgb.shape) == 3 and (rgb.shape[2]) == 3:  # avoid black and white photos
+        return rgb
+    else:
+        print(file)
+
 
 def resize_image(im, size):
     return scipy.misc.imresize(im, size).astype(float) / 256 * 100

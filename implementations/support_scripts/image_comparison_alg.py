@@ -7,7 +7,7 @@ from matplotlib import gridspec
 
 path_to_photos = "../../result_images"
 # file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
-file_prefix = ["hist01", "hist02", "hist03", "hist04", "hist05"]
+file_prefix = ["let-there-color", "hist02", "hist05", "vgg1", "imp9", "imp9-bn", "imp9-wsm"]
 
 plt.rcParams.update({'font.size': 8})
 
@@ -54,7 +54,7 @@ for image_name in im_names_all:
             ax1 = plt.subplot(gs1[i * num_col + j])
             ax1.imshow(image)
 
-            ax1.text(0.03, 0.97, int(im) + 5,
+            ax1.text(0.03, 0.97, int(im) + 3,
                     horizontalalignment='left',
                     verticalalignment='top',
                     transform = ax1.transAxes,
