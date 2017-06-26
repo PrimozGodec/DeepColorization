@@ -4,6 +4,9 @@ import math
 import matplotlib.pyplot as plt
 from PIL import Image
 from matplotlib import gridspec
+from skimage import color
+
+from implementations.support_scripts.image_processing import load_images
 
 path_to_photos = "../../result_images"
 # file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
@@ -40,9 +43,42 @@ for image_name in im_names_all:
     num_rows = len(it)
     num_col = len(file_prefix)
 
-    plt.figure(figsize=(num_col * 2.5 + 1, num_rows * 2.5 + 1))
-    gs1 = gridspec.GridSpec(num_rows, num_col, width_ratios=[1] * num_col,
+    plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+    gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
          wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+
+    original = []
+
+    # add grayscale image at beginning
+    for j, alg in enumerate(file_prefix):
+        image = load_images("../../test_set", image_name)
+        # original.append(image)
+
+        # plot image
+        ax1 = plt.subplot(gs1[j])
+        ax1.imshow(image[:, :, 0], cmap='gray')
+
+        ax1.text(0.03, 0.97, "črno-bela",
+                 horizontalalignment='left',
+                 verticalalignment='top',
+                 transform=ax1.transAxes,
+                 color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
+        ax1.axis('off')
+        if ax1.is_first_row():
+            ax1.set_title(alg, fontsize=9)
+
+
+        ax1 = plt.subplot(gs1[- j - 1])
+        ax1.imshow(color.lab2rgb(image[:, :, :]))
+
+        ax1.text(0.03, 0.97, "originalna",
+                 horizontalalignment='left',
+                 verticalalignment='top',
+                 transform=ax1.transAxes,
+                 color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
+
+        ax1.axis('off')
+
 
     for i, im in enumerate(it):
         # open image
@@ -51,7 +87,7 @@ for image_name in im_names_all:
             image = Image.open(fname)
 
             # plot image
-            ax1 = plt.subplot(gs1[i * num_col + j])
+            ax1 = plt.subplot(gs1[i * num_col + j + num_col])
             ax1.imshow(image)
 
             ax1.text(0.03, 0.97, int(im) + 3,
@@ -71,5 +107,4 @@ for image_name in im_names_all:
         "../../result_merged/" + image_name[:-4] + "-" + "_".join(file_prefix) + ".pdf",
         format='pdf', bbox_inches='tight')
     plt.close()
-
 
