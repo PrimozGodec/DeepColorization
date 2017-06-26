@@ -148,10 +148,10 @@ model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, 
 
 model.summary()
 
-start_from = 27
-save_every_n_epoch = 3
+start_from = 0
+save_every_n_epoch = 1
 n_epochs = 10000
-model.load_weights("../weights/implementation9-bn-24.h5")
+# model.load_weights("../weights/implementation9-bn-24.h5")
 
 # start image downloader
 ip = None

@@ -96,7 +96,7 @@ model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence,
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 3
+save_every_n_epoch = 1
 n_epochs = 10000
 
 print("weights loaded")

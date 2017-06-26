@@ -113,12 +113,12 @@ model.compile(optimizer=opt, loss=categorical_crossentropy_color, metrics=[root_
 
 model.summary()
 
-start_from = 30
-save_every_n_epoch = 3
+start_from = 0
+save_every_n_epoch = 1
 n_epochs = 10000
 
 print("weights loaded")
-model.load_weights("../weights/hist05-27.h5")
+# model.load_weights("../weights/hist05-27.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
