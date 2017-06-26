@@ -90,7 +90,7 @@ model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, 
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 3
+save_every_n_epoch = 1
 n_epochs = 10000
 # model.load_weights("../weights/let-there-color-50.h5")
 
