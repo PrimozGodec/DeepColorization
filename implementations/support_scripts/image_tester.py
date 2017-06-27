@@ -187,7 +187,7 @@ def image_error_small_vgg(model, name):
             print(i)
 
     print("RMSE:", np.mean(rmses))
-    print("PSNR:", np.mean(psnr))
+    print("PSNR:", np.mean(psnrs))
 
 
 def image_error_vgg(model, name, b_size=32, dim=3):
