@@ -227,6 +227,7 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
 
             # save
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[batch_n * b_size + i])
+        print(batch_n)
 
     print("RMSE:", np.mean(rmses))
     print("PSNR:", np.mean(psnrs))
