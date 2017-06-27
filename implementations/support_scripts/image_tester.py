@@ -361,7 +361,7 @@ def image_error_hist(model, name, b_size=32):
                                      a[:, :, np.newaxis], b[:, :, np.newaxis]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
-            rmses.append(rmse(lab_im[:, :, 1:], all_images[:, :, 1:]))
+            rmses.append(rmse(lab_im[:, :, 1:], all_images[i, :, :, 1:]))
             psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
 
             # save
