@@ -202,7 +202,7 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
         all_images = np.zeros((b_size, 224, 224, 3))
         all_images_rgb = np.zeros((b_size, 224, 224, 3))
         all_images_l = np.zeros((b_size, 224, 224, dim))
-        for i in range(num_of_images):
+        for i in range(b_size):
             # get image
             image_rgb = load_images_rgb(test_set_dir_path, image_list[batch_n * b_size + i], size=(224, 224))
             image_lab = color.rgb2lab(image_rgb)
@@ -217,7 +217,7 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
         rmses += list(rmse(color_im, all_images[:, :, :, 1:]))
 
         abst_path = get_abs_path('../../validation_colorization/')
-        for i in range(num_of_images):
+        for i in range(b_size):
             # to rgb
             lab_im = np.concatenate((all_images_l[i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
@@ -226,7 +226,7 @@ def image_error_vgg(model, num_of_images, name, b_size=32, dim=3):
             psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
 
             # save
-            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[i])
+            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[batch_n * b_size + i])
 
     print("RMSE:", np.mean(rmses))
     print("PSNR:", np.mean(psnrs))
