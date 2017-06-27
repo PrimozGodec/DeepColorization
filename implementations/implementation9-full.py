@@ -15,7 +15,7 @@ from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, Add, add, \
     Conv2DTranspose, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 b_size = 32
 
