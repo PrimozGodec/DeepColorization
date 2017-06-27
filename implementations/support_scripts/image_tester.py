@@ -53,7 +53,7 @@ def image_error_full_vgg(model, name, b_size=32):
             all_images_rgb[i, :, :, :] = image_rgb
 
         all_vgg = np.zeros((num_of_images, 224, 224, 3))
-        for i in range(num_of_images):
+        for i in range(b_size):
             all_vgg[i, :, :, :] = np.tile(all_images_l[i], (1, 1, 1, 3))
 
         color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
