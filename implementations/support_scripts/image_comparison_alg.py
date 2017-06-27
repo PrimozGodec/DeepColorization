@@ -10,7 +10,7 @@ from implementations.support_scripts.image_processing import load_images
 
 path_to_photos = "../../result_images"
 # file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
-file_prefix = ["let-there-color", "hist02", "hist05", "vgg1", "imp9", "imp9-bn", "imp9-wsm"]
+file_prefix = ["let-there-color", "hist02", "hist05", "vgg1", "imp9", "imp9-wsm"]
 
 plt.rcParams.update({'font.size': 8})
 

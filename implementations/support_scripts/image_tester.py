@@ -37,6 +37,8 @@ def image_error_full_vgg(model, name, b_size=32):
     rmses = []
     psnrs = []
 
+    print("total batches:", num_of_images // b_size)
+
     for batch_n in range(num_of_images // b_size):
         all_images_l = np.zeros((b_size, 224, 224, 1))
         all_images = np.zeros((b_size, 224, 224, 3))
@@ -69,9 +71,10 @@ def image_error_full_vgg(model, name, b_size=32):
 
             # save
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[i])
+        print(batch_n)
 
     print("RMSE:", np.mean(rmses))
-    print("PSNR:", np.mean(psnr))
+    print("PSNR:", np.mean(psnrs))
 
 
 # matrices for multiplying that needs to calculate only once
