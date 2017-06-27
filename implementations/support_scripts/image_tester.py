@@ -16,12 +16,12 @@ def get_abs_path(relative):
 
 
 def rmse(im1, im2):
-    RMSE = np.mean((im1 - im2) ** 2, axis=[-1, -2, -3]) ** 0.5
+    RMSE = np.mean((im1 - im2) ** 2, axis=(-1, -2, -3)) ** 0.5
     return RMSE
 
 
 def psnr(im1, im2):
-    PSNR = 20 * np.log10(255 / np.mean((im1 - im2) ** 2, axis=[-1, -2, -3]) ** 0.5)
+    PSNR = 20 * np.log10(255 / np.mean((im1 - im2) ** 2, axis=(-1, -2, -3)) ** 0.5)
     return PSNR
 
 
