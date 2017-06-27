@@ -5,6 +5,7 @@ import pickle
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_tester import image_error_hist
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
 
 from keras import backend as K
@@ -15,7 +16,7 @@ from keras.models import Sequential
 from implementations.support_scripts.common import h5_small_vgg_generator_onehot_weights1, \
     image_check, image_check_hist, h5_small_vgg_generator_onehot_weights
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 8
 
@@ -169,22 +170,24 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 3
 n_epochs = 10000
-# model.load_weights("../weights/colorful-0.h5")
+model.load_weights("../weights/colorful2-3.h5")
 
-g = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_train", None)
-gval = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_validation", None)
+# g = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_train", None)
+# gval = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(10000//b_size))
+#     model.save_weights("../weights/colorful2-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     image_check_hist(model, 80, "colorful2-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
+#
+#     # save history
+#     output = open('../history/colorful2-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/colorful2-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    image_check_hist(model, 80, "colorful2-" + str(i * save_every_n_epoch) + "-", b_size=b_size, dim=1)
-
-    # save history
-    output = open('../history/colorful2-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
+image_error_hist(model, "colorful-test-100", b_size=b_size)

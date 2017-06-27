@@ -366,7 +366,7 @@ def image_error_hist(model, name, b_size=32):
             psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
 
             # save
-            abs_svave_path = os.path.join(script_dir, '../../result_images/')
+            abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
             scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
     print("RMSE:", np.mean(rmses))
