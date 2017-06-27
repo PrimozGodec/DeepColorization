@@ -2,6 +2,8 @@ import pickle
 import sys
 import os
 
+from implementations.support_scripts.image_tester import image_error_full_vgg
+
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
@@ -92,22 +94,24 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
-# model.load_weights("../weights/let-there-color-50.h5")
+model.load_weights("../weights/let-there-color-2.h5")
 
-g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
-gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
+# g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
+# gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(10000//b_size))
+#     model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     image_check_with_vgg(model, 80, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+#
+#     # save history
+#     output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    image_check_with_vgg(model, 80, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
-
-    # save history
-    output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
+image_error_full_vgg(model, "let-there-color-test-100", b_size=b_size)
