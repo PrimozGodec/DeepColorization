@@ -352,7 +352,7 @@ def image_error_hist(model, name, b_size=32):
 
         color_im = model.predict(all_images_l, batch_size=b_size)
 
-        for i in range(num_of_images):
+        for i in range(b_size):
             # to rgb
             idx = np.argmax(color_im[i], axis=2)
             a = idx // 20 * 10.0 - 100 + 5
