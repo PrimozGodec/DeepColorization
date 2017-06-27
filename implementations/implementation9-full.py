@@ -112,8 +112,8 @@ n_epochs = 30
 
 # start image downloader
 
-g = h5_vgg_generator_let_there(b_size, "../data/h5_small_train", None)
-gval = h5_vgg_generator_let_there(b_size, "../data/h5_small_validation", None)
+g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
+gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
