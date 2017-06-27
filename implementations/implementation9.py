@@ -110,7 +110,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
-model.load_weights("../weights/implementation9-12.h5")
+# model.load_weights("../weights/implementation9-12.h5")
 
 # start image downloader
 ip = None
@@ -133,5 +133,5 @@ ip = None
 #     pickle.dump(history.history, output)
 #     output.close()
 
-image_error_small_vgg(model, "imp09-test-100")
+# image_error_small_vgg(model, "imp09-test-100")
 
