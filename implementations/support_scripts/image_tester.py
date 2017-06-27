@@ -352,8 +352,6 @@ def image_error_hist(model, name, b_size=32):
 
         color_im = model.predict(all_images_l, batch_size=b_size)
 
-        rmses += rmse(color_im, all_images[:, :, :, 1:])
-
         for i in range(num_of_images):
             # to rgb
             idx = np.argmax(color_im[i], axis=2)
@@ -363,6 +361,7 @@ def image_error_hist(model, name, b_size=32):
                                      a[:, :, np.newaxis], b[:, :, np.newaxis]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
+            rmses.append(rmse(lab_im[:, :, 1:], all_images[:, :, 1:]))
             psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
 
             # save
