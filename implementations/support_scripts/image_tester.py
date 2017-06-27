@@ -309,7 +309,7 @@ def image_error_small_hist(model, name):
 
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
-        rmses.append(rmse(original_size_im, image_lab[1:]))
+        rmses.append(rmse(original_size_im, image_lab[:, :, 1:]))
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
