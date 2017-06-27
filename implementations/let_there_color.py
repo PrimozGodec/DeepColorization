@@ -2,13 +2,11 @@ import pickle
 import sys
 import os
 
-from implementations.support_scripts.image_tester import image_error_full_vgg
-
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_tester import image_error_full_vgg
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
 
-from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg
 from keras.applications import VGG16
 from keras.engine import Model
 
