@@ -180,7 +180,8 @@ def image_error_small_vgg(model, name):
 
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
-        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+        # commented to speedup
+        # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
         # print progress
         if i % 500 == 0:
