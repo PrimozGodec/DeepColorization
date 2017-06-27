@@ -59,6 +59,7 @@ def image_error_full_vgg(model, name, b_size=32):
         color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
 
         rmses += list(rmse(color_im, all_images[:, :, :, 1:]))
+        print(rmses)
 
         abs_save_path = get_abs_path('../../validation_colorization/')
         for i in range(b_size):
