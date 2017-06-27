@@ -176,7 +176,7 @@ def image_error_small_vgg(model, name):
         im_rgb = color.lab2rgb(color_im)
 
         # calculate psnr
-        psnrs.append(psnr(im_rgb, image_rgb))
+        psnrs.append(psnr(im_rgb * 256, image_rgb))
 
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
