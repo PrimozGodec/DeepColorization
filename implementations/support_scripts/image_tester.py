@@ -61,16 +61,16 @@ def image_error_full_vgg(model, name, b_size=32):
         rmses += list(rmse(color_im, all_images[:, :, :, 1:]))
 
         abs_save_path = get_abs_path('../../validation_colorization/')
-        for i in range(num_of_images):
+        for i in range(b_size):
             # to rgb
             lab_im = np.concatenate((all_images_l[i, :, :, :], color_im[i]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
             # calculate psnr
-            psnrs.append(psnr(image_rgb, all_images_rgb[i, :, : :]))
+            psnrs.append(psnr(im_rgb, all_images_rgb[i, :, : :]))
 
             # save
-            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[i])
+            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[batch_n * b_size + i])
         print(batch_n)
 
     print("RMSE:", np.mean(rmses))
