@@ -4,11 +4,10 @@ import sys
 from skimage import color
 import numpy as np
 
-from implementations.support_scripts.image_processing import load_images_rgb, images_to_l, resize_image
-from implementations.support_scripts.image_tester import rmse, psnr
-
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_processing import load_images_rgb, images_to_l, resize_image
+from implementations.support_scripts.image_tester import rmse, psnr
 from implementations.models import imp9_32, let_there_color_224, let_there_color_896
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "4"
