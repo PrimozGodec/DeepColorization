@@ -11,7 +11,7 @@ sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.models import imp9_32, let_there_color_224, let_there_color_896
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 
 # matrices for multiplying that needs to calculate only once
