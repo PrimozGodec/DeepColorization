@@ -170,7 +170,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 3
 n_epochs = 10000
-model.load_weights("../weights/colorful2-3.h5")
+model.load_weights("../weights/colorful2-6.h5")
 
 # g = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_train", None)
 # gval = h5_small_vgg_generator_onehot_weights(b_size, "../data/h5_224_validation", None)
