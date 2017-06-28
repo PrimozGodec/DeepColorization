@@ -183,7 +183,7 @@ model_imp9 = imp9_32.model()
 model_let_224 = let_there_color_224.model()
 model_let_896 = let_there_color_896.model()
 
-model_imp9.load_weights("../../weights/implementation9.h5")
+model_imp9.load_weights("../../weights/implementation9-12.h5")
 model_let_224.load_weights("../../weights/let-there-color-2.h5")
 model_let_896.load_weights("../../weights/let-there-color-2.h5")
 
