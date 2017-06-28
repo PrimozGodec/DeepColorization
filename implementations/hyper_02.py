@@ -56,6 +56,12 @@ output = Conv2D(128, (3, 3), padding="same", activation="relu")(hypercolumns)
 output = Conv2D(64, (3, 3), padding="same", activation="relu")(hypercolumns)
 output = Conv2D(2, (3, 3), padding="same", activation="relu")(output)
 
+def unormalise(x):
+    # outputs in range [0, 1] resized to range [-100, 100]
+    return (x * 200) - 100
+
+output = Lambda(unormalise)(output)
+
 def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
 
