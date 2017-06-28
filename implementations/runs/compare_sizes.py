@@ -158,7 +158,7 @@ def error_let_there(model, name, path, im_size):
 
         all_vgg = np.zeros((num_of_images, 224, 224, 3))
         for i in range(b_size):
-            cur_im = Image.fromarray(all_images_l[i], "L")
+            cur_im = Image.fromarray(all_images_l[i, :, :, 0], "L")
             all_vgg[i, :, :, :] = np.tile(np.array(cur_im.resize((224, 224), Image.ANTIALIAS)), (1, 1, 1, 3))
 
         color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
