@@ -121,7 +121,7 @@ def error_imp9_32(model, name, path, size):
         # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
         # print progress
-        if i % 500 == 0:
+        if i % 100 == 0:
             print(i)
 
     return np.mean(rmses), np.mean(psnrs)
@@ -196,6 +196,6 @@ images_dir = "../../../big_dataset"
 
 # test imp9
 # print(error_let_there(model_let_224, "test", images_dir, im_size=(224, 224)))
-print(error_let_there(model_let_896, "test", images_dir, im_size=(896, 896)))
+# print(error_let_there(model_let_896, "test", images_dir, im_size=(896, 896)))
 print(error_imp9_32(model_imp9, "test", images_dir, size=(224, 224)))
 print(error_imp9_32(model_imp9, "test", images_dir, size=(896, 896)))
