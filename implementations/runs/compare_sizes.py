@@ -1,6 +1,7 @@
 import os
 import sys
 
+from PIL import Image
 from skimage import color
 import numpy as np
 
@@ -131,6 +132,9 @@ def error_let_there(model, name, path, im_size):
     Used to test let-there-be-color
     """
 
+    b_size = 32
+    im_w, im_h = im_size
+
     image_list = os.listdir(path)
     num_of_images = len(image_list)
 
@@ -140,9 +144,9 @@ def error_let_there(model, name, path, im_size):
     print("total batches:", num_of_images // b_size)
 
     for batch_n in range(num_of_images // b_size):
-        all_images_l = np.zeros((b_size, im_size, im_size, 1))
-        all_images = np.zeros((b_size, im_size, im_size, 3))
-        all_images_rgb = np.zeros((b_size, im_size, im_size, 3))
+        all_images_l = np.zeros((b_size, im_w, im_h, 1))
+        all_images = np.zeros((b_size, im_w, im_h, 3))
+        all_images_rgb = np.zeros((b_size, im_w, im_h, 3))
         for i in range(b_size):
             # get image
             image_rgb = load_images_rgb(path, image_list[batch_n * b_size + i], size=im_size)  # image is of size 256x256
@@ -154,7 +158,8 @@ def error_let_there(model, name, path, im_size):
 
         all_vgg = np.zeros((num_of_images, 224, 224, 3))
         for i in range(b_size):
-            all_vgg[i, :, :, :] = np.tile(all_images_l[i], (1, 1, 1, 3))
+            cur_im = Image.fromarray(all_images_l[i], "LAB")
+            all_vgg[i, :, :, :] = np.tile(np.array(cur_im.resize((224, 224), Image.ANTIALIAS)), (1, 1, 1, 3))
 
         color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
 
