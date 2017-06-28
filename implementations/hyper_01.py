@@ -18,7 +18,7 @@ import tensorflow as tf
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
-b_size = 4
+b_size = 8
 
 # VGG
 vgg16 = VGG16(weights="imagenet", include_top=True)
@@ -34,19 +34,19 @@ def resize(x):
     return tf.image.resize_images(x, (224, 224), method=ResizeMethod.BILINEAR)
 
 
-block2_conv1 = Lambda(resize)(layer_dict["block2_conv1"].output)
+# block2_conv1 = Lambda(resize)(layer_dict["block2_conv1"].output)
 block2_conv2 = Lambda(resize)(layer_dict["block2_conv2"].output)
 
-block3_conv1 = Lambda(resize)(layer_dict["block3_conv1"].output)
-block3_conv2 = Lambda(resize)(layer_dict["block3_conv2"].output)
+# block3_conv1 = Lambda(resize)(layer_dict["block3_conv1"].output)
+# block3_conv2 = Lambda(resize)(layer_dict["block3_conv2"].output)
 block3_conv3 = Lambda(resize)(layer_dict["block3_conv3"].output)
 
-block4_conv1 = Lambda(resize)(layer_dict["block4_conv1"].output)
-block4_conv2 = Lambda(resize)(layer_dict["block4_conv2"].output)
+# block4_conv1 = Lambda(resize)(layer_dict["block4_conv1"].output)
+# block4_conv2 = Lambda(resize)(layer_dict["block4_conv2"].output)
 block4_conv3 = Lambda(resize)(layer_dict["block4_conv3"].output)
 
-block5_conv1 = Lambda(resize)(layer_dict["block5_conv1"].output)
-block5_conv2 = Lambda(resize)(layer_dict["block5_conv2"].output)
+# block5_conv1 = Lambda(resize)(layer_dict["block5_conv1"].output)
+# block5_conv2 = Lambda(resize)(layer_dict["block5_conv2"].output)
 block5_conv3 = Lambda(resize)(layer_dict["block5_conv3"].output)
 
 
@@ -59,12 +59,11 @@ def repeat_output(input):
 fc1 = Lambda(repeat_output)(layer_dict["fc1"].output)
 fc2 = Lambda(repeat_output)(layer_dict["fc2"].output)
 
-hypercolumns = concatenate([layer_dict["block1_conv1"].output, layer_dict["block1_conv2"].output,
-                            block2_conv1, block2_conv2,
-                            block3_conv1, block3_conv2, block3_conv3,
-                            block4_conv1, block4_conv2, block4_conv3,
-                            block5_conv1, block5_conv2, block5_conv3,
-                            fc1, fc2], axis=3)
+hypercolumns = concatenate([layer_dict["block1_conv2"].output,
+                            block2_conv2,
+                            block3_conv3,
+                            block4_conv3,
+                            block5_conv3], axis=3)
 
 # hypercolumns = concatenate([fc1, fc2], axis=3)
 
