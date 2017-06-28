@@ -140,9 +140,9 @@ def error_let_there(model, name, path, im_size):
     print("total batches:", num_of_images // b_size)
 
     for batch_n in range(num_of_images // b_size):
-        all_images_l = np.zeros((b_size, 224, 224, 1))
-        all_images = np.zeros((b_size, 224, 224, 3))
-        all_images_rgb = np.zeros((b_size, 224, 224, 3))
+        all_images_l = np.zeros((b_size, im_size, im_size, 1))
+        all_images = np.zeros((b_size, im_size, im_size, 3))
+        all_images_rgb = np.zeros((b_size, im_size, im_size, 3))
         for i in range(b_size):
             # get image
             image_rgb = load_images_rgb(path, image_list[batch_n * b_size + i], size=im_size)  # image is of size 256x256
@@ -190,7 +190,7 @@ model_let_896.load_weights("../../weights/let-there-color-2.h5")
 images_dir = "../../../big_dataset"
 
 # test imp9
-print(error_let_there(model_let_224, "test", images_dir, im_size=(224, 224)))
+# print(error_let_there(model_let_224, "test", images_dir, im_size=(224, 224)))
 print(error_let_there(model_let_896, "test", images_dir, im_size=(896, 896)))
 print(error_imp9_32(model_imp9, "test", images_dir, size=(224, 224)))
 print(error_imp9_32(model_imp9, "test", images_dir, size=(896, 896)))
