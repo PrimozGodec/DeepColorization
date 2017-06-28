@@ -77,7 +77,7 @@ def error_imp9_32(model, name, path, size):
         for n in range(predictions_ab.shape[0]):
             a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
 
-            if a + 32 > 256 or b + 32 > 256:
+            if a + 32 > size[0] or b + 32 > size[1]:
                 continue  # it is empty edge
 
             # weight decision
