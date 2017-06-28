@@ -71,6 +71,12 @@ output = Conv2D(1024, (1, 1), padding="same", activation="relu")(hypercolumns)
 output = Conv2D(2, (1, 1), padding="same", activation="relu")(output)
 # output = UpSampling2D((4, 4))(output)
 
+def unormalise(x):
+    # outputs in range [0, 1] resized to range [-100, 100]
+    return (x * 200) - 100
+
+output = Lambda(unormalise)(output)
+
 def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
 
@@ -81,8 +87,8 @@ model.compile(optimizer=opt, loss=custom_mse)
 
 model.summary()
 
-start_from = 5
-save_every_n_epoch = 5
+start_from = 0
+save_every_n_epoch = 3
 n_epochs = 10000
 # model.load_weights("../weights/hyper01-0.h5")
 
