@@ -18,7 +18,7 @@ import tensorflow as tf
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
-b_size = 8
+b_size = 4
 
 # VGG
 vgg16 = VGG16(weights="imagenet", include_top=True)
