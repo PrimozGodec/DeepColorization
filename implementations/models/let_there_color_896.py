@@ -14,7 +14,7 @@ from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, conc
 
 
 def model():
-    input_shape = (224, 224, 1)
+    input_shape = (896, 896, 1)
 
     # main network
     main_input = Input(shape=input_shape, name='image_part_input')
@@ -75,4 +75,5 @@ def model():
     model = Model(inputs=[main_input, vgg16.input], output=last)
     opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, mean_squared_error])
+    model.summary()
     return model

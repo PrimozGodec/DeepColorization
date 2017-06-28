@@ -75,4 +75,5 @@ def model():
     model = Model(inputs=[main_input, vgg16.input], output=last)
     opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, mean_squared_error])
+    model.summary()
     return model
