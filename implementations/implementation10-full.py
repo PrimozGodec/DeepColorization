@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
-from implementations.support_scripts.image_tester import image_error_full_vgg
+from implementations.support_scripts.image_tester import image_error_full_vgg, image_error_vgg
 
 from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg, \
     h5_full_generator_no_vgg, image_check
@@ -94,26 +94,26 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 30
-# model.load_weights("../weights/implementation9-full-5.h5")
+model.load_weights("../weights/implementation10-full-10.h5")
 
 # start image downloader
 
-g = h5_full_generator_no_vgg(b_size, "../data/h5_224_train", None)
-gval = h5_full_generator_no_vgg(b_size, "../data/h5_224_validation", None)
+# g = h5_full_generator_no_vgg(b_size, "../data/h5_224_train", None)
+# gval = h5_full_generator_no_vgg(b_size, "../data/h5_224_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(10000//b_size))
+#     model.save_weights("../weights/implementation10-full-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     image_check(model, 80, "imp10-full-" + str(i * save_every_n_epoch) + "-", dim=1)
+#
+#     # save history
+#     output = open('../history/imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/implementation10-full-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    image_check(model, 80, "imp10-full-" + str(i * save_every_n_epoch) + "-", dim=1)
-
-    # save history
-    output = open('../history/imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
-
-# image_error_full_vgg(model, "imp9-full-100", b_size=b_size)
+image_error_vgg(model, "imp10-full-100", b_size=b_size, dim=1)
