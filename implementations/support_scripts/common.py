@@ -283,6 +283,81 @@ def whole_image_check_overlapping(model, num_of_images, name):
         scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
 
+def whole_image_check_overlapping_no_vgg(model, num_of_images, name):
+
+    # find directory
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+    rel_path = "../../test_set"
+    abs_file_path = os.path.join(script_dir, rel_path)
+    image_list = os.listdir(abs_file_path)
+
+    # repeat for each image
+    # lets take first n images
+    for i in range(num_of_images):
+        # get image
+        image_lab = load_images(abs_file_path, image_list[i])  # image is of size 256x256
+        image_l = images_to_l(image_lab)
+
+        h, w = image_l.shape
+
+        # split images to list of images
+        slices_dim = 256//32
+        slices = np.zeros((slices_dim * slices_dim * 4, 32, 32, 1))
+        for a in range(slices_dim * 2 - 1):
+            for b in range(slices_dim * 2 - 1):
+
+                slices[a * slices_dim * 2 + b] = image_l[a*32//2: a*32//2 + 32, b*32//2: b*32//2 + 32, np.newaxis]
+
+        # append together booth lists
+        input_data = slices
+
+        # predict
+        predictions_ab = model.predict(input_data, batch_size=32)
+
+        # reshape back
+        original_size_im = np.zeros((h, w, 2))
+
+        for n in range(predictions_ab.shape[0]):
+            a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
+
+            if a + 32 > 256 or b + 32 > 256:
+                continue  # it is empty edge
+
+            # weight decision
+            if a == 0 and b == 0:
+                weight = weight_top_left
+            elif a == 0 and b == 224:
+                weight = weight_top_right
+            elif a == 0:
+                weight = weight_top
+            elif a == 224 and b == 0:
+                weight = weight_bottom_left
+            elif b == 0:
+                weight = weight_left
+            elif a == 224 and b == 224:
+                weight = weight_bottom_right
+            elif a == 224:
+                weight = weight_bottom
+            elif b == 224:
+                weight = weight_right
+            else:
+                weight = weight_m
+
+            im_a = predictions_ab[n, :, :, 0] * weight
+            im_b = predictions_ab[n, :, :, 1] * weight
+
+            original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
+
+        # to rgb
+        color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
+        # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
+        im_rgb = color.lab2rgb(color_im)
+
+        # save
+        abs_svave_path = os.path.join(script_dir, '../../result_images/')
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+
+
 def whole_image_check_hist(model, num_of_images, name):
 
     # find directory
