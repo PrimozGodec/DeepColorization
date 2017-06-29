@@ -79,7 +79,7 @@ def image_error_full_vgg(model, name, b_size=32):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
@@ -198,7 +198,7 @@ def image_error_small_vgg(model, name):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
@@ -247,7 +247,7 @@ def image_error_vgg(model, name, b_size=32, dim=3):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
@@ -392,5 +392,5 @@ def image_error_hist(model, name, b_size=32):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
