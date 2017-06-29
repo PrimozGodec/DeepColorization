@@ -35,8 +35,8 @@ def image_error_full_vgg(model, name, b_size=32):
     image_list = os.listdir(abs_file_path)
     num_of_images = len(image_list)
 
-    rmses = []
-    psnrs = []
+    rmses = {}
+    psnrs = {}
 
     print("total batches:", num_of_images // b_size)
 
@@ -59,7 +59,9 @@ def image_error_full_vgg(model, name, b_size=32):
 
         color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
 
-        rmses += list(rmse(color_im, all_images[:, :, :, 1:]))
+        im_from = batch_n * b_size
+        rmse_t = list(rmse(color_im, all_images[:, :, :, 1:]))
+        rmses.update({im_n: r for im_n, r in zip(rmse_t, image_list[im_from: im_from+b_size])})
 
         abs_save_path = get_abs_path('../../validation_colorization/')
         for i in range(b_size):
@@ -68,14 +70,18 @@ def image_error_full_vgg(model, name, b_size=32):
             im_rgb = color.lab2rgb(lab_im)
 
             # calculate psnr
-            psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, : :]))
+            psnrs[image_list[batch_n * b_size + i]] = psnr(im_rgb * 256, all_images_rgb[i, :, : :])
 
             # save
-            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[batch_n * b_size + i])
+            # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[batch_n * b_size + i])
         print(batch_n)
 
-    print("RMSE:", np.mean(rmses))
-    print("PSNR:", np.mean(psnrs))
+    print("RMSE:", np.mean(rmses.values()))
+    print("PSNR:", np.mean(psnrs.values()))
+
+    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+        pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
+
 
 
 # matrices for multiplying that needs to calculate only once
