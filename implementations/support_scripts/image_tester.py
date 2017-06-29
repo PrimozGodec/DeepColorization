@@ -76,8 +76,8 @@ def image_error_full_vgg(model, name, b_size=32):
             # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_save_path + name + image_list[batch_n * b_size + i])
         print(batch_n)
 
-    print("RMSE:", np.mean(rmses.values()))
-    print("PSNR:", np.mean(psnrs.values()))
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
 
     with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
@@ -196,8 +196,8 @@ def image_error_small_vgg(model, name):
         if i % 500 == 0:
             print(i)
 
-    print("RMSE:", np.mean(rmses.values()))
-    print("PSNR:", np.mean(psnrs.values()))
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
 
     with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
@@ -244,8 +244,8 @@ def image_error_vgg(model, name, b_size=32, dim=3):
             # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[batch_n * b_size + i])
         print(batch_n)
 
-    print("RMSE:", np.mean(rmses.values()))
-    print("PSNR:", np.mean(psnrs.values()))
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
 
     with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
@@ -388,8 +388,8 @@ def image_error_hist(model, name, b_size=32):
             # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + im_name)
         print(batch_n)
 
-    print("RMSE:", np.mean(rmses.values()))
-    print("PSNR:", np.mean(psnrs.values()))
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
 
     with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
