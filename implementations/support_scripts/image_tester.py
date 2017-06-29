@@ -257,8 +257,8 @@ def image_error_small_hist(model, name):
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
-    rmses = []
-    psnrs = []
+    rmses = {}
+    psnrs = {}
 
     # repeat for each image
     # lets take first n images
@@ -327,14 +327,16 @@ def image_error_small_hist(model, name):
 
             original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
 
-        rmses.append(rmse(original_size_im, image_lab[:, :, 1:]))
+        im_name = image_list[i]
+
+        rmses[im_name] = rmse(original_size_im, image_lab[:, :, 1:])
 
         # to rgb
         color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
         # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
         im_rgb = color.lab2rgb(color_im)
 
-        psnrs.append(psnr(im_rgb * 256, image_rgb))
+        psnrs[im_name] = psnr(im_rgb * 256, image_rgb)
 
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
@@ -343,8 +345,11 @@ def image_error_small_hist(model, name):
         if i % 500 == 0:
             print(i)
 
-    print("RMSE:", np.mean(rmses))
-    print("PSNR:", np.mean(psnrs))
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
+
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
+        pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
 def image_error_hist(model, name, b_size=32):
