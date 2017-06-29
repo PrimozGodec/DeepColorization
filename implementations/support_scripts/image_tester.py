@@ -32,7 +32,7 @@ def image_error_full_vgg(model, name, b_size=32):
     """
 
     abs_file_path = get_abs_path("../../../subset100_000/validation")
-    image_list = os.listdir(abs_file_path)
+    image_list = os.listdir(abs_file_path)[:10]
     num_of_images = len(image_list)
 
     rmses = {}
