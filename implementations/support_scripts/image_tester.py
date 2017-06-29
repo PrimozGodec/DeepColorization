@@ -4,6 +4,7 @@ import os
 import scipy
 from skimage import color
 import scipy.misc
+import pickle
 
 import numpy as np
 
@@ -335,8 +336,8 @@ def image_error_hist(model, name, b_size=32):
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
-    rmses = []
-    psnrs = []
+    rmses = {}
+    psnrs = {}
 
     for batch_n in range(num_of_images // b_size):
         all_images = np.zeros((b_size, 224, 224, 3))
@@ -362,13 +363,18 @@ def image_error_hist(model, name, b_size=32):
                                      a[:, :, np.newaxis], b[:, :, np.newaxis]), axis=2)
             im_rgb = color.lab2rgb(lab_im)
 
-            rmses.append(rmse(lab_im[:, :, 1:], all_images[i, :, :, 1:]))
-            psnrs.append(psnr(im_rgb * 256, all_images_rgb[i, :, :, :]))
+            im_name = image_list[batch_n * b_size + i]
+
+            rmses[im_name] = rmse(lab_im[:, :, 1:], all_images[i, :, :, 1:])
+            psnrs[im_name] = psnr(im_rgb * 256, all_images_rgb[i, :, :, :])
 
             # save
-            abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
-            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[batch_n * b_size + i])
+            # abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
+            # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + im_name)
         print(batch_n)
 
-    print("RMSE:", np.mean(rmses))
-    print("PSNR:", np.mean(psnrs))
+    print("RMSE:", np.mean(rmses.values()))
+    print("PSNR:", np.mean(psnrs.values()))
+
+    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+        pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
