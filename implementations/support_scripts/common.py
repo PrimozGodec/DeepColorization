@@ -400,6 +400,27 @@ class H5Choose:
         return join(self.dir, selected)
 
 
+def h5_small_generator(batch_size, dir, downloader):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    x2 = None
+    y = None
+    n = 0
+
+    while True:
+        f = None
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['small']
+            y = f['ab_hist']
+            n = 0
+        yield x1[n:n+batch_size], y[n:n+batch_size]
+        n += batch_size
+
+
 def h5_small_vgg_generator(batch_size, dir, downloader):
     file_picker = H5Choose(dir=dir)
     x1 = None

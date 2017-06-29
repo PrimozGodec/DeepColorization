@@ -5,7 +5,8 @@ import os
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
-from implementations.support_scripts.common import h5_small_vgg_generator, whole_image_check_overlapping
+from implementations.support_scripts.common import h5_small_vgg_generator, whole_image_check_overlapping, \
+    h5_small_generator
 
 from keras.engine import Model
 
@@ -81,7 +82,7 @@ def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true), axis=[1, 2, 3])
 
 
-model = Model(inputs=[main_input, vgg16.input], output=last)
+model = Model(inputs=main_input, output=last)
 opt = optimizers.Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, mean_squared_error])
 
@@ -95,8 +96,8 @@ n_epochs = 10000
 # start image downloader
 ip = None
 
-g = h5_small_vgg_generator(b_size, "../data/h5_small_train", ip)
-gval = h5_small_vgg_generator(b_size, "../data/h5_small_validation", None)
+g = h5_small_generator(b_size, "../data/h5_small_train", ip)
+gval = h5_small_generator(b_size, "../data/h5_small_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
