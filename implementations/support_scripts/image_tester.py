@@ -83,6 +83,9 @@ def image_error_full_vgg(model, name, b_size=32):
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
+
+
+
 # matrices for multiplying that needs to calculate only once
 vec = np.hstack((np.linspace(1/16, 1 - 1/16, 16), np.flip(np.linspace(1/16, 1 - 1/16, 16), axis=0)))
 one = np.ones((32, 32))
@@ -136,6 +139,104 @@ def image_error_small_vgg(model, name):
 
         # append together booth lists
         input_data = [slices, np.array([image_l_224,] * slices_dim ** 2 * 4)]
+
+        # predict
+        predictions_ab = model.predict(input_data, batch_size=32)
+
+        # reshape back
+        original_size_im = np.zeros((h, w, 2))
+
+        for n in range(predictions_ab.shape[0]):
+            a, b = n // (slices_dim * 2) * 16, n % (slices_dim * 2) * 16
+
+            if a + 32 > 256 or b + 32 > 256:
+                continue  # it is empty edge
+
+            # weight decision
+            if a == 0 and b == 0:
+                weight = weight_top_left
+            elif a == 0 and b == 224:
+                weight = weight_top_right
+            elif a == 0:
+                weight = weight_top
+            elif a == 224 and b == 0:
+                weight = weight_bottom_left
+            elif b == 0:
+                weight = weight_left
+            elif a == 224 and b == 224:
+                weight = weight_bottom_right
+            elif a == 224:
+                weight = weight_bottom
+            elif b == 224:
+                weight = weight_right
+            else:
+                weight = weight_m
+
+            im_a = predictions_ab[n, :, :, 0] * weight
+            im_b = predictions_ab[n, :, :, 1] * weight
+
+            original_size_im[a:a+32, b:b+32, :] += np.stack((im_a, im_b), axis=2)
+
+        im_name = image_list[i]
+
+        rmses[im_name] = rmse(original_size_im, image_lab[:, :, 1:])
+
+        # to rgb
+        color_im = np.concatenate((image_l[:, :, np.newaxis], original_size_im), axis=2)
+        # color_im = np.concatenate(((np.ones(image_l.shape) * 50)[:, :, np.newaxis], original_size_im), axis=2)
+        im_rgb = color.lab2rgb(color_im)
+
+        # calculate psnr
+        psnrs[im_name] = psnr(im_rgb * 256, image_rgb)
+
+        # save
+        abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
+        # commented to speedup
+        # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+
+        # print progress
+        if i % 500 == 0:
+            print(i)
+
+    print("RMSE:", np.mean(list(rmses.values())))
+    print("PSNR:", np.mean(list(psnrs.values())))
+
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "wb") as f:
+        pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
+
+
+def image_error_small_no_vgg(model, name):
+    """
+    Used to test let-there-be-color
+    """
+
+    # find directory
+    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    image_list = os.listdir(test_set_dir_path)
+    num_of_images = len(image_list)
+
+    rmses = {}
+    psnrs = {}
+    # repeat for each image
+    # lets take first n images
+    for i in range(num_of_images):
+        # get image
+        image_rgb = load_images_rgb(test_set_dir_path, image_list[i])  # image is of size 256x256
+        image_lab = color.rgb2lab(image_rgb)
+        image_l = images_to_l(image_lab)
+
+        h, w = image_l.shape
+
+        # split images to list of images
+        slices_dim = 256//32
+        slices = np.zeros((slices_dim * slices_dim * 4, 32, 32, 1))
+        for a in range(slices_dim * 2 - 1):
+            for b in range(slices_dim * 2 - 1):
+
+                slices[a * slices_dim * 2 + b] = image_l[a*32//2: a*32//2 + 32, b*32//2: b*32//2 + 32, np.newaxis]
+
+        # append together booth lists
+        input_data = slices
 
         # predict
         predictions_ab = model.predict(input_data, batch_size=32)
