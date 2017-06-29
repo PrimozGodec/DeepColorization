@@ -16,7 +16,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, Activation
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 b_size = 32
 
@@ -96,7 +96,7 @@ model.compile(optimizer=opt, loss=custom_kullback_leibler_divergence,
 
 model.summary()
 
-start_from = 22
+start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
 
