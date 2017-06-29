@@ -79,9 +79,8 @@ def image_error_full_vgg(model, name, b_size=32):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
-
 
 
 # matrices for multiplying that needs to calculate only once
@@ -199,13 +198,13 @@ def image_error_small_vgg(model, name):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
 
 
 def image_error_vgg(model, name, b_size=32, dim=3):
     test_set_dir_path = get_abs_path("../../../subset100_000/validation")
-    image_list = os.listdir(test_set_dir_path)[:32]
+    image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
     rmses = {}
@@ -248,8 +247,9 @@ def image_error_vgg(model, name, b_size=32, dim=3):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
+
 
 def image_error_small_hist(model, name):
     test_set_dir_path = get_abs_path("../../../subset100_000/validation")
@@ -392,5 +392,5 @@ def image_error_hist(model, name, b_size=32):
     print("RMSE:", np.mean(list(rmses.values())))
     print("PSNR:", np.mean(list(psnrs.values())))
 
-    with open(get_abs_path("../../rmses/name" + ".pkl")) as f:
+    with open(get_abs_path("../../rmses/" + name + ".pkl"), "w") as f:
         pickle.dump({"rmses": rmses, "psnrs": psnrs}, f)
