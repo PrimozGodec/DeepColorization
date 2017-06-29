@@ -15,7 +15,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, Lambda, Dense, concatenate, regularizers, add, Conv2DTranspose, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 b_size = 32
 
