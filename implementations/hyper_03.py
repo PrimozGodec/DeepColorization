@@ -70,15 +70,15 @@ model.compile(optimizer=opt, loss=custom_mse)
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 3
+save_every_n_epoch = 1
 n_epochs = 10000
 # model.load_weights("../weights/hyper01-0.h5")
 
 # start image downloader
 ip = None
 
-g = h5_vgg_generator(b_size, "../h5_data_224", ip)
-gval = h5_vgg_generator(b_size, "../h5_data_224_validate", None)
+g = h5_vgg_generator(b_size, "../data/h5_224_train", ip)
+gval = h5_vgg_generator(b_size, "../data/h5_224_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
