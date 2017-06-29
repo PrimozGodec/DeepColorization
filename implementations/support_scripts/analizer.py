@@ -9,7 +9,7 @@ This script show data chart analysis for training
 import os
 import pickle
 
-implementation = "imp10-full"
+implementation = "hyper03"
 
 # list all history files
 files = sorted([x for x in os.listdir("../../history")

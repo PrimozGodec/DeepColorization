@@ -6,6 +6,8 @@ from tensorflow.python.ops.image_ops_impl import ResizeMethod
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_tester import image_error_vgg
+
 from implementations.support_scripts.common import h5_vgg_generator, image_check
 from keras.applications import VGG16
 from keras.engine import Model
@@ -72,25 +74,27 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
-# model.load_weights("../weights/hyper01-0.h5")
+model.load_weights("../weights/hyper03-9.h5")
 
 # start image downloader
 ip = None
 
-g = h5_vgg_generator(b_size, "../data/h5_224_train", ip)
-gval = h5_vgg_generator(b_size, "../data/h5_224_validation", None)
+# g = h5_vgg_generator(b_size, "../data/h5_224_train", ip)
+# gval = h5_vgg_generator(b_size, "../data/h5_224_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(1024//b_size))
+#     model.save_weights("../weights/hyper03-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     image_check(model, 40, "hyper03-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+#
+#     # save history
+#     output = open('../history/hyper03-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(1024//b_size))
-    model.save_weights("../weights/hyper03-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    image_check(model, 40, "hyper03-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
-
-    # save history
-    output = open('../history/hyper03-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
+image_error_vgg(model, "hyper03-test-100", b_size=b_size)
