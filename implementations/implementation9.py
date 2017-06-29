@@ -4,18 +4,14 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
-from implementations.support_scripts.image_tester import image_error_small_vgg
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
 
-from implementations.support_scripts.common import h5_small_vgg_generator, \
-    whole_image_check_overlapping
 from keras.applications import VGG16
 from keras.engine import Model
 
 from keras import backend as K, Input
 from keras import optimizers
-from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, Add, add, \
-    Conv2DTranspose, MaxPooling2D
+from keras.layers import Conv2D, Lambda, Dense, concatenate, regularizers, add, Conv2DTranspose, MaxPooling2D
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
