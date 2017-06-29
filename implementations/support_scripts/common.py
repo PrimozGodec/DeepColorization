@@ -552,7 +552,7 @@ def h5_full_generator_no_vgg(batch_size, dir, downloader):
             x1 = f['im']
             n = 0
 
-        yield x1[n:n+batch_size, :, :, 0], x1[n:n+batch_size, :, :, 1:3]
+        yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], x1[n:n+batch_size, :, :, 1:3]
         n += batch_size
 
 
