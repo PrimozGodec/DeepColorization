@@ -61,7 +61,7 @@ def image_error_full_vgg(model, name, b_size=32):
 
         im_from = batch_n * b_size
         rmse_t = list(rmse(color_im, all_images[:, :, :, 1:]))
-        rmses.update({im_n: r for im_n, r in zip(rmse_t, image_list[im_from: im_from+b_size])})
+        rmses.update({im_n: r for im_n, r in zip(image_list[im_from: im_from + b_size], rmse_t)})
 
         abs_save_path = get_abs_path('../../validation_colorization/')
         for i in range(b_size):
@@ -229,7 +229,7 @@ def image_error_vgg(model, name, b_size=32, dim=3):
 
         im_from = batch_n * b_size
         rmse_t = list(rmse(color_im, all_images[:, :, :, 1:]))
-        rmses.update({im_n: r for im_n, r in zip(rmse_t, image_list[im_from: im_from + b_size])})
+        rmses.update({im_n: r for im_n, r in zip(image_list[im_from: im_from + b_size], rmse_t)})
 
         abst_path = get_abs_path('../../validation_colorization/')
         for i in range(b_size):
