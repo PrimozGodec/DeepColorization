@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_tester import image_error_small_vgg
 from implementations.support_scripts.metrics import root_mean_squared_error, mean_squared_error
 
 from keras.applications import VGG16
@@ -13,7 +14,7 @@ from keras import backend as K, Input
 from keras import optimizers
 from keras.layers import Conv2D, Lambda, Dense, concatenate, regularizers, add, Conv2DTranspose, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 b_size = 32
 
@@ -106,7 +107,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
-# model.load_weights("../weights/implementation9-12.h5")
+model.load_weights("../weights/implementation9-12.h5")
 
 # start image downloader
 ip = None
@@ -129,5 +130,5 @@ ip = None
 #     pickle.dump(history.history, output)
 #     output.close()
 
-# image_error_small_vgg(model, "imp09-test-100")
+image_error_small_vgg(model, "imp09-test-100")
 
