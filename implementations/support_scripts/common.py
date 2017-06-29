@@ -537,6 +537,25 @@ def h5_vgg_generator(batch_size, dir, downloader):
         n += batch_size
 
 
+def h5_full_generator_no_vgg(batch_size, dir, downloader):
+    file_picker = H5Choose(dir=dir)
+    x1 = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next(downloader)
+            f = h5py.File(file, 'r')
+            x1 = f['im']
+            n = 0
+
+        yield x1[n:n+batch_size, :, :, 0], x1[n:n+batch_size, :, :, 1:3]
+        n += batch_size
+
+
 def h5_vgg_generator_let_there(batch_size, dir, downloader):
     file_picker = H5Choose(dir=dir)
     x1 = None
