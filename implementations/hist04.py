@@ -131,7 +131,7 @@ model.compile(optimizer=opt, loss=categorical_crossentropy_color)
 model.summary()
 
 start_from = 0
-save_every_n_epoch = 5
+save_every_n_epoch = 1
 n_epochs = 10000
 
 print("weights loaded")
@@ -142,8 +142,8 @@ print("weights loaded")
 # ip.start()
 ip = None
 
-g = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../h5_data", ip)
-gval = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../h5_validate", None)
+g = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_train", ip)
+gval = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_validation", None)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):

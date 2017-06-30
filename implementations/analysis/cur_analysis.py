@@ -1,8 +1,9 @@
 import numpy as np
 import os
 import pickle
-from Orange.projection import CUR
+from Orange.projection import CUR, PCA
 from Orange.data import Table
+from scipy import linalg
 
 """ Construct RMSE matrix M """
 
@@ -25,12 +26,24 @@ for i, rmse_d in enumerate(rmse_data):
 
 """ Perform CUR """
 data = Table(M)
-print(data)
-cur = CUR(rank=7, max_error=2, compute_U=False)
+# print(data)
+cur = CUR(rank=7, max_error=1, compute_U=False)
 cur_model = cur(data)
 
 transformed_data = cur_model(data, axis=1)
 a = np.argmax(transformed_data, axis=1)
-print(transformed_data)
+# print(transformed_data)
 
-print(a)
+# print(a)
+
+""" SVD """
+U, s, Vh = linalg.svd(M, full_matrices=False)
+print(U.shape, s.shape, Vh.shape)
+maxs = np.argmax(Vh, axis=1)
+
+print(maxs)
+print([list(images)[x] for x in maxs])
+
+
+top = Vh.argsort(axis=1)
+print([list(images)[x] for x in top[0, -5:]])
