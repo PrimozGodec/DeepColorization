@@ -4,8 +4,8 @@ import os
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
-from implementations.support_scripts.common import whole_image_check, h5_small_vgg_generator, \
-    h5_small_vgg_generator_onehot, whole_image_check_hist, h5_small_vgg_generator_onehot_weight_hist04
+from implementations.support_scripts.image_tester import image_error_small_hist
+
 from keras.applications import VGG16
 from keras.engine import Model
 
@@ -135,28 +135,29 @@ save_every_n_epoch = 1
 n_epochs = 10000
 
 print("weights loaded")
-# model.load_weights("../weights/implementation7d-hist-65.h5")
+model.load_weights("../weights/hist04-31.h5")
 
 # start image downloader
 # ip = ImagePacker("../small_dataset", "../h5_data",  "imp7d-", num_images=1024, num_files=None)
 # ip.start()
-ip = None
+# ip = None
+#
+# g = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_train", ip)
+# gval = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(1024//b_size))
+#     model.save_weights("../weights/hist04-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     whole_image_check_hist(model, 20, "hist04-" + str(i * save_every_n_epoch) + "-")
+#
+#     # save history
+#     output = open('../history/hist04-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-g = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_train", ip)
-gval = h5_small_vgg_generator_onehot_weight_hist04(b_size, "../data/h5_small_validation", None)
-
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=60000/b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(1024//b_size))
-    model.save_weights("../weights/hist04-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    whole_image_check_hist(model, 20, "hist04-" + str(i * save_every_n_epoch) + "-")
-
-    # save history
-    output = open('../history/hist04-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
-
+image_error_small_hist(model, "hist04-test-100")
