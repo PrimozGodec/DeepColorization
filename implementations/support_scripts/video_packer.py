@@ -14,7 +14,7 @@ from implementations.support_scripts.image_processing import resize_rgb
 
 
 def save_h5(data, to_dir, im_num):
-    f = h5py.File(os.path.join(to_dir, im_num + ".h5"), 'w')
+    f = h5py.File(os.path.join(to_dir, str(im_num) + ".h5"), 'w')
     f.create_dataset('im', data.shape, dtype='float', data=data)
 
 
@@ -28,7 +28,7 @@ def video2h5(from_dir, to_dir, images_per_file):
     file_n = 0
     n = 0
 
-    for video_file in video_files:
+    for i, video_file in enumerate(video_files):
         vid = skvideo.io.vreader(os.path.join(from_dir, video_file))
         for frame in vid:
             rgb = resize_rgb(frame, size=(224, 224))
@@ -43,6 +43,7 @@ def video2h5(from_dir, to_dir, images_per_file):
                 n = 0
 
         vid.close()
+        print(i)
 
     # save last data if exist
     if n >= 0:
