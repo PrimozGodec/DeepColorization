@@ -41,9 +41,14 @@ U, s, Vh = linalg.svd(M, full_matrices=False)
 print(U.shape, s.shape, Vh.shape)
 maxs = np.argmax(Vh, axis=1)
 
-print(maxs)
-print([list(images)[x] for x in maxs])
-
-
 top = Vh.argsort(axis=1)
-print([list(images)[x] for x in top[0, -5:]])
+# print(top[:, -5:])
+
+selected_images_ids = top[:, -9:].flatten()
+print(len(selected_images_ids))
+
+""" make error matrix for selected """
+A = np.zeros((num_files, len(selected_images_ids)))
+for i, rmse_d in enumerate(rmse_data):
+    rmses_per_method = [rmse_d["rmses"][list(images)[x]] for x in selected_images_ids]
+    A[i, :] = rmses_per_method
