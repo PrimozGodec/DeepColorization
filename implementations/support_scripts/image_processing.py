@@ -20,6 +20,7 @@ import scipy.stats as st
 
 import scipy.ndimage
 import scipy.signal
+import scipy.misc
 
 
 
@@ -69,6 +70,12 @@ def resize_image(im, size):
     # img = Image.fromarray(im, 'L')
     # img = img.resize(size, Image.ANTIALIAS)
     # return np.array(img)
+
+
+def resize_rgb(im, size):
+    img = Image.fromarray(im, 'RGB')
+    img = img.resize(size, Image.ANTIALIAS)
+    return np.array(img)
 
 
 def images_to_l(image):
