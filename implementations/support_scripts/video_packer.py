@@ -10,6 +10,7 @@ import numpy as np
 import skvideo.io
 from skimage import color
 
+sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 from implementations.support_scripts.image_processing import resize_rgb
 
 
