@@ -53,4 +53,4 @@ def video2h5(from_dir, to_dir, images_per_file):
 
 
 if __name__ == "__main__":
-    video2h5("../../../videos_dataset/training", "../../data/video/training", 1024)
+    video2h5("../../../videos_dataset/validation", "../../data/video/validation", 1024)
