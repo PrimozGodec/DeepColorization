@@ -32,6 +32,7 @@ if not os.path.isfile(save_in):
 with open(save_in, "rb") as f:
     nature_videos = pickle.load(f)
 
+nature_videos = nature_videos[::-1]
 
 """ download videos """
 # extract videos length
@@ -49,7 +50,7 @@ import youtube_dl
 
 info = {}
 ydl_opts = {}
-ydl = youtube_dl.YoutubeDL({'outtmpl': '../../../videos_dataset/%(id)s.%(ext)s'})
+ydl = youtube_dl.YoutubeDL({'outtmpl': '../../../videos_dataset/validation/%(id)s.%(ext)s'})
 with open(save_in, "wb") as f:
     with ydl:
         for video in nature_videos:
@@ -70,7 +71,7 @@ with open(save_in, "wb") as f:
                 pickle.dump(video_info, f)
 
                 total_length += result["duration"]
-                if total_length > 4000:
+                if total_length > 1000:
                     exit()
 
 
