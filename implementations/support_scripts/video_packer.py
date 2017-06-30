@@ -4,6 +4,7 @@ Transform frames to lab
 Write them as h5 file
 """
 import os
+import sys
 
 import h5py
 import numpy as np
