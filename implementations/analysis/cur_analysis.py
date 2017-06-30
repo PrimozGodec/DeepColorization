@@ -2,7 +2,7 @@ import numpy as np
 import os
 import pickle
 from Orange.projection import CUR, PCA
-from Orange.data import Table, Domain, ContinuousVariable
+from Orange.data import Table, Domain, ContinuousVariable, DiscreteVariable, StringVariable
 from scipy import linalg
 
 """ Construct RMSE matrix M """
@@ -54,13 +54,19 @@ for i, rmse_d in enumerate(rmse_data):
     A[i, :] = rmses_per_method
 
 A = A.T  # to get methods as a feature
+selected_names = [list(images)[x] for x in selected_images_ids]
+print(len(set(selected_names)))  # check unique
 
 print(A.shape)
 
 """ Pack as a orange table """
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files])
-table = Table(domain, A)
+domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Image")])
+table = Table(domain, A, metas=np.array(selected_names)[:, np.newaxis])
+
+domain_methods = Domain([ContinuousVariable(im) for im in selected_names], metas=[StringVariable("Method")])
+table_methods = Table(domain_methods, A.T, metas=np.array(rmse_files)[:, np.newaxis])
 # print(table.domain)
 
 """ Save data """
-table.save("../../processed_data/top99.tab")
+table.save("../../processed_data/top99-images.tab")
+table_methods.save("../../processed_data/top99-methods.tab")
