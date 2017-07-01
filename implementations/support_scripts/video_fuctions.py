@@ -2,6 +2,7 @@ import os
 import random
 
 import h5py
+import numpy as np
 
 
 class VideoH5Chooser:
@@ -33,27 +34,38 @@ class VideoH5Chooser:
         return os.path.join(self.dir, sel)
 
 
-def imp10_full_generator(batch_size, dir, ):
-    file_picker = VideoH5Chooser(dir=dir)
+def h5_vgg_generator_let_there(batch_size, dir, num_neighbours=0, random=True):
+    file_picker = VideoH5Chooser(dir=dir, random=random)
     x1 = None
     n = 0
     f = None
 
     while True:
-        if x1 is None or n > len(x1) - batch_size:
+        if x1 is None or n > len(x1) - batch_size - num_neighbours:
             if f is not None:
                 f.close()
             file = file_picker.pick_next()
             f = h5py.File(file, 'r')
             x1 = f['im']
-            n = 0
+            n = num_neighbours  # skip fist n images if learning with neighbours
 
-        yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], x1[n:n+batch_size, :, :, 1:3]
+        frames = []
+        for i in range(batch_size):
+            frames.append(np.concatenate(
+                np.split(x1[n+i-num_neighbours:n+i+num_neighbours+1, :, :, 0], 1+2*num_neighbours, axis=0), axis=2))
+
+        yield ([np.stack(frames, axis=0),
+            np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3))],
+            x1[n:n+batch_size, :, :, 1:3])
         n += batch_size
+
 
 
 # test
 if __name__ == "__main__":
-    v = VideoH5Chooser("../../h5_data", False)
-    for i in range(10):
-        print(v.pick_next())
+    # v = VideoH5Chooser("../../h5_data", False)
+    # for i in range(10):
+    #     print(v.pick_next())
+
+    g = h5_vgg_generator_let_there(2, "../../data/video/training")
+    print(next(g))
