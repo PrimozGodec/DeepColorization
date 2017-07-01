@@ -51,10 +51,13 @@ def h5_vgg_generator_let_there(batch_size, dir, num_neighbours=0, random=True):
 
         frames = []
         for i in range(batch_size):
-            frames.append(np.concatenate(
-                np.split(x1[n+i-num_neighbours:n+i+num_neighbours+1, :, :, 0], 1+2*num_neighbours, axis=0), axis=2))
+            frames.append(np.stack(
+                np.split(x1[n+i-num_neighbours:n+i+num_neighbours+1, :, :, 0], 1+2*num_neighbours, axis=0), axis=3))
 
-        yield ([np.stack(frames, axis=0),
+        frames = np.stack(frames, axis=0)
+        b, _, w, h, c = frames.shape
+
+        yield ([frames.reshape(b, w, h, c),
             np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3))],
             x1[n:n+batch_size, :, :, 1:3])
         n += batch_size
@@ -67,5 +70,5 @@ if __name__ == "__main__":
     # for i in range(10):
     #     print(v.pick_next())
 
-    g = h5_vgg_generator_let_there(2, "../../data/video/training")
-    print(next(g))
+    g = h5_vgg_generator_let_there(2, "../../data/video/training", num_neighbours=1)
+    print(next(g)[0][0].shape)
