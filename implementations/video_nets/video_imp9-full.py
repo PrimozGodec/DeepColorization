@@ -2,11 +2,9 @@ import pickle
 import sys
 import os
 
-from implementations.support_scripts.video_fuctions import video_imp9_full_generator
 
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
-
-from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg
+from implementations.support_scripts.video_fuctions import video_imp9_full_generator, video_visual_checker_imp9_full
 
 from keras.applications import VGG16
 from keras.engine import Model
@@ -124,7 +122,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/video-imp10-full-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    # image_check_with_vgg(model, 80, "video-imp10-full-" + str(i * save_every_n_epoch) + "-")
+    video_visual_checker_imp9_full(model, 32, "video-imp10-full-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/video-imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

@@ -66,7 +66,7 @@ def video_imp9_full_generator(batch_size, dir, num_neighbours=0, random=True):
         n += batch_size
 
 
-def image_check_with_vgg(model, num_of_images, name, b_size=32, num_neighbours=0):
+def video_visual_checker_imp9_full(model, num_of_images, name, b_size=32, num_neighbours=0):
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
     g = video_imp9_full_generator(num_of_images, "../data/video/training", num_neighbours=num_neighbours)
 
