@@ -1,0 +1,59 @@
+import os
+import random
+
+import h5py
+
+
+class VideoH5Chooser:
+
+    def __init__(self, dir, random):
+        self.dir = dir
+        self.used = []
+        self.random = random
+        self.n = 0
+        self.files = self.all_files()
+
+    def all_files(self):
+        return [f for f in os.listdir(self.dir) if f.endswith("h5")]
+
+    def pick_next(self):
+        if not self.random:
+            sel = os.path.join(self.dir, self.files[self.n])
+            self.n += 1
+            if self.n >= len(self.files):
+                self.n = 0
+        else:
+            to_select = list(set(self.files) - set(self.used))
+
+            sel = random.choice(to_select)
+            self.used.append(sel)
+            if len(to_select) <= 1:
+                self.used = []  # to start again
+
+        return os.path.join(self.dir, sel)
+
+
+def imp10_full_generator(batch_size, dir, ):
+    file_picker = VideoH5Chooser(dir=dir)
+    x1 = None
+    n = 0
+    f = None
+
+    while True:
+        if x1 is None or n > len(x1) - batch_size:
+            if f is not None:
+                f.close()
+            file = file_picker.pick_next()
+            f = h5py.File(file, 'r')
+            x1 = f['im']
+            n = 0
+
+        yield x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis], x1[n:n+batch_size, :, :, 1:3]
+        n += batch_size
+
+
+# test
+if __name__ == "__main__":
+    v = VideoH5Chooser("../../h5_data", False)
+    for i in range(10):
+        print(v.pick_next())
