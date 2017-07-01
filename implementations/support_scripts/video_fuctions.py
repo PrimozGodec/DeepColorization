@@ -34,7 +34,7 @@ class VideoH5Chooser:
         return os.path.join(self.dir, sel)
 
 
-def h5_vgg_generator_let_there(batch_size, dir, num_neighbours=0, random=True):
+def video_imp9_full_generator(batch_size, dir, num_neighbours=0, random=True):
     file_picker = VideoH5Chooser(dir=dir, random=random)
     x1 = None
     n = 0
