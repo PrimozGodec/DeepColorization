@@ -71,4 +71,14 @@ if __name__ == "__main__":
     #     print(v.pick_next())
 
     g = h5_vgg_generator_let_there(2, "../../data/video/training", num_neighbours=1)
-    print(next(g)[0][0].shape)
+    for i in range(2):
+        a = next(g)
+
+    print(a[0][0].shape)
+
+    # test
+    f = h5py.File("../../data/video/training/0.h5", 'r')
+    x1 = f['im']
+
+    print(np.sum(a[0][0][0, :, :, 1] - x1[3, :, :, 0]))
+
