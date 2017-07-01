@@ -1,8 +1,11 @@
+import inspect
 import os
 import random
 
 import h5py
 import numpy as np
+import scipy.misc
+from skimage import color
 
 
 class VideoH5Chooser:
@@ -62,6 +65,23 @@ def video_imp9_full_generator(batch_size, dir, num_neighbours=0, random=True):
             x1[n:n+batch_size, :, :, 1:3])
         n += batch_size
 
+
+def image_check_with_vgg(model, num_of_images, name, b_size=32, num_neighbours=0):
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
+    g = video_imp9_full_generator(num_of_images, "../data/video/training", num_neighbours=num_neighbours)
+
+    network_input = next(g)[0]
+
+    color_im = model.predict(network_input, batch_size=b_size)
+
+    for i in range(num_of_images):
+        # to rgb
+        lab_im = np.concatenate((network_input[0][i, :, :, 0][:, :, np.newaxis], color_im[i]), axis=2)
+        im_rgb = color.lab2rgb(lab_im)
+
+        # save
+        abs_svave_path = os.path.join(script_dir, '../../result_images/')
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + str(i) + ".jpg")
 
 
 # test
