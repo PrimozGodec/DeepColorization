@@ -13,11 +13,11 @@ from keras import optimizers
 from keras.layers import Conv2D, UpSampling2D, Lambda, Dense, Merge, merge, concatenate, regularizers, Add, add, \
     Conv2DTranspose, MaxPooling2D
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 b_size = 32
 
-input_shape = (224, 224, 1)
+input_shape = (224, 224, 5)
 
 # main network
 main_input = Input(shape=input_shape, name='image_part_input')
@@ -110,20 +110,20 @@ n_epochs = 30
 
 # start image downloader
 
-g = video_imp9_full_generator(b_size, "../../data/video/training", num_neighbours=0, random=True)
-gval = video_imp9_full_generator(b_size, "../../data/video/validation", num_neighbours=0, random=False)
+g = video_imp9_full_generator(b_size, "../../data/video/training", num_neighbours=2, random=True)
+gval = video_imp9_full_generator(b_size, "../../data/video/validation", num_neighbours=2, random=False)
 
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../../weights/video-imp10-full-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../../weights/video-imp10-full-2-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    video_visual_checker_imp9_full(model, 32, "video-imp10-full-" + str(i * save_every_n_epoch) + "-")
+    video_visual_checker_imp9_full(model, 32, "video-imp10-full-2-" + str(i * save_every_n_epoch) + "-", num_neighbours=2)
 
     # save history
-    output = open('../../history/video-imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../../history/video-imp10-full-2-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
