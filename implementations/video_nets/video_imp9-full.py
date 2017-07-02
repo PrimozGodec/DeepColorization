@@ -2,7 +2,6 @@ import pickle
 import sys
 import os
 
-
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 from implementations.support_scripts.video_fuctions import video_imp9_full_generator, video_visual_checker_imp9_full
 
