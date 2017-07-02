@@ -22,7 +22,7 @@ class VideoH5Chooser:
 
     def pick_next(self):
         if not self.random:
-            sel = os.path.join(self.dir, self.files[self.n])
+            sel = self.files[self.n]
             self.n += 1
             if self.n >= len(self.files):
                 self.n = 0
