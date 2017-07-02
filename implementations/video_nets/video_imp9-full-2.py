@@ -121,7 +121,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../../weights/video-imp10-full-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    video_visual_checker_imp9_full(model, 32, "video-imp10-full-" + str(i * save_every_n_epoch) + "-", num_neighbours=1)
+    video_visual_checker_imp9_full(model, 32, "video-imp10-full-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../../history/video-imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
