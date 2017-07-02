@@ -118,12 +118,12 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     print("START", i * save_every_n_epoch, "/", n_epochs)
     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
                                   validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../../weights/video-imp10-full-" + str(i * save_every_n_epoch) + ".h5")
+    model.save_weights("../../weights/video-imp9-full-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    video_visual_checker_imp9_full(model, 32, "video-imp10-full-" + str(i * save_every_n_epoch) + "-", num_neighbours=1)
+    video_visual_checker_imp9_full(model, 32, "video-imp9-full-" + str(i * save_every_n_epoch) + "-", num_neighbours=1)
 
     # save history
-    output = open('../../history/video-imp10-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    output = open('../../history/video-imp9-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
     pickle.dump(history.history, output)
     output.close()
