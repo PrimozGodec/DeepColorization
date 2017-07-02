@@ -68,7 +68,7 @@ def video_imp9_full_generator(batch_size, dir, num_neighbours=0, random=True):
 
 def video_visual_checker_imp9_full(model, num_of_images, name, b_size=32, num_neighbours=0):
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))  # script directory
-    g = video_imp9_full_generator(num_of_images, "../data/video/training", num_neighbours=num_neighbours)
+    g = video_imp9_full_generator(num_of_images, "../../data/video/validation", num_neighbours=num_neighbours)
 
     network_input = next(g)[0]
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     # for i in range(10):
     #     print(v.pick_next())
 
-    g = h5_vgg_generator_let_there(2, "../../data/video/training", num_neighbours=1)
+    g = video_imp9_full_generator(2, "../../data/video/training", num_neighbours=1)
     for i in range(2):
         a = next(g)
 
