@@ -42,6 +42,7 @@ def video2h5(from_dir, to_dir, images_per_file, num_files):
             file_path = os.path.join(from_dir, file_from)
             f = h5py.File(file_path, 'r')
             images = f["im"]
+            f.close()
             T = images.shape[0]
 
             r_frame = randint(0, T-1-(num_neighbours * 2 + 1))
