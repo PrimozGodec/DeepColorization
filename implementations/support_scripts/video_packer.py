@@ -42,7 +42,7 @@ def video2h5(from_dir, to_dir, images_per_file, num_files):
             file_path = os.path.join(from_dir, file_from)
             f = h5py.File(file_path, 'r')
             images = f["im"]
-            f.close()
+
             T = images.shape[0]
 
             r_frame = randint(0, T-1-(num_neighbours * 2 + 1))
@@ -52,7 +52,7 @@ def video2h5(from_dir, to_dir, images_per_file, num_files):
             frames_ab[i, :, :, :] = lab_vid[num_neighbours, :, :, 1:]
             stacked_l = np.stack(np.split(lab_vid[:, :, :, 0], 1 + 2 * num_neighbours, axis=0), axis=3)
             frames_l[i, :, :, :] = stacked_l
-
+            f.close()
 
         save_h5((frames_l, frames_ab), to_dir, file_n)
         print(time.time() - t)
