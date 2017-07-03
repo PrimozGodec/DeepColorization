@@ -33,7 +33,7 @@ ranks = order.argsort(axis=1)
 
 # print(ranks[:, :10])
 
-rho, p = scipy.stats.spearmanr(M, axis=1)
+rho, p = scipy.stats.spearmanr(ranks, axis=1)
 
 # print(rho)
 print(" ".join(["".ljust(10)] + ["%s" % v[:10] for v in rmse_files]))
@@ -50,20 +50,60 @@ domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVa
 table = Table(domain, M.T, metas=[[r] for r in images])
 table.save("../../processed_data/m_10000_im.tab")
 
+""" pack rank m to table """
+domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+table = Table(domain, ranks.T, metas=[[r] for r in images])
+table.save("../../processed_data/ranks_1000.tab")
+
 """ Perform CUR """
-# data = Table(M)
-# # print(data)
-# cur = CUR(rank=7, max_error=1, compute_U=False)
-# cur_model = cur(data)
-#
-# transformed_data = cur_model(data, axis=1)
-# a = np.argmax(transformed_data, axis=1)
-# # print(transformed_data)
-#
-# # print(a)
-#
-# """ SVD """
-# U, s, Vh = linalg.svd(M, full_matrices=False)
+data = Table(ranks)
+# print(data)
+cur = CUR(rank=3, compute_U=False)
+cur_model = cur(data)
+
+transformed_data = cur_model(data, axis=1)
+transformed_data = np.array(transformed_data)
+
+find_per_row = 100 // transformed_data.shape[0]
+print(transformed_data.shape[0])
+print(find_per_row)
+all_rows = range(transformed_data.shape[0])
+tops = []
+for row in range(transformed_data.shape[0]):
+    sel_rows = [x for x in all_rows if x != row]
+    subs = transformed_data[sel_rows, :] - transformed_data[row, :]
+    score = np.mean(subs, axis=0)
+    top = score.argsort()[-find_per_row:]
+    tops.append(top.tolist())
+
+# flatten list
+tops = [item for sublist in tops for item in sublist]
+
+print(len(tops))
+print(len(set(tops)))
+
+top_ranks = ranks[:, tops]
+print(top_ranks.shape)
+
+for i in range(0, len(top_ranks)):
+    print(" ".join([rmse_files[i][:10]] + [("%d" % v).ljust(5) for v in top_ranks[i, :]]))
+
+""" pack rank to table """
+domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[tops]], metas=[StringVariable("Methods")])
+table = Table(domain, top_ranks, metas=[[r] for r in rmse_files])
+table.save("../../processed_data/ranks_top_100_per_method.tab")
+
+domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+table = Table(domain, top_ranks.T, metas=[[r] for r in np.array(list(images))[tops]])
+table.save("../../processed_data/ranks_top_100_per_image.tab")
+
+
+
+    # """ SVD """
+# U, s, Vh = linalg.svd(ranks, full_matrices=False)
+# print(Vh[:, :10])
+
+
 # print(U.shape, s.shape, Vh.shape)
 # maxs = np.argmax(Vh, axis=1)
 #
