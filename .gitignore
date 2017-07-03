@@ -112,3 +112,10 @@ h5_data/*
 h5_data_separate/*
 
 *.pkl
+data/
+hist_graphs/
+h5_data_224/
+h5_data_separate/
+log/
+result_merged/
+processed_data
