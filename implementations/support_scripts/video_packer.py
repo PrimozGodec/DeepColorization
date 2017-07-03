@@ -24,7 +24,7 @@ def save_h5(data, to_dir, im_num):
     f.create_dataset('ab', ab.shape, dtype='float', data=ab)
 
 
-def video2h5(from_dir, to_dir, images_per_file, num_files, name):
+def video2h5(from_dir, to_dir, images_per_file, num_files):
 
     # list files to pack
     video_files = os.listdir(from_dir)
@@ -57,4 +57,4 @@ def video2h5(from_dir, to_dir, images_per_file, num_files, name):
 
 
 if __name__ == "__main__":
-    video2h5("../../../videos_dataset/training_h5", "../../data/video/training", 1024, 100, "training")
+    video2h5("../../../videos_dataset/training_h5", "../../data/video/training", 1024, 100)
