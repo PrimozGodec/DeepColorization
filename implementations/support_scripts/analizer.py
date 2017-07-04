@@ -8,8 +8,9 @@ This script show data chart analysis for training
 # select implementation
 import os
 import pickle
+from matplotlib.ticker import MaxNLocator
 
-implementation = "hist03"
+implementation = "hist04"
 
 # list all history files
 files = sorted([x for x in os.listdir("../../history")
@@ -25,6 +26,7 @@ for file in files:
         loss += data["loss"]
         val_loss += data["val_loss"]
 
+ax = plt.figure().gca()
 plt.plot(loss)
 plt.plot(val_loss)
 
@@ -36,8 +38,11 @@ print(np.argmin(val_loss))
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+plt.legend(['train', 'test'], loc='upper right')
 plt.ylim([2, 4])
 
-plt.show()
+
+ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+# plt.show()
 plt.savefig("../../hist_graphs/" + implementation + ".jpg")
