@@ -98,7 +98,8 @@ table = Table(domain, top_ranks.T, metas=[[r] for r in np.array(list(images))[to
 table.save("../../processed_data/ranks_top_100_per_image.tab")
 
 """ Trial with outliers"""
-
+# implemented looking at this paper about outlier detection with knn
+# ftp://ftp10.us.freebsd.org/users/azhang/disc/disc01/cd1/out/papers/sigmod/efficientalgorisrrak.pdf
 from sklearn.neighbors import NearestNeighbors
 neigh = NearestNeighbors(n_neighbors=10)
 neigh.fit(transformed_data.T)
