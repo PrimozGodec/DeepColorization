@@ -39,30 +39,24 @@ class VideoH5Chooser:
 
 def video_imp9_full_generator(batch_size, dir, num_neighbours=0, random=True):
     file_picker = VideoH5Chooser(dir=dir, random=random)
-    x1 = None
+    l = None
+    ab = None
     n = 0
     f = None
 
     while True:
-        if x1 is None or n > len(x1) - batch_size - num_neighbours:
+        if l is None or n > len(l) - batch_size:
             if f is not None:
                 f.close()
             file = file_picker.pick_next()
             f = h5py.File(file, 'r')
-            x1 = f['im']
-            n = num_neighbours  # skip fist n images if learning with neighbours
+            l = f["l"]
+            ab = f["ab"]
+            n = 0
 
-        frames = []
-        for i in range(batch_size):
-            frames.append(np.stack(
-                np.split(x1[n+i-num_neighbours:n+i+num_neighbours+1, :, :, 0], 1+2*num_neighbours, axis=0), axis=3))
-
-        frames = np.stack(frames, axis=0)
-        b, _, w, h, c = frames.shape
-
-        yield ([frames.reshape(b, w, h, c),
-            np.tile(x1[n:n+batch_size, :, :, 0][:, :, :, np.newaxis],  (1, 1, 1, 3))],
-            x1[n:n+batch_size, :, :, 1:3])
+        yield ([l[n:n+batch_size, :, :, 4-num_neighbours:4+num_neighbours+1],
+                np.tile(l[n:n + batch_size, :, :, 4][:, :, :, np.newaxis], (1, 1, 1, 3))],
+               ab[n:n+batch_size, :, :, :])
         n += batch_size
 
 
