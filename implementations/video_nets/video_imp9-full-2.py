@@ -116,8 +116,8 @@ gval = video_imp9_full_generator(b_size, "../../data/video/validation", num_neig
 
 for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
     print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
+    history = model.fit_generator(g, steps_per_epoch=102400//b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(10240//b_size))
     model.save_weights("../../weights/video-imp9-full-2-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
