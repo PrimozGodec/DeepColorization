@@ -97,12 +97,33 @@ domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVa
 table = Table(domain, top_ranks.T, metas=[[r] for r in np.array(list(images))[tops]])
 table.save("../../processed_data/ranks_top_100_per_image.tab")
 
+""" Trial with outliers"""
 
+from sklearn.neighbors import NearestNeighbors
+neigh = NearestNeighbors(n_neighbors=10)
+neigh.fit(transformed_data.T)
 
-    # """ SVD """
+distance_to_neighbours = neigh.kneighbors(transformed_data.T)
+max_dist_idx = distance_to_neighbours[0][:, -1].argsort()[-100:]
+print(max_dist_idx.shape)
+
+print(len(set(max_dist_idx) - set(tops)))
+
+top_ranks_knn = ranks[:, max_dist_idx]
+for i in range(0, len(top_ranks_knn)):
+    print(" ".join([rmse_files[i][:10]] + [("%d" % v).ljust(5) for v in top_ranks_knn[i, :]]))
+
+domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+table = Table(domain, top_ranks_knn.T, metas=[[r] for r in np.array(list(images))[max_dist_idx]])
+table.save("../../processed_data/ranks_top_100_per_image_knn.tab")
+
+domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[max_dist_idx]], metas=[StringVariable("Methods")])
+table = Table(domain, top_ranks_knn, metas=[[r] for r in rmse_files])
+table.save("../../processed_data/ranks_top_100_per_method_knn.tab")
+
+# """ SVD """
 # U, s, Vh = linalg.svd(ranks, full_matrices=False)
 # print(Vh[:, :10])
-
 
 # print(U.shape, s.shape, Vh.shape)
 # maxs = np.argmax(Vh, axis=1)
