@@ -290,7 +290,7 @@ def image_error_small_no_vgg(model, name):
         # save
         abs_svave_path = os.path.join(get_abs_path('../../validation_colorization/'))
         # commented to speedup
-        # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
+        scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abs_svave_path + name + image_list[i])
 
         # print progress
         if i % 500 == 0:
@@ -341,7 +341,7 @@ def image_error_vgg(model, name, b_size=32, dim=3):
             psnrs[image_list[batch_n * b_size + i]] = psnr(im_rgb * 256, all_images_rgb[i, :, :, :])
 
             # save
-            # scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[batch_n * b_size + i])
+            scipy.misc.toimage(im_rgb, cmin=0.0, cmax=1.0).save(abst_path + name + image_list[batch_n * b_size + i])
         print(batch_n)
 
     print(list(rmses.values()))

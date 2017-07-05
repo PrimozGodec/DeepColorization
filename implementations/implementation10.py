@@ -89,6 +89,10 @@ model.compile(optimizer=opt, loss=custom_mse, metrics=[root_mean_squared_error, 
 
 model.summary()
 
+from keras.utils import plot_model
+plot_model(model, to_file='model.png')
+
+exit()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 10000
