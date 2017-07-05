@@ -7,17 +7,53 @@ from Orange.projection import CUR, PCA
 from Orange.data import Table, Domain, ContinuousVariable, DiscreteVariable, StringVariable
 from scipy import linalg
 
+""" methods names """
+
+rename_methods = {"colorful-test-100": "Zang in sod.",
+                  "hist02-test-100": "Klas. brez uteži - arih. 1",
+                  "hist03-test-100": "Klas. brez uteži - arih. 2",
+                  "hist04-test-100": "Klas. z utežmi - arih. 2",
+                  "hist05-test-100": "Klas. z utežmi - arih. 1",
+                  "hyper03-test-100": "Dahl",
+                  "imp09-test-100": "Reg. po delih",
+                  "imp9-full-100": "Reg. celotna slika",
+                  "imp09-wsm-test-100": "Reg. po delih - brez softmax",
+                  "imp10-test-100": "Reg. po delih - brez globalne mreže",
+                  "imp10-full-100": "Reg. celotna slika - brez globalne mreže",
+                  "let-there-color-test-100": "Iizuka in sod.",
+                  "vgg-test-100": "Reg. celotna slika VGG"}
+
 """ Construct RMSE matrix M """
 
 rmse_files = os.listdir("../../rmses")
 num_files = len(rmse_files)
 
+# make rigth order
+rmse_files = [
+    'colorful-test-100.pkl',
+    'let-there-color-test-100.pkl',
+    'hyper03-test-100.pkl',
+    'imp09-test-100.pkl',
+    'imp09-wsm-test-100.pkl',
+    'imp10-test-100.pkl',
+    'imp9-full-100.pkl',
+    'imp10-full-100.pkl',
+    'vgg-test-100.pkl',
+    'hist02-test-100.pkl',
+    'hist03-test-100.pkl',
+    'hist04-test-100.pkl',
+    'hist05-test-100.pkl']
+
 rmse_data = []
+
 
 # read all files
 for rmse_file in rmse_files:
     with (open(os.path.join("../../rmses", rmse_file), "rb")) as f:
         rmse_data.append(pickle.load(f))
+
+rmse_files = [rename_methods[x[:-4]] for x in rmse_files]
+print(rmse_files)
 
 images = rmse_data[0]["rmses"].keys()
 
@@ -36,24 +72,24 @@ ranks = order.argsort(axis=1)
 rho, p = scipy.stats.spearmanr(ranks, axis=1)
 
 # print(rho)
-print(" ".join(["".ljust(10)] + ["%s" % v[:10] for v in rmse_files]))
+print("&".join(["".ljust(10)] + ["%s" % v[:10].ljust(10) for v in rmse_files]))
 for i in range(0, len(rho)):
-    print(" ".join([rmse_files[i][:10]] + [("%.4f" % v).ljust(10) for v in rho[i, :]]))
+    print("&".join([rmse_files[i][:10].ljust(10)] + [("%.4f" % v).ljust(10) for v in rho[i, :]]), "\\\\")
 
-""" pack rho values to orange data table to perform MDS """
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Methods")])
-table = Table(domain, rho, metas=[[r] for r in rmse_files])
-table.save("../../processed_data/spearman_rhos.tab")
-
-""" pack matrix m to table """
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
-table = Table(domain, M.T, metas=[[r] for r in images])
-table.save("../../processed_data/m_10000_im.tab")
-
-""" pack rank m to table """
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
-table = Table(domain, ranks.T, metas=[[r] for r in images])
-table.save("../../processed_data/ranks_1000.tab")
+# """ pack rho values to orange data table to perform MDS """
+# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Methods")])
+# table = Table(domain, rho, metas=[[r] for r in rmse_files])
+# table.save("../../processed_data/spearman_rhos.tab")
+#
+# """ pack matrix m to table """
+# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+# table = Table(domain, M.T, metas=[[r] for r in images])
+# table.save("../../processed_data/m_10000_im.tab")
+#
+# """ pack rank m to table """
+# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+# table = Table(domain, ranks.T, metas=[[r] for r in images])
+# table.save("../../processed_data/ranks_1000.tab")
 
 """ Perform CUR """
 data = Table(ranks)
@@ -86,16 +122,16 @@ top_ranks = ranks[:, tops]
 print(top_ranks.shape)
 
 for i in range(0, len(top_ranks)):
-    print(" ".join([rmse_files[i][:10]] + [("%d" % v).ljust(5) for v in top_ranks[i, :]]))
+    print(" ".join([rmse_files[i][:10].ljust(10)] + [("%d" % v).ljust(5) for v in top_ranks[i, :]]))
 
-""" pack rank to table """
-domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[tops]], metas=[StringVariable("Methods")])
-table = Table(domain, top_ranks, metas=[[r] for r in rmse_files])
-table.save("../../processed_data/ranks_top_100_per_method.tab")
-
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
-table = Table(domain, top_ranks.T, metas=[[r] for r in np.array(list(images))[tops]])
-table.save("../../processed_data/ranks_top_100_per_image.tab")
+# """ pack rank to table """
+# domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[tops]], metas=[StringVariable("Methods")])
+# table = Table(domain, top_ranks, metas=[[r] for r in rmse_files])
+# table.save("../../processed_data/ranks_top_100_per_method.tab")
+#
+# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+# table = Table(domain, top_ranks.T, metas=[[r] for r in np.array(list(images))[tops]])
+# table.save("../../processed_data/ranks_top_100_per_image.tab")
 
 """ Trial with outliers"""
 # implemented looking at this paper about outlier detection with knn
@@ -114,13 +150,13 @@ top_ranks_knn = ranks[:, max_dist_idx]
 for i in range(0, len(top_ranks_knn)):
     print(" ".join([rmse_files[i][:10]] + [("%d" % v).ljust(5) for v in top_ranks_knn[i, :]]))
 
-domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
-table = Table(domain, top_ranks_knn.T, metas=[[r] for r in np.array(list(images))[max_dist_idx]])
-table.save("../../processed_data/ranks_top_100_per_image_knn.tab")
-
-domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[max_dist_idx]], metas=[StringVariable("Methods")])
-table = Table(domain, top_ranks_knn, metas=[[r] for r in rmse_files])
-table.save("../../processed_data/ranks_top_100_per_method_knn.tab")
+# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])
+# table = Table(domain, top_ranks_knn.T, metas=[[r] for r in np.array(list(images))[max_dist_idx]])
+# table.save("../../processed_data/ranks_top_100_per_image_knn.tab")
+#
+# domain = Domain([ContinuousVariable(alg) for alg in np.array(list(images))[max_dist_idx]], metas=[StringVariable("Methods")])
+# table = Table(domain, top_ranks_knn, metas=[[r] for r in rmse_files])
+# table.save("../../processed_data/ranks_top_100_per_method_knn.tab")
 
 # """ SVD """
 # U, s, Vh = linalg.svd(ranks, full_matrices=False)
