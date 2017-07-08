@@ -5,7 +5,7 @@ dir_validation = "../../../imagenet_validation"
 
 val_set = os.listdir(dir_validation)
 for file in val_set:
-    without_jpg = file[:-5]
+    without_jpg, _ = file.split(".")
     print(without_jpg)
 
     im_dir, _ = without_jpg.split("_")
