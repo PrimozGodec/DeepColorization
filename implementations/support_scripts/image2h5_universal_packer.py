@@ -79,7 +79,7 @@ class ImagePacker(threading.Thread):
 
         def gen():
             start = time.time()
-            self.image_dirs = np.random.choice(self.image_dirs, self.num_files, p=self.dir_probabilities)
+            self.selected_image_dirs = np.random.choice(self.image_dirs, self.num_files, p=self.dir_probabilities)
             self.generate_h5_small_vgg(self.num_images, "{}{:0=4d}.h5".format(self.prefix, self.n))
 
             self.n += 1
@@ -103,7 +103,7 @@ class ImagePacker(threading.Thread):
 
 
     def select_file(self, i):
-        images = os.listdir(os.path.join(self.dir_from, self.image_dirs[i]))
+        images = os.listdir(os.path.join(self.dir_from, self.selected_image_dirs[i]))
         ch = random.choice(images)
 
         with open("../../../whole_subset_data/training.txt", "a") as f:
