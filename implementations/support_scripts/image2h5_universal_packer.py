@@ -102,7 +102,7 @@ class ImagePacker(threading.Thread):
 
 
     def select_file(self):
-        image_dir = np.random.choice(self.image_dirs, 1, p=self.dir_probabilities)
+        image_dir = np.random.choice(self.image_dirs, p=self.dir_probabilities)
         images = os.listdir(os.path.join(self.dir_from, image_dir))
         ch = random.choice(images)
 
