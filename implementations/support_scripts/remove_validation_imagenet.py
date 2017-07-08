@@ -1,7 +1,7 @@
 import os
 
 dir_imagenet = "../../../imagenet"
-dir_validation = "../../../validation"
+dir_validation = "../../../imagenet_validation"
 
 val_set = os.listdir(dir_validation)
 for file in val_set:
