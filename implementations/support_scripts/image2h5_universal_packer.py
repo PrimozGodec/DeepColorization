@@ -109,7 +109,7 @@ class ImagePacker(threading.Thread):
         with open("../../../whole_subset_data/training.txt", "a") as f:
             print(ch, file=f)
 
-        return self.image_dirs[i], ch
+        return self.selected_image_dirs[i], ch
 
     def generate_h5_small_vgg(self, size, name):
         import h5py
