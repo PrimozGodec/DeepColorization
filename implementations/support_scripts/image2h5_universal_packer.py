@@ -125,7 +125,7 @@ class ImagePacker(threading.Thread):
         while i < size:
             # print(i)
             # download image
-            file_dir, file_name = self.select_file()
+            file_dir, file_name = self.select_file(i)
             lab_im = load_images(os.path.join(self.dir_from, file_dir), file_name, size=self.im_size)
 
             if type(lab_im) is not np.ndarray or lab_im == "error":
