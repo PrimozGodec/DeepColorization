@@ -62,7 +62,7 @@ class ImagePacker(threading.Thread):
             Number that tells from where to number the h5 files in dir
         """
         k = len(self.prefix)
-        only_files = [f for f in os.listdir(self.dir_to) if isfile(join(self.dir_to, f)) and f[:k] == self.prefix]
+        only_files = [f for f in os.listdir(self.dir_to1) if isfile(join(self.dir_to1, f)) and f[:k] == self.prefix]
         return max([-1] + [int(x[k:k + 4]) for x in only_files]) + 1  # files has name with format prefxxxx.h5 - x is a number
 
     def generate_files(self):
@@ -105,6 +105,9 @@ class ImagePacker(threading.Thread):
         image_dir = np.random.choice(self.image_dirs, 1, p=self.dir_probabilities)
         images = os.listdir(os.path.join(self.dir_from, image_dir))
         ch = random.choice(images)
+
+        with open("../../../whole_subset_data/training.txt", "a") as f:
+            print(ch, file=f)
 
         return image_dir, ch
 
