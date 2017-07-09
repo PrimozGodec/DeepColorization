@@ -1,3 +1,5 @@
+from collections import Counter
+
 import numpy as np
 import os
 import pickle
@@ -6,6 +8,7 @@ import scipy.stats
 from Orange.projection import CUR, PCA
 from Orange.data import Table, Domain, ContinuousVariable, DiscreteVariable, StringVariable
 from scipy import linalg
+from scp import SCPClient
 
 """ methods names """
 
@@ -66,6 +69,25 @@ for i, rmse_d in enumerate(rmse_data):
 array = np.array(M)
 order = array.argsort(axis=1)
 ranks = order.argsort(axis=1)
+
+import paramiko
+most_common_top = Counter(np.array(list(images))[np.argsort(ranks, axis=1)[:, :20].flatten()])
+
+import paramiko
+k = paramiko.RSAKey.from_private_key_file("/home/primoz/.ssh/id_rsa")
+c = paramiko.SSHClient()
+c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+print("connecting")
+c.connect(hostname = "193.2.72.59", username = "primoz", pkey = k )
+print("connected")
+
+scp = SCPClient(c.get_transport())
+
+for im in most_common_top:
+    scp.get("nfs/primoz/hist/validation_colorization/05/imp9-full-100" + im, "/home/primoz/Desktop/test1")
+
+scp.close()
+c.close()
 
 # print(ranks[:, :10])
 
