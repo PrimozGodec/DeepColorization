@@ -167,6 +167,6 @@ for batch_n in range(num_of_images // b_size):
     convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"]])
 
     net_layers = convout_([all_images_l, all_vgg])
-    print(net_layers)
+    print(net_layers.shape)
 
     exit()
