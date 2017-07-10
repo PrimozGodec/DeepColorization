@@ -164,7 +164,7 @@ for batch_n in range(num_of_images // b_size):
 
     # color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
 
-    convout_ = K.function(model.inputs, [outputs["covn1"], outputs["covn2"], outputs["covn3"], outputs["covn4"]])
+    convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"]])
 
     net_layers = convout_([all_images_l, all_vgg])
     print(net_layers)
