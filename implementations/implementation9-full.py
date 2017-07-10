@@ -4,10 +4,9 @@ import os
 
 from skimage import color
 
-from implementations.support_scripts.image_processing import load_images_rgb, images_to_l
-
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
+from implementations.support_scripts.image_processing import load_images_rgb, images_to_l
 from implementations.support_scripts.image_tester import image_error_full_vgg
 
 from implementations.support_scripts.common import h5_vgg_generator_let_there, image_check_with_vgg
