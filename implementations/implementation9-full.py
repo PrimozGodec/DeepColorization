@@ -169,7 +169,7 @@ for batch_n in range(num_of_images // b_size):
     net_layers = convout_([all_images_l, all_vgg])
 
     for l in net_layers:
-        print(type(l))
+        print(l.shape)
 
 
     exit()
