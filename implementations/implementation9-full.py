@@ -138,6 +138,7 @@ model.load_weights("../weights/implementation9-full-5.h5")
 # image_error_full_vgg(model, "imp9-full-100", b_size=b_size)
 
 import numpy as np
+import scipy.misc
 
 abs_file_path = "../../subset100_000/validation"
 image_list = os.listdir(abs_file_path)
@@ -168,8 +169,12 @@ for batch_n in range(num_of_images // b_size):
 
     net_layers = convout_([all_images_l, all_vgg])
 
-    for l in net_layers:
-        print(l.shape)
-
+    for l_num, l in enumerate(net_layers):
+        b, w, h, c = l.shape
+        for b in range(b):
+            for im in range(c):
+                im = net_layers[b, :, :, c]
+                scipy.misc.toimage(im, cmin=im.min(), cmax=im.max(), mode="L").save(
+                    "../../visulalisations/" + l_num + "_" + c + "_" + image_list[batch_n * b_size + b])
 
     exit()
