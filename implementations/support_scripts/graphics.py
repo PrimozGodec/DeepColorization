@@ -7,6 +7,7 @@ import math
 from operator import itemgetter
 
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from matplotlib import gridspec
 from skimage import color
 
@@ -116,14 +117,44 @@ def alg_comparison(im_dir, methods, images):
     plt.savefig("../../../images-methods-comparison-100.jpg", bbox_inches='tight')
     plt.close()
 
+def visualize_activations(act_dir):
+    files = os.listdir(act_dir)
+
+    split_files = [x.split("_") for x in files]
+
+    images_names = [x[2] + "_" + x[3] for x in split_files]
+
+    for image in images_names:
+        im_per_dim = int(math.sqrt(64))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(64):
+            image1 = mpimg.imread(os.path.join(act_dir, "0_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/0" + image, bbox_inches='tight')
+        plt.close()
+
+
+
 
 if __name__ == "__main__":
     # blackwhite_colorized_comparison("../../../colorized_im")
 
 
-    images_list = ["n09205509_3677.JPEG", "n01850373_5523.JPEG",  # the good ones
-                   "n03439814_15864.JPEG", "n01839750_2625.JPEG",  # so so
-                   "n11950345_7349.JPEG", "n12953206_10800.JPEG"]  # worst
-
-    alg_comparison("../../../selected-images-100", list(rename_methods.keys()),
-                   images_list)
+    # images_list = ["n09205509_3677.JPEG", "n01850373_5523.JPEG",  # the good ones
+    #                "n03439814_15864.JPEG", "n01839750_2625.JPEG",  # so so
+    #                "n11950345_7349.JPEG", "n12953206_10800.JPEG"]  # worst
+    #
+    # alg_comparison("../../../selected-images-100", list(rename_methods.keys()),
+    #                images_list)
+    visualize_activations("../../../visualisations/")
