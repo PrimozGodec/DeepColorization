@@ -38,11 +38,11 @@ x = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=re
 x = add([x, x1])
 
 x = Conv2D(128, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01))(x)
+           kernel_regularizer=regularizers.l2(0.01), name="conv5")(x)
 x = MaxPooling2D((2, 2), strides=(2, 2))(x)
-x1 = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x)
-x = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x1)
-x = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x)
+x1 = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv6")(x)
+x = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv7")(x1)
+x = Conv2D(256, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv8")(x)
 x = add([x, x1])
 
 x = Conv2D(256, (3, 3), padding="same", activation="relu",
@@ -165,7 +165,8 @@ for batch_n in range(num_of_images // b_size):
 
     # color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
 
-    convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"]])
+    convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"],
+                                         outputs["conv5"], outputs["conv6"], outputs["conv7"], outputs["conv8"]])
 
     net_layers = convout_([all_images_l, all_vgg])
 
