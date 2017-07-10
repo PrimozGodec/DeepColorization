@@ -172,9 +172,9 @@ for batch_n in range(num_of_images // b_size):
     for l_num, l in enumerate(net_layers):
         b, w, h, c = l.shape
         for b in range(b):
-            for im in range(c):
-                im = net_layers[b, :, :, c]
+            for ch in range(c):
+                im = net_layers[b, :, :, ch]
                 scipy.misc.toimage(im, cmin=im.min(), cmax=im.max(), mode="L").save(
-                    "../../visulalisations/" + l_num + "_" + c + "_" + image_list[batch_n * b_size + b])
+                    "../../visulalisations/" + str(l_num) + "_" + str(c) + "_" + image_list[batch_n * b_size + b])
 
     exit()
