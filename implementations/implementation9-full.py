@@ -2,6 +2,10 @@ import pickle
 import sys
 import os
 
+from skimage import color
+
+from implementations.support_scripts.image_processing import load_images_rgb, images_to_l
+
 sys.path.append(os.getcwd()[:os.getcwd().index('implementations')])
 
 from implementations.support_scripts.image_tester import image_error_full_vgg
@@ -27,11 +31,11 @@ input_shape = (224, 224, 1)
 main_input = Input(shape=input_shape, name='image_part_input')
 
 x = Conv2D(64, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01))(main_input)
+           kernel_regularizer=regularizers.l2(0.01), name="conv1")(main_input)
 x = MaxPooling2D((2, 2), strides=(2, 2))(x)
-x1 = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x)
-x = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x1)
-x = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01))(x)
+x1 = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv2")(x)
+x = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv3")(x1)
+x = Conv2D(128, (3, 3), padding="same", activation="relu", kernel_regularizer=regularizers.l2(0.01), name="conv4")(x)
 x = add([x, x1])
 
 x = Conv2D(128, (3, 3), padding="same", activation="relu",
@@ -132,4 +136,38 @@ model.load_weights("../weights/implementation9-full-5.h5")
 #     pickle.dump(history.history, output)
 #     output.close()
 
-image_error_full_vgg(model, "imp9-full-100", b_size=b_size)
+# image_error_full_vgg(model, "imp9-full-100", b_size=b_size)
+
+import numpy as np
+
+abs_file_path = "../../subset100_000/validation"
+image_list = os.listdir(abs_file_path)
+num_of_images = len(image_list)
+
+outputs = {layer.name : layer.output for layer in model.layers}
+
+for batch_n in range(num_of_images // b_size):
+    all_images_l = np.zeros((b_size, 224, 224, 1))
+    all_images = np.zeros((b_size, 224, 224, 3))
+    all_images_rgb = np.zeros((b_size, 224, 224, 3))
+    for i in range(b_size):
+        # get image
+        image_rgb = load_images_rgb(abs_file_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+        image_lab = color.rgb2lab(image_rgb)
+        image_l = images_to_l(image_lab)
+        all_images_l[i, :, :, :] = image_l[:, :, np.newaxis]
+        all_images[i, :, :, :] = image_lab
+        all_images_rgb[i, :, :, :] = image_rgb
+
+    all_vgg = np.zeros((num_of_images, 224, 224, 3))
+    for i in range(b_size):
+        all_vgg[i, :, :, :] = np.tile(all_images_l[i], (1, 1, 1, 3))
+
+    # color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
+
+    convout_ = K.function(model.inputs, [outputs["covn1"], outputs["covn2"], outputs["covn3"], outputs["covn4"]])
+
+    net_layers = convout_([all_images_l, all_vgg])
+    print(net_layers)
+
+    exit()
