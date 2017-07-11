@@ -122,9 +122,12 @@ def visualize_activations(act_dir):
 
     split_files = [x.split("_") for x in files]
 
-    images_names = [x[2] + "_" + x[3] for x in split_files]
-
+    images_names = list(set([x[2] + "_" + x[3] for x in split_files]))
+    print(len(images_names))
     for image in images_names:
+
+        #1st layer
+        print(1)
         im_per_dim = int(math.sqrt(64))
         num_rows = im_per_dim
         num_col = im_per_dim
@@ -133,6 +136,7 @@ def visualize_activations(act_dir):
         gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
                                 wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
         for l1 in range(64):
+
             image1 = mpimg.imread(os.path.join(act_dir, "0_" + str(l1) + "_" + image))
 
             # plot image
@@ -141,7 +145,115 @@ def visualize_activations(act_dir):
 
             ax1.axis('off')
 
-        plt.savefig("../../../visualisation_merged/0" + image, bbox_inches='tight')
+        plt.savefig("../../../visualisation_merged/0_" + image, bbox_inches='tight')
+        plt.close()
+
+        # 2nd layer
+        print(2)
+        im_per_dim = int(math.sqrt(128))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(im_per_dim ** 2):
+            image1 = mpimg.imread(os.path.join(act_dir, "1_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/1_" + image, bbox_inches='tight')
+        plt.close()
+
+        # 3rd layer
+        print(3)
+        im_per_dim = int(math.sqrt(128))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(im_per_dim ** 2):
+            image1 = mpimg.imread(os.path.join(act_dir, "2_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/2_" + image, bbox_inches='tight')
+        plt.close()
+
+        # 4rd layer
+        print(4)
+        im_per_dim = int(math.sqrt(128))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(im_per_dim ** 2):
+
+            image1 = mpimg.imread(os.path.join(act_dir, "3_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/3_" + image, bbox_inches='tight')
+        plt.close()
+
+        # 5nd layer
+        print(5)
+        im_per_dim = int(math.sqrt(128))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(im_per_dim ** 2):
+
+            image1 = mpimg.imread(os.path.join(act_dir, "4_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/4_" + image, bbox_inches='tight')
+        plt.close()
+
+        # 6nd layer
+        print(6)
+        im_per_dim = int(math.sqrt(256))
+        num_rows = im_per_dim
+        num_col = im_per_dim
+
+        plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+        gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                                wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+        for l1 in range(im_per_dim ** 2):
+
+            image1 = mpimg.imread(os.path.join(act_dir, "5_" + str(l1) + "_" + image))
+
+            # plot image
+            ax1 = plt.subplot(gs1[l1])
+            ax1.imshow(image1, cmap="gray")
+
+            ax1.axis('off')
+
+        plt.savefig("../../../visualisation_merged/5_" + image, bbox_inches='tight')
         plt.close()
 
 

@@ -188,15 +188,15 @@ images_dir = "../../../big_dataset"
 
 # test imp9
 
-model_let_896 = let_there_color_896.model()
-model_let_896.load_weights("../../weights/let-there-color-2.h5")
-print(error_let_there(model_let_896, "test", images_dir, im_size=(896, 896)))
+# model_let_896 = let_there_color_896.model()
+# model_let_896.load_weights("../../weights/let-there-color-2.h5")
+# print(error_let_there(model_let_896, "test", images_dir, im_size=(896, 896)))
 
 model_let_224 = let_there_color_224.model()
 model_let_224.load_weights("../../weights/let-there-color-2.h5")
 print(error_let_there(model_let_224, "test", images_dir, im_size=(224, 224)))
 
-model_imp9 = imp9_32.model()
-model_imp9.load_weights("../../weights/implementation9-12.h5")
-print(error_imp9_32(model_imp9, "test", images_dir, size=(224, 224)))
-print(error_imp9_32(model_imp9, "test", images_dir, size=(896, 896)))
+# model_imp9 = imp9_32.model()
+# model_imp9.load_weights("../../weights/implementation9-12.h5")
+# print(error_imp9_32(model_imp9, "test", images_dir, size=(224, 224)))
+# print(error_imp9_32(model_imp9, "test", images_dir, size=(896, 896)))
