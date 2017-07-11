@@ -257,6 +257,26 @@ def visualize_activations(act_dir):
         plt.close()
 
 
+def make_grid(num_col, num_rows, image_dir):
+
+    plt.figure(figsize=(num_col * 2.5 + 0.5, (num_rows + 2) * 2.5 + 2.1))
+    gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                            wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+
+    ims = sorted(os.listdir(image_dir))
+    for i, im in enumerate(ims):
+        image1 = mpimg.imread(os.path.join(image_dir, im))
+
+        # plot image
+        ax1 = plt.subplot(gs1[i])
+        ax1.imshow(image1, cmap="gray")
+        ax1.set_title("Nivo " + str(i + 1), fontsize=7)
+
+        ax1.axis('off')
+
+    plt.savefig("../../../visualisations_merged/complete.jpg", bbox_inches='tight', dpi=1200)
+    plt.close()
+
 
 
 if __name__ == "__main__":
@@ -269,4 +289,5 @@ if __name__ == "__main__":
     #
     # alg_comparison("../../../selected-images-100", list(rename_methods.keys()),
     #                images_list)
-    visualize_activations("../../../visualisations/")
+    # visualize_activations("../../../visualisations/")
+    make_grid(2, 3, "../../../visualisations_merged")
