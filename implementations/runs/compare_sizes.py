@@ -132,7 +132,7 @@ def error_let_there(model, name, path, im_size):
     Used to test let-there-be-color
     """
 
-    b_size = 32
+    b_size = 8
     im_w, im_h = im_size
 
     image_list = os.listdir(path)
