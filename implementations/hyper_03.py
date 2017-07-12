@@ -73,7 +73,7 @@ model.summary()
 
 start_from = 0
 save_every_n_epoch = 1
-n_epochs = 10000
+n_epochs = 150
 # model.load_weights("../weights/hyper03-9.h5")
 
 # start image downloader
