@@ -112,70 +112,70 @@ model.summary()
 
 start_from = 0
 save_every_n_epoch = 1
-n_epochs = 30
-model.load_weights("../weights/implementation9-full-5.h5")
+n_epochs = 150
+# model.load_weights("../weights/implementation9-full-5.h5")
 
 # start image downloader
 #
-# g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
-# gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
-#
-#
-# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-#     print("START", i * save_every_n_epoch, "/", n_epochs)
-#     history = model.fit_generator(g, steps_per_epoch=100000//b_size, epochs=save_every_n_epoch,
-#                                   validation_data=gval, validation_steps=(10000//b_size))
-#     model.save_weights("../weights/implementation9-full-" + str(i * save_every_n_epoch) + ".h5")
-#
-#     # save sample images
-#     image_check_with_vgg(model, 80, "imp9-full-" + str(i * save_every_n_epoch) + "-")
-#
-#     # save history
-#     output = open('../history/imp9-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-#     pickle.dump(history.history, output)
-#     output.close()
+g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
+gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
+
+
+for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+    print("START", i * save_every_n_epoch, "/", n_epochs)
+    history = model.fit_generator(g, steps_per_epoch=50000//b_size, epochs=save_every_n_epoch,
+                                  validation_data=gval, validation_steps=(10000//b_size))
+    model.save_weights("../weights/implementation9-full-" + str(i * save_every_n_epoch) + ".h5")
+
+    # save sample images
+    image_check_with_vgg(model, 80, "imp9-full-" + str(i * save_every_n_epoch) + "-")
+
+    # save history
+    output = open('../history/imp9-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+    pickle.dump(history.history, output)
+    output.close()
 
 # image_error_full_vgg(model, "imp9-full-100", b_size=b_size)
 
-import numpy as np
-import scipy.misc
-
-abs_file_path = "../../subset100_000/validation"
-image_list = os.listdir(abs_file_path)
-num_of_images = len(image_list)
-
-outputs = {layer.name : layer.output for layer in model.layers}
-
-for batch_n in range(num_of_images // b_size):
-    all_images_l = np.zeros((b_size, 224, 224, 1))
-    all_images = np.zeros((b_size, 224, 224, 3))
-    all_images_rgb = np.zeros((b_size, 224, 224, 3))
-    for i in range(b_size):
-        # get image
-        image_rgb = load_images_rgb(abs_file_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
-        image_lab = color.rgb2lab(image_rgb)
-        image_l = images_to_l(image_lab)
-        all_images_l[i, :, :, :] = image_l[:, :, np.newaxis]
-        all_images[i, :, :, :] = image_lab
-        all_images_rgb[i, :, :, :] = image_rgb
-
-    all_vgg = np.zeros((num_of_images, 224, 224, 3))
-    for i in range(b_size):
-        all_vgg[i, :, :, :] = np.tile(all_images_l[i], (1, 1, 1, 3))
-
-    # color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
-
-    convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"],
-                                         outputs["conv5"], outputs["conv6"], outputs["conv7"], outputs["conv8"]])
-
-    net_layers = convout_([all_images_l, all_vgg])
-
-    for l_num, l in enumerate(net_layers):
-        b, w, h, c = l.shape
-        for b in range(b):
-            for ch in range(c):
-                im = l[b, :, :, ch]
-                scipy.misc.toimage(im, cmin=im.min(), cmax=im.max(), mode="L").save(
-                    "../../visualisations/" + str(l_num) + "_" + str(ch) + "_" + image_list[batch_n * b_size + b])
-
-    exit()
+# import numpy as np
+# import scipy.misc
+#
+# abs_file_path = "../../subset100_000/validation"
+# image_list = os.listdir(abs_file_path)
+# num_of_images = len(image_list)
+#
+# outputs = {layer.name : layer.output for layer in model.layers}
+#
+# for batch_n in range(num_of_images // b_size):
+#     all_images_l = np.zeros((b_size, 224, 224, 1))
+#     all_images = np.zeros((b_size, 224, 224, 3))
+#     all_images_rgb = np.zeros((b_size, 224, 224, 3))
+#     for i in range(b_size):
+#         # get image
+#         image_rgb = load_images_rgb(abs_file_path, image_list[batch_n * b_size + i], size=(224, 224))  # image is of size 256x256
+#         image_lab = color.rgb2lab(image_rgb)
+#         image_l = images_to_l(image_lab)
+#         all_images_l[i, :, :, :] = image_l[:, :, np.newaxis]
+#         all_images[i, :, :, :] = image_lab
+#         all_images_rgb[i, :, :, :] = image_rgb
+#
+#     all_vgg = np.zeros((num_of_images, 224, 224, 3))
+#     for i in range(b_size):
+#         all_vgg[i, :, :, :] = np.tile(all_images_l[i], (1, 1, 1, 3))
+#
+#     # color_im = model.predict([all_images_l, all_vgg], batch_size=b_size)
+#
+#     convout_ = K.function(model.inputs, [outputs["conv1"], outputs["conv2"], outputs["conv3"], outputs["conv4"],
+#                                          outputs["conv5"], outputs["conv6"], outputs["conv7"], outputs["conv8"]])
+#
+#     net_layers = convout_([all_images_l, all_vgg])
+#
+#     for l_num, l in enumerate(net_layers):
+#         b, w, h, c = l.shape
+#         for b in range(b):
+#             for ch in range(c):
+#                 im = l[b, :, :, ch]
+#                 scipy.misc.toimage(im, cmin=im.min(), cmax=im.max(), mode="L").save(
+#                     "../../visualisations/" + str(l_num) + "_" + str(ch) + "_" + image_list[batch_n * b_size + b])
+#
+#     exit()
