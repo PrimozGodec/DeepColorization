@@ -137,7 +137,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/hist05-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    whole_image_check_hist(model, 80, "hist05-" + str(i * save_every_n_epoch) + "-")
+    whole_image_check_hist(model, 40, "hist05-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/hist05-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

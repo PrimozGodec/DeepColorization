@@ -90,7 +90,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/hyper03-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check(model, 80, "hyper03-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+    image_check(model, 40, "hyper03-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
 
     # save history
     output = open('../history/hyper03-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

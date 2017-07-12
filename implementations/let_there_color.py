@@ -106,7 +106,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check_with_vgg(model, 80, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+    image_check_with_vgg(model, 40, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
 
     # save history
     output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')

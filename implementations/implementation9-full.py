@@ -128,7 +128,7 @@ for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch)
     model.save_weights("../weights/implementation9-full-" + str(i * save_every_n_epoch) + ".h5")
 
     # save sample images
-    image_check_with_vgg(model, 80, "imp9-full-" + str(i * save_every_n_epoch) + "-")
+    image_check_with_vgg(model, 40, "imp9-full-" + str(i * save_every_n_epoch) + "-")
 
     # save history
     output = open('../history/imp9-full-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
