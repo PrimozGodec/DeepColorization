@@ -108,22 +108,22 @@ print("weights loaded")
 # ip.start()
 ip = None
 
-g = h5_small_vgg_generator_onehot(b_size, "../data/h5_small_train", ip)
-gval = h5_small_vgg_generator_onehot(b_size, "../data/h5_small_validation", None)
+# g = h5_small_vgg_generator_onehot(b_size, "../data/h5_small_train", ip)
+# gval = h5_small_vgg_generator_onehot(b_size, "../data/h5_small_validation", None)
 
 
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=50000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/hist02-" + str(i * save_every_n_epoch) + ".h5")
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=50000//b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(10000//b_size))
+#     model.save_weights("../weights/hist02-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     whole_image_check_hist(model, 40, "hist02-" + str(i * save_every_n_epoch) + "-")
+#
+#     # save history
+#     output = open('../history/hist02-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-    # save sample images
-    whole_image_check_hist(model, 40, "hist02-" + str(i * save_every_n_epoch) + "-")
-
-    # save history
-    output = open('../history/hist02-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
-
-# image_error_small_hist(model, "hist02-test-100")
+image_error_small_hist(model, "hist02-test-full-")

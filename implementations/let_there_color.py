@@ -95,22 +95,22 @@ save_every_n_epoch = 1
 n_epochs = 150
 # model.load_weights("../weights/let-there-color-2.h5")
 
-g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
-gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
+# g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
+# gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
+#
+#
+# for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
+#     print("START", i * save_every_n_epoch, "/", n_epochs)
+#     history = model.fit_generator(g, steps_per_epoch=50000//b_size, epochs=save_every_n_epoch,
+#                                   validation_data=gval, validation_steps=(10000//b_size))
+#     model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
+#
+#     # save sample images
+#     image_check_with_vgg(model, 40, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
+#
+#     # save history
+#     output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
+#     pickle.dump(history.history, output)
+#     output.close()
 
-
-for i in range(start_from // save_every_n_epoch, n_epochs // save_every_n_epoch):
-    print("START", i * save_every_n_epoch, "/", n_epochs)
-    history = model.fit_generator(g, steps_per_epoch=50000//b_size, epochs=save_every_n_epoch,
-                                  validation_data=gval, validation_steps=(10000//b_size))
-    model.save_weights("../weights/let-there-color-" + str(i * save_every_n_epoch) + ".h5")
-
-    # save sample images
-    image_check_with_vgg(model, 40, "let-there-color-" + str(i * save_every_n_epoch) + "-", b_size=b_size)
-
-    # save history
-    output = open('../history/let-there-color-{:0=4d}.pkl'.format(i * save_every_n_epoch), 'wb')
-    pickle.dump(history.history, output)
-    output.close()
-
-# image_error_full_vgg(model, "let-there-color-test-100", b_size=b_size)
+image_error_full_vgg(model, "let-there-color-test-full-", b_size=b_size)
