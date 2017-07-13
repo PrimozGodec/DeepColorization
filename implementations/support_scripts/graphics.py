@@ -38,7 +38,7 @@ def blackwhite_colorized_comparison(dir_color):
 
 
 
-
+    plt.subplot_tool()
     plt.savefig("../../../black-colored-comparison.jpg", bbox_inches='tight')
     plt.close()
 
@@ -280,7 +280,7 @@ def make_grid(num_col, num_rows, image_dir):
 
 
 if __name__ == "__main__":
-    # blackwhite_colorized_comparison("../../../colorized_im")
+    blackwhite_colorized_comparison("../../../colorized_im")
 
 
     # images_list = ["n09205509_3677.JPEG", "n01850373_5523.JPEG",  # the good ones
@@ -290,4 +290,4 @@ if __name__ == "__main__":
     # alg_comparison("../../../selected-images-100", list(rename_methods.keys()),
     #                images_list)
     # visualize_activations("../../../visualisations/")
-    make_grid(2, 3, "../../../visualisations_merged")
+    # make_grid(2, 3, "../../../visualisations_merged")
