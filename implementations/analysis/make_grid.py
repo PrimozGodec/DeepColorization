@@ -12,10 +12,10 @@ grid_width = 3
 images = os.listdir(grid_dir)
 
 rename_methods = {"colorful2": "Zang in sod.",
-                  "hist02": "Klas. brez uteži - arih. 1",
-                  "hist03": "Klas. brez uteži - arih. 2",
-                  "hist04": "Klas. z utežmi - arih. 2",
-                  "hist05": "Klas. z utežmi - arih. 1",
+                  "hist02": "Klas. brez uteži - plitva arh.",
+                  "hist03": "Klas. brez uteži - globja arh.",
+                  "hist04": "Klas. z utežmi - globja arh.",
+                  "hist05": "Klas. z utežmi - plitva arh.",
                   "hyper03": "Dahl",
                   "imp9": "Reg. po delih",
                   "imp9-full": "Reg. celotna slika",
@@ -27,6 +27,8 @@ rename_methods = {"colorful2": "Zang in sod.",
 
 order = ["colorful2", "let-there-color", "hyper03", "imp9", "imp9-wsm", "imp10", "imp9-full", "imp10-full",
          "vgg1", "hist02", "hist03", "hist04", "hist05"]
+
+# order = ["let-there-color", "hyper03", "imp9", "imp9-full", "vgg1", "hist02","hist05"]
 
 # dfine plot
 num_col = grid_width

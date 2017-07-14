@@ -10,7 +10,7 @@ import os
 import pickle
 from matplotlib.ticker import MaxNLocator
 
-implementation = "imp9"
+implementation = "hyper03"
 
 # list all history files
 files = sorted([x for x in os.listdir("../../history")
@@ -39,7 +39,7 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper right')
-plt.ylim([220, 280])
+plt.ylim([220, 320])
 
 
 ax.xaxis.set_major_locator(MaxNLocator(integer=True))

@@ -10,7 +10,19 @@ from implementations.support_scripts.image_processing import load_images
 
 path_to_photos = "../../result_images"
 # file_prefix = ["imp7d", "imp7d-relu", "imp7d-reg", "imp7d-hist", "imp7d-01"]
-file_prefix = ["let-there-color", "hist02", "hist05", "vgg1", "imp9", "imp9-wsm"]
+file_prefix = ["let-there-color", "hyper03", "imp9", "imp9-full", "vgg1", "hist02", "hist05"]
+
+rename_methods = {"colorful": "Zang in sod.",
+                  "hist02": "Klas. brez uteži - plitva arh.",
+                  "hist03": "Klas. brez uteži - arih. 2",
+                  "hist04": "Klas. z utežmi - arih. 2",
+                  "hist05": "Klas. z utežmi - plitva arh.",
+                  "hyper03": "Dahl",
+                  "imp9": "Reg. po delih",
+                  "imp9-full": "Reg. celotna slika",
+                  "imp10": "Reg. po delih - brez globalne mreže",
+                  "let-there-color": "Iizuka in sod.",
+                  "vgg1": "Reg. celotna slika VGG"}
 
 plt.rcParams.update({'font.size': 8})
 
@@ -22,6 +34,7 @@ for alg in file_prefix:
 
     split_files = [x.split('-') for x in files_with_prefix if len(x.split("-")) == 2]
     split_names.append(split_files)
+
     image_names = sorted(list(set(list(zip(*split_files))[1])))
     im_names.append(image_names)
 
@@ -40,7 +53,7 @@ for image_name in im_names_all:
     it = list(map(set, it))
     it = sorted(list(set.intersection(*it)), key=int)
 
-    num_rows = len(it)
+    num_rows = 10 # len(it) // 5
     num_col = len(file_prefix)
 
     plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
@@ -65,7 +78,7 @@ for image_name in im_names_all:
                  color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
         ax1.axis('off')
         if ax1.is_first_row():
-            ax1.set_title(alg, fontsize=9)
+            ax1.set_title(rename_methods[alg], fontsize=9)
 
 
         ax1 = plt.subplot(gs1[- j - 1])
@@ -81,6 +94,12 @@ for image_name in im_names_all:
 
 
     for i, im in enumerate(it):
+        # if (int(im) + 1) % 5 != 0:
+        #     continue
+
+        if i >= 10:
+            break
+
         # open image
         for j, alg in enumerate(file_prefix):
             fname = os.path.join(path_to_photos, alg) + "-" + im + "-" + image_name
@@ -90,7 +109,7 @@ for image_name in im_names_all:
             ax1 = plt.subplot(gs1[i * num_col + j + num_col])
             ax1.imshow(image)
 
-            ax1.text(0.03, 0.97, int(im) + 3,
+            ax1.text(0.03, 0.97, int(im) + 1,
                     horizontalalignment='left',
                     verticalalignment='top',
                     transform = ax1.transAxes,
