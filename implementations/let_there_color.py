@@ -93,7 +93,7 @@ model.summary()
 start_from = 0
 save_every_n_epoch = 1
 n_epochs = 150
-# model.load_weights("../weights/let-there-color-2.h5")
+model.load_weights("../weights/let-there-color-105.h5")
 
 # g = h5_vgg_generator_let_there(b_size, "../data/h5_224_train", None)
 # gval = h5_vgg_generator_let_there(b_size, "../data/h5_224_validation", None)
