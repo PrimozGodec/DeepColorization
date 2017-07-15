@@ -30,8 +30,8 @@ def image_error_full_vgg(model, name, b_size=32):
     """
     Used to test let-there-be-color
     """
-
-    abs_file_path = get_abs_path("../../../subset100_000/validation")
+    abs_file_path = get_abs_path("../../../special_test")
+    # abs_file_path = get_abs_path("../../../subset100_000/validation")
     image_list = os.listdir(abs_file_path)
     num_of_images = len(image_list)
 
@@ -108,7 +108,8 @@ def image_error_small_vgg(model, name):
     """
 
     # find directory
-    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    test_set_dir_path = get_abs_path("../../../special_test")
+    # test_set_dir_path = get_abs_path("../../../subset100_000/validation")
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
@@ -211,7 +212,8 @@ def image_error_small_no_vgg(model, name):
     """
 
     # find directory
-    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    test_set_dir_path = get_abs_path("../../../special_test")
+    # test_set_dir_path = get_abs_path("../../../subset100_000/validation")
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
@@ -304,7 +306,8 @@ def image_error_small_no_vgg(model, name):
 
 
 def image_error_vgg(model, name, b_size=32, dim=3):
-    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    test_set_dir_path = get_abs_path("../../../special_test")
+    # test_set_dir_path = get_abs_path("../../../subset100_000/validation")
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
@@ -353,7 +356,8 @@ def image_error_vgg(model, name, b_size=32, dim=3):
 
 
 def image_error_small_hist(model, name):
-    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    test_set_dir_path = get_abs_path("../../../special_test")
+    # test_set_dir_path = get_abs_path("../../../subset100_000/validation")
     # find directory
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
@@ -454,7 +458,8 @@ def image_error_small_hist(model, name):
 
 
 def image_error_hist(model, name, b_size=32):
-    test_set_dir_path = get_abs_path("../../../subset100_000/validation")
+    test_set_dir_path = get_abs_path("../../../special_test")
+    # test_set_dir_path = get_abs_path("../../../subset100_000/validation")
     image_list = os.listdir(test_set_dir_path)
     num_of_images = len(image_list)
 
