@@ -36,7 +36,8 @@ def load_images(dir, file, size=(256, 256)):
         img = Image.open(os.path.join(dir, file))
         img = img.resize(size, Image.ANTIALIAS)
 
-    except (OSError, ValueError, IOError, ZeroDivisionError):
+    except (OSError, ValueError, IOError, ZeroDivisionError) as e:
+        print(e)
         print("Damaged:", file)
         return "error"
 

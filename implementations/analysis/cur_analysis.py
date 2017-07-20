@@ -13,10 +13,10 @@ from scp import SCPClient
 """ methods names """
 
 rename_methods = {"colorful-test-100": "Zang in sod.",
-                  "hist02-test-100": "Klas. brez uteži - arih. 1",
-                  "hist03-test-100": "Klas. brez uteži - arih. 2",
-                  "hist04-test-100": "Klas. z utežmi - arih. 2",
-                  "hist05-test-100": "Klas. z utežmi - arih. 1",
+                  "hist02-test-100": "Klas. brez uteži - plitva arh.",
+                  "hist03-test-100": "Klas. brez uteži - globja arh.",
+                  "hist04-test-100": "Klas. z utežmi - globja arh.",
+                  "hist05-test-100": "Klas. z utežmi - plitva arh.",
                   "hyper03-test-100": "Dahl",
                   "imp09-test-100": "Reg. po delih",
                   "imp9-full-100": "Reg. celotna slika",
@@ -73,21 +73,21 @@ ranks = order.argsort(axis=1)
 import paramiko
 most_common_top = Counter(np.array(list(images))[np.argsort(ranks, axis=1)[:, :20].flatten()])
 
-import paramiko
-k = paramiko.RSAKey.from_private_key_file("/home/primoz/.ssh/id_rsa")
-c = paramiko.SSHClient()
-c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-print("connecting")
-c.connect(hostname = "193.2.72.59", username = "primoz", pkey = k )
-print("connected")
-
-scp = SCPClient(c.get_transport())
-
-for im in most_common_top:
-    scp.get("nfs/primoz/hist/validation_colorization/05/imp9-full-100" + im, "/home/primoz/Desktop/test1")
-
-scp.close()
-c.close()
+# import paramiko
+# k = paramiko.RSAKey.from_private_key_file("/home/primoz/.ssh/id_rsa")
+# c = paramiko.SSHClient()
+# c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+# print("connecting")
+# c.connect(hostname = "193.2.72.59", username = "primoz", pkey = k )
+# print("connected")
+#
+# scp = SCPClient(c.get_transport())
+#
+# for im in most_common_top:
+#     scp.get("nfs/primoz/hist/validation_colorization/05/imp9-full-100" + im, "/home/primoz/Desktop/test1")
+#
+# scp.close()
+# c.close()
 
 # print(ranks[:, :10])
 
@@ -98,10 +98,10 @@ print("&".join(["".ljust(10)] + ["%s" % v[:10].ljust(10) for v in rmse_files]))
 for i in range(0, len(rho)):
     print("&".join([rmse_files[i][:10].ljust(10)] + [("%.4f" % v).ljust(10) for v in rho[i, :]]), "\\\\")
 
-# """ pack rho values to orange data table to perform MDS """
-# domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Methods")])
-# table = Table(domain, rho, metas=[[r] for r in rmse_files])
-# table.save("../../processed_data/spearman_rhos.tab")
+""" pack rho values to orange data table to perform MDS """
+domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Methods")])
+table = Table(domain, rho, metas=[[r] for r in rmse_files])
+table.save("../../processed_data/spearman_rhos-1.tab")
 #
 # """ pack matrix m to table """
 # domain = Domain([ContinuousVariable(alg) for alg in rmse_files], metas=[StringVariable("Images")])

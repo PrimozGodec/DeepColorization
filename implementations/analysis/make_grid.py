@@ -25,10 +25,10 @@ rename_methods = {"colorful2": "Zang in sod.",
                   "let-there-color": "Iizuka in sod.",
                   "vgg1": "Reg. celotna slika VGG"}
 
-order = ["colorful2", "let-there-color", "hyper03", "imp9", "imp9-wsm", "imp10", "imp9-full", "imp10-full",
-         "vgg1", "hist02", "hist03", "hist04", "hist05"]
+# order = ["colorful2", "let-there-color", "hyper03", "imp9", "imp9-wsm", "imp10", "imp9-full", "imp10-full",
+#          "vgg1", "hist02", "hist03", "hist04", "hist05"]
 
-# order = ["let-there-color", "hyper03", "imp9", "imp9-full", "vgg1", "hist02","hist05"]
+order = ["let-there-color", "hyper03", "imp9", "imp9-full", "vgg1", "hist02","hist05"]
 
 # dfine plot
 num_col = grid_width

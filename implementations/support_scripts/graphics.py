@@ -45,25 +45,26 @@ def blackwhite_colorized_comparison(dir_color):
 
 rename_methods = {"": "Originalna slika",
                   "colorful-test-100": "Zang in sod.",
-                  "hist02-test-100": "Klas. brez uteži - plitva arh.",
-                  "hist03-test-100": "Klas. brez uteži - globja arh.",
-                  "hist04-test-100": "Klas. z utežmi - globja arh.",
-                  "hist05-test-100": "Klas. z utežmi - plitva arh.",
+                  # "hist02-test-100": "Klas. brez uteži\nplitva arh.",
+                  # "hist03-test-100": "Klas. brez uteži\nglobja arh.",
+                  # "hist04-test-100": "Klas. z utežmi\nglobja arh.",
+                  # "hist05-test-100": "Klas. z utežmi\nplitva arh.",
                   "hyper03-test-100": "Dahl",
                   "imp09-test-100": "Reg. po delih",
-                  "imp9-full-100": "Reg. celotna slika",
-                  "imp09-wsm-test-100": "Reg. po delih - brez softmax",
-                  "imp10-test-100": "Reg. po delih - brez globalne mreže",
-                  "imp10-full-100": "Reg. celotna slika - brez globalne mreže",
+                  "imp9-full-100": "Reg. cel. slika",
+                  "imp09-wsm-test-100": "Reg. po delih\nbrez softmax",
+                  "imp10-test-100": "Reg. po delih\nbrez glob. mr.",
+                  "imp10-full-100": "Reg. cel. slika\nbrez glob. mr.",
                   "let-there-color-test-100": "Iizuka in sod.",
-                  "vgg-test-100": "Reg. celotna slika VGG"}
+                  "vgg-test-100": "Reg. cel.\nslika VGG"}
+
 
 methods_order = {"": 0,
                   "colorful-test-100": 1,
-                  "hist02-test-100": 10,
-                  "hist03-test-100": 11,
-                  "hist04-test-100": 13,
-                  "hist05-test-100": 12,
+                  # "hist02-test-100": 10,
+                  # "hist03-test-100": 11,
+                  # "hist04-test-100": 13,
+                  # "hist05-test-100": 12,
                   "hyper03-test-100": 3,
                   "imp09-test-100": 4,
                   "imp9-full-100": 7,
@@ -73,6 +74,37 @@ methods_order = {"": 0,
                   "let-there-color-test-100": 2,
                   "vgg-test-100": 9}
 
+
+methods_order_v = {"": 0,
+                  # "colorful-test-100": 1,
+                  "hist02-test-full-": 10,
+                  # "hist03-test-100": 11,
+                  # "hist04-test-100": 13,
+                  "hist05-test-full-": 12,
+                  "hyper03-test-full-": 3,
+                  "imp09-test-full-": 4,
+                  "imp9-full-test-full-": 7,
+                  # "imp09-wsm-test-100": 5,
+                  # "imp10-test-100": 6,
+                  # "imp10-full-100": 8,
+                  "let-there-color-test-full-": 2,
+                  "vgg-test-full-": 9}
+
+rename_methods_v = {"": "Originalna slika",
+                  "colorful-test-100": "Zang in sod.",
+                  "hist02-test-full-": "Klas. brez uteži\nplitva arh.",
+                  "hist03-test-100": "Klas. brez uteži\nglobja arh.",
+                  "hist04-test-100": "Klas. z utežmi\nglobja arh.",
+                  "hist05-test-full-": "Klas. z utežmi\nplitva arh.",
+                  "hyper03-test-full-": "Dahl",
+                  "imp09-test-full-": "Reg. po delih",
+                  "imp9-full-test-full-": "Reg. cel. slika",
+                  "imp09-wsm-test-100": "Reg. po delih\nbrez softmax",
+                  "let-there-color-test-full-": "Iizuka in sod.",
+                  "vgg-test-full-": "Reg. celotna\nslika VGG"}
+
+
+plt.rcParams.update({'font.size': 22})
 
 def alg_comparison(im_dir, methods, images):
 
@@ -105,17 +137,68 @@ def alg_comparison(im_dir, methods, images):
             # if ax1.is_first_row():
             #     ax1.set_title(images[i].split(".")[0], fontsize=9)
             if ax1.is_first_col():
-                ax1.text(-0.12, 0.5, rename_methods[ordered_methods[j]],
-                         horizontalalignment='left',
+                ax1.text(-0.10, 0.5, rename_methods[ordered_methods[j]],
+                         horizontalalignment='right',
                          verticalalignment='center',
                          transform=ax1.transAxes,
                          color="black",
-                         rotation=90)
+                         rotation=90,
+                         multialignment='center')
 
 
 
     plt.savefig("../../../images-methods-comparison-100.jpg", bbox_inches='tight')
     plt.close()
+
+
+def alg_comparison_vertical(im_dir):
+
+
+    # dfine plot
+    files = os.listdir(im_dir)
+    just_im_names = list(set([x.split("-")[-1] for x in files]))
+    # just_im_names = ['n02215770_4433.JPEG', 'Screen Shot 2017-07-05 at 12.42.28.png', 'n02867401_971.JPEG', 'n02783994_7940.JPEG', 'n03219483_4276.JPEG', 'n03891538_27243.JPEG', 'n02213543_4098.JPEG', 'n01322221_4873.JPEG', 'n02903126_318.JPEG', 'n02124623_8147.JPEG', 'maruti-suzuki-swift-default-image.png-version201707131518.png', 'n02940385_203.JPEG']
+
+    num_col = 8
+    num_rows = len(just_im_names)
+
+    plt.figure(figsize=(num_col * 2.5 + 1, (num_rows + 2) * 2.5 + 1))
+    gs1 = gridspec.GridSpec(num_rows + 2, num_col, width_ratios=[1] * num_col,
+                            wspace=0.03, hspace=0.03, top=1, bottom=0, left=0, right=1)
+
+    orders_tup = sorted(methods_order_v.items(), key=itemgetter(1))
+
+    ordered_methods = [x[0] for x in orders_tup]
+
+
+    # make plots
+    for j in range(num_rows):
+        for i in range(num_col):
+
+            image1 = load_images(im_dir, ordered_methods[i] + just_im_names[j])
+
+            # plot image
+            ax1 = plt.subplot(gs1[j * num_col + i])
+            ax1.imshow(color.lab2rgb(image1))
+
+            ax1.axis('off')
+
+            # if ax1.is_first_row():
+            #     ax1.set_title(images[i].split(".")[0], fontsize=9)
+            if ax1.is_first_row():
+                ax1.set_title(rename_methods_v[ordered_methods[i]], fontsize=22, y=1.08)
+                # ax1.text(-0.12, 0.5, rename_methods_v[ordered_methods[i]],
+                #          horizontalalignment='left',
+                #          verticalalignment='center',
+                #          transform=ax1.transAxes,
+                #          color="black",
+                #          rotation=90)
+
+
+
+    plt.savefig("../../../images-methods-comparison-full.pdf", bbox_inches='tight', format='pdf')
+    plt.close()
+
 
 def visualize_activations(act_dir):
     files = os.listdir(act_dir)
@@ -289,5 +372,9 @@ if __name__ == "__main__":
     #
     # alg_comparison("../../../selected-images-100", list(rename_methods.keys()),
     #                images_list)
+
     # visualize_activations("../../../visualisations/")
     # make_grid(2, 3, "../../../visualisations_merged")
+
+    alg_comparison_vertical("../../../selection-full/dobre")
+    # blackwhite_colorized_comparison("../../../old-colorized")

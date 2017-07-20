@@ -13,16 +13,16 @@ path_to_photos = "../../result_images"
 file_prefix = ["let-there-color", "hyper03", "imp9", "imp9-full", "vgg1", "hist02", "hist05"]
 
 rename_methods = {"colorful": "Zang in sod.",
-                  "hist02": "Klas. brez uteži - plitva arh.",
-                  "hist03": "Klas. brez uteži - arih. 2",
-                  "hist04": "Klas. z utežmi - arih. 2",
-                  "hist05": "Klas. z utežmi - plitva arh.",
+                  "hist02": "Klas. brez uteži\nplitva arh.",
+                  "hist03": "Klas. brez uteži\narih. 2",
+                  "hist04": "Klas. z utežmi\narih. 2",
+                  "hist05": "Klas. z utežmi\nplitva arh.",
                   "hyper03": "Dahl",
                   "imp9": "Reg. po delih",
-                  "imp9-full": "Reg. celotna slika",
-                  "imp10": "Reg. po delih - brez globalne mreže",
+                  "imp9-full": "Reg. cel. slika",
+                  "imp10": "Reg. po delih\nbrez glob. mr.",
                   "let-there-color": "Iizuka in sod.",
-                  "vgg1": "Reg. celotna slika VGG"}
+                  "vgg1": "Reg. celotna\nslika VGG"}
 
 plt.rcParams.update({'font.size': 8})
 
@@ -75,10 +75,11 @@ for image_name in im_names_all:
                  horizontalalignment='left',
                  verticalalignment='top',
                  transform=ax1.transAxes,
+                 size=22,
                  color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
         ax1.axis('off')
         if ax1.is_first_row():
-            ax1.set_title(rename_methods[alg], fontsize=9)
+            ax1.set_title(rename_methods[alg], fontsize=22, y=1.08)
 
 
         ax1 = plt.subplot(gs1[- j - 1])
@@ -88,6 +89,7 @@ for image_name in im_names_all:
                  horizontalalignment='left',
                  verticalalignment='top',
                  transform=ax1.transAxes,
+                 size=22,
                  color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
 
         ax1.axis('off')
@@ -113,11 +115,12 @@ for image_name in im_names_all:
                     horizontalalignment='left',
                     verticalalignment='top',
                     transform = ax1.transAxes,
+                     size=22,
                      color="white", bbox=dict(boxstyle="round,pad=0.05", fc="black", lw=2))
 
             ax1.axis('off')
             if ax1.is_first_row():
-                ax1.set_title(alg, fontsize=9)
+                ax1.set_title(alg, fontsize=22)
 
             image.close()
 
