@@ -194,8 +194,6 @@ def alg_comparison_vertical(im_dir):
                 #          color="black",
                 #          rotation=90)
 
-
-
     plt.savefig("../../../images-methods-comparison-full.pdf", bbox_inches='tight', format='pdf')
     plt.close()
 
